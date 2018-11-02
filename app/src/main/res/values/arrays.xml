@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="SAMPLE_TYPE">
+        <item>监督抽检</item>
+        <item>风险监测</item>
+    </string-array>
+
+    <string-array name="DOMESTIC_AREA">
+        <item>城市</item>
+        <item>乡村</item>
+        <item>景点</item>
+    </string-array>
+
+    <string-array name="SUPPLIER_PERMIT_TYPE">
+        <item>流通许可证</item>
+        <item>餐饮服务许可证</item>
+    </string-array>
+
+    <string-array name="DRAW_ADDR">
+        <item>生产环节:原辅料库</item>
+        <item>生产环节:生产线</item>
+        <item>生产环节:半成品库</item>
+        <item>生产环节:成品库(待检区)</item>
+        <item>生产环节:成品库(已检区)</item>
+        <item>流通环节:农贸市场</item>
+        <item>流通环节:菜市场</item>
+        <item>流通环节:批发市场</item>
+        <item>流通环节:商场</item>
+        <item>流通环节:超市</item>
+        <item>流通环节:小杂食店</item>
+        <item>流通环节:网购</item>
+        <item>流通环节:其他</item>
+        <item>餐饮环节:餐馆(特大型餐馆)</item>
+        <item>餐饮环节:餐馆(大型餐馆)</item>
+        <item>餐饮环节:餐馆(中型餐馆)</item>
+        <item>餐饮环节:餐馆(小型餐馆)</item>
+        <item>餐饮环节:食堂(机关食堂)</item>
+        <item>餐饮环节:食堂(学校/托幼食堂)</item>
+        <item>餐饮环节:食堂(企事业单位食堂)</item>
+        <item>餐饮环节:食堂(建筑工地食堂)</item>
+        <item>餐饮环节:小吃店</item>
+        <item>餐饮环节:快餐店</item>
+        <!--<item>餐饮环节:饮品店</item>-->
+        <item>餐饮环节:集体用餐配送单位</item>
+        <item>餐饮环节:中央厨房</item>
+        <item>餐饮环节:其他</item>
+    </string-array>
+
+    <string-array name="SAMPLE_SOURCE">
+        <item>加工自制</item>
+        <item>委托生产</item>
+        <item>外购</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="SAMPLE_PROPERTY">
+        <item>普通食品</item>
+        <item>特殊膳食食品</item>
+        <item>节令食品</item>
+        <item>重大活动保障食品</item>
+    </string-array>
+
+    <string-array name="SAMPLE_STYLE">
+        <item>食用农产品</item>
+        <item>工业加工食品</item>
+        <item>餐饮加工食品</item>
+        <item>食品添加剂</item>
+        <item>食品相关产品</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="DATE_PRODUCT_TYPE">
+        <item>生产日期</item>
+        <item>加工日期</item>
+        <item>购进日期</item>
+    </string-array>
+
+    <string-array name="I_AND_O">
+        <item>是</item>
+        <item>否</item>
+    </string-array>
+
+    <string-array name="SAMPLE_STATUS">
+        <item>固体</item>
+        <item>半固体</item>
+        <item>液体</item>
+        <item>气体</item>
+    </string-array>
+
+    <string-array name="PACK_TYPE">
+        <item>散装</item>
+        <item>预包装</item>
+    </string-array>
+
+    <string-array name="SAVE_MODE">
+        <item>常温</item>
+        <item>冷藏</item>
+        <item>冷冻</item>
+        <item>避光</item>
+        <item>密闭</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="PACK">
+        <item>玻璃瓶</item>
+        <item>塑料瓶</item>
+        <item>塑料袋</item>
+        <item>无菌袋</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="DRAW_METHOD">
+        <item>无菌抽样</item>
+        <item>非无菌抽样</item>
+    </string-array>
+
+    <string-array name="IMG_TYPE">
+        <item>样品照片</item>
+        <item>现场照片</item>
+        <item>营业执照</item>
+        <item>经营许可证</item>
+        <item>告知书</item>
+        <item>反馈单</item>
+    </string-array>
+</resources>
