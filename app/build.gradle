@@ -39,5 +39,5 @@ dependencies {
     implementation 'com.github.lovetuzitong:MultiImageSelector:1.2'
     implementation 'com.leon:lfilepickerlibrary:1.8.0'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.6.0'
+    implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
 }

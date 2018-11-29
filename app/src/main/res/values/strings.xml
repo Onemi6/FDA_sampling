@@ -10,4 +10,5 @@
     <string name="upload_img">上传图片</string>
     <string name="printf">生成抽样单</string>
     <string name="selectimg">选择图片</string>
+    <string name="scanner">扫描</string>
 </resources>

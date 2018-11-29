@@ -19,6 +19,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -69,13 +71,14 @@ public class MainInfoActivity extends AppCompatActivity {
         permissionList.add(Manifest.permission.INTERNET);
         permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        //permissionList.add(Manifest.permission.CAMERA);
+        permissionList.add(Manifest.permission.CAMERA);
         checkAndRequestPermissions(permissionList);
 
         ishavefile = getSharedPreferences("filepath", MODE_PRIVATE);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_maininfo);
         setSupportActionBar(toolbar);
+
         CrashHandler.getInstance().init(context);
         fab = findViewById(R.id.fab);
         tv_filename = findViewById(R.id.tv_filename);
@@ -177,7 +180,6 @@ public class MainInfoActivity extends AppCompatActivity {
                 ();*/
             }
         }
-
     }
 
     @Override
@@ -279,4 +281,30 @@ public class MainInfoActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.test, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_scanner:
+                Intent intent = new Intent();
+                intent.setClass(MainInfoActivity.this,
+                        TestActivity.class);
+                //finish();// 结束当前活动
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

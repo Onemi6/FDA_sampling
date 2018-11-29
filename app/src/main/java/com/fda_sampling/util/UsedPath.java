@@ -13,4 +13,5 @@ public class UsedPath {
     // public static String api_Sys_GetClientByName=ip+"Sys/GetClientByName?";
 
     public static String serverurl = "http://111.2.23.176:8083/update.xml";
+    //http://www.3tpi.com:8016/FDA_sampling.apk
 }
