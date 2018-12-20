@@ -43,7 +43,7 @@ public class JavascriptInterfaceImpl {
         integrator.setPrompt("请扫描一维码"); //底部的提示文字，设为""可以置空
         integrator.setCameraId(0); //前置或者后置摄像头
         integrator.setBeepEnabled(true); //扫描成功的「哔哔」声，默认开启
-        integrator.setBarcodeImageEnabled(true);
+        integrator.setBarcodeImageEnabled(true); // 扫完码之后生成二维码的图片
         integrator.initiateScan();
     }
 
@@ -51,12 +51,12 @@ public class JavascriptInterfaceImpl {
     public void Scanner2() {
         IntentIntegrator integrator = new IntentIntegrator(mActivity);
         // 设置要扫描的条码类型，ONE_D_CODE_TYPES：一维码，QR_CODE_TYPES-二维码
-        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
         integrator.setCaptureActivity(ScanActivity.class); //设置打开摄像头的Activity
         integrator.setPrompt("请扫描二维码"); //底部的提示文字，设为""可以置空
         integrator.setCameraId(0); //前置或者后置摄像头
         integrator.setBeepEnabled(true); //扫描成功的「哔哔」声，默认开启
-        integrator.setBarcodeImageEnabled(true);
+        integrator.setBarcodeImageEnabled(true); // 扫完码之后生成二维码的图片
         integrator.initiateScan();
     }
 }

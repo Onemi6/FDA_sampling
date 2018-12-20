@@ -42,24 +42,21 @@ public class MainInfoActivity extends AppCompatActivity {
 
     private int pos;
     private long mExitTime;
+    private TextView tv_filename;
     private FloatingActionButton fab;
     private RecyclerView rv_add;
     private LinearLayoutManager layoutmanager;
     private MaininfoAdapter adapter;
     private List<Info_Detail> list_add = new ArrayList<Info_Detail>();
+    public static final int MY_PERMISSIONS_REQUEST = 3000, REQUESTCODE_FROM_ACTIVITY = 1000;
+    private List<String> paths = new ArrayList<>();
+    private String filepath = null, islogin;
+    private Context context;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
-    int REQUESTCODE_FROM_ACTIVITY = 1000;
-    //一个整形常量
-    public static final int MY_PERMISSIONS_REQUEST = 3000;
     //定义一个list，用于存储需要申请的权限
     private ArrayList<String> permissionList = new ArrayList<>();
-    private List<String> paths = new ArrayList<>();
-    private String filepath = null;
-    private Context context;
-    private TextView tv_filename;
-
-    private SharedPreferences ishavefile;
-    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +71,21 @@ public class MainInfoActivity extends AppCompatActivity {
         permissionList.add(Manifest.permission.CAMERA);
         checkAndRequestPermissions(permissionList);
 
-        ishavefile = getSharedPreferences("filepath", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
+        islogin = sharedPreferences.getString("NAME", "");
 
         Toolbar toolbar = findViewById(R.id.toolbar_maininfo);
+        if (islogin != "") {
+            toolbar.setSubtitle(islogin);
+        }
+        //toolbar.setTitle("未登录");
+        //toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        //设置toolbar
         setSupportActionBar(toolbar);
+        //左边的小箭头（注意需要在setSupportActionBar(toolbar)之后才有效果）
+        //toolbar.setNavigationIcon(R.drawable.ic_account_circle_white);
+        //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
+        //toolbar.setOnMenuItemClickListener(onMenuItemClick);
 
         CrashHandler.getInstance().init(context);
         fab = findViewById(R.id.fab);
@@ -205,7 +213,7 @@ public class MainInfoActivity extends AppCompatActivity {
                     InfoList.outpath = filepath;
                     tv_filename.setText(filepath);
                     //保存选择的文件路径
-                    editor = ishavefile.edit();
+                    //editor = sharedPreferences.edit();
                     editor.putString("filepath", filepath);
                     editor.commit();
                     Snackbar.make(fab, "文件选择成功", Snackbar.LENGTH_LONG)
@@ -221,8 +229,8 @@ public class MainInfoActivity extends AppCompatActivity {
 
     public void initdata() {
 
-        if (ishavefile != null && ishavefile.getString("filepath", "") != "") {
-            list_add = FileRW.readFile(ishavefile.getString("filepath", ""));
+        if (sharedPreferences != null && sharedPreferences.getString("filepath", "") != "") {
+            list_add = FileRW.readFile(sharedPreferences.getString("filepath", ""));
             if (list_add == null) {
                 filepath = null;
                 InfoList.outpath = null;
@@ -231,8 +239,8 @@ public class MainInfoActivity extends AppCompatActivity {
                 String fileName = f.getName();*/
                 InfoList.list_info = list_add;
                 adapter.changList_add(list_add);
-                InfoList.outpath = ishavefile.getString("filepath", "");
-                tv_filename.setText(ishavefile.getString("filepath", ""));
+                InfoList.outpath = sharedPreferences.getString("filepath", "");
+                tv_filename.setText(sharedPreferences.getString("filepath", ""));
                 filepath = null;
             }
         }
@@ -296,12 +304,18 @@ public class MainInfoActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_scanner:
-                Intent intent = new Intent();
-                intent.setClass(MainInfoActivity.this,
+                Intent intent_scan = new Intent();
+                intent_scan.setClass(MainInfoActivity.this,
                         TestActivity.class);
                 //finish();// 结束当前活动
-                startActivity(intent);
+                startActivity(intent_scan);
                 break;
+            case android.R.id.home:
+                Intent intent_login = new Intent();
+                intent_login.setClass(MainInfoActivity.this,
+                        LoginActivity.class);
+                intent_login.putExtra("login_type",-1);
+                startActivity(intent_login);
             default:
                 break;
         }

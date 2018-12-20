@@ -68,6 +68,8 @@ public class TestActivity extends Activity {
             String result = "扫描结果:" + scanResult.getContents();
             Log.v("result", result);
             webview.loadUrl("javascript:GetResult('" + result + "')");
+        }else{
+
         }
     }
 }
