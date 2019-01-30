@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.TestActivity">
+
+    <!--<item
+        android:id="@+id/action_scanner"
+        android:orderInCategory="100"
+        android:title="@string/scanner"
+        app:showAsAction="ifRoom" />-->
+
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="100"
+        android:title="@string/refresh"
+        app:showAsAction="ifRoom" />
+
+</menu>

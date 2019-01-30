@@ -6,14 +6,20 @@
     <string name="info_SUPPLIER">被抽样单位信息</string>
     <string name="info_sample">样品信息</string>
     <string name="details">详细情况</string>
-    <string name="save">保存</string>
+    <string name="submit">提交</string>
     <string name="upload_img">上传图片</string>
     <string name="printf">生成抽样单</string>
     <string name="selectimg">选择图片</string>
     <string name="scanner">扫描</string>
+    <string name="refresh">刷新</string>
     <string name="account">账号</string>
     <string name="password">密码</string>
     <string name="btn_login">登录</string>
     <string name="welcome_speech">欢迎使用本平台</string>
+    <string name="TasksList">任务列表</string>
+    <string name="Tips">采样信息审核退回:红色;样品审核退回:橙色;</string>
+    <string name="update_title">检测到新版本V%1$s</string>
+    <string name="update_content">更新内容</string>
+    <string name="update_btn">马上升级</string>
 
 </resources>

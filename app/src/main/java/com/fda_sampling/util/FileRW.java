@@ -4,7 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.fda_sampling.model.Info_Detail;
+import com.fda_sampling.model.Task;
+import com.fda_sampling.model.Tasks;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -25,15 +26,15 @@ import java.util.List;
 
 public class FileRW {
     private static String str_json;
-    private static List<Info_Detail> list = new ArrayList<Info_Detail>();
+    private static List<Task> list = new ArrayList<>();
 
-    public static List<Info_Detail> readFile(String filepath) {
+    public static List<Task> readFile(String filepath) {
         try {
             InputStream is = new FileInputStream(filepath);
             InputStreamReader in = new InputStreamReader(is, "UTF-8");
             BufferedReader read = new BufferedReader(in);
             Gson gson = new Gson();
-            list = gson.fromJson(read.readLine().toString(), new TypeToken<List<Info_Detail>>() {
+            list = gson.fromJson(read.readLine().toString(), new TypeToken<List<Tasks>>() {
             }.getType());
             read.close();
             in.close();
@@ -55,7 +56,7 @@ public class FileRW {
         return null;
     }
 
-    public static void writerFile(String filepath, List<Info_Detail> list, Context context) {
+    public static void writerFile(String filepath, List<Task> list, Context context) {
         Gson gson = new Gson();
         str_json = gson.toJson(list);
         try {

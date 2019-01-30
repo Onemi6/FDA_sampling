@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context="com.fda_sampling.activity.DetailsActivity">
+    tools:context="com.fda_sampling.view.DetailsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbarlayout_details"
@@ -19,1017 +19,984 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
-
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:id="@+id/details_return"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/activity_horizontal_margin4"
+            android:paddingTop="@dimen/activity_horizontal_margin3">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:paddingEnd="@dimen/activity_vertical_margin4"
+                android:text="审核状态:" />
+
+            <TextView
+                android:id="@+id/details_STATE"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:paddingEnd="@dimen/activity_vertical_margin4"
+                android:text="退回原因:" />
+
+            <TextView
+                android:id="@+id/details_CHECK_INFO"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_vertical_margin3">
+
+        <TableLayout
             android:id="@+id/list_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_vertical_margin">
+            android:stretchColumns="*">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="抽样单编号:" />
 
                 <EditText
                     android:id="@+id/details_CUSTOM_NO"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="NO:" />
 
                 <EditText
                     android:id="@+id/details_DRAW_NO"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="任务来源:" />
 
                 <EditText
                     android:id="@+id/details_BUSINESS_SOURCE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="任务类别:" />
 
                 <Spinner
                     android:id="@+id/details_SAMPLE_TYPE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
-                    android:text="报验编号(实验室系统生成的编号):" />
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="报验编号(实验室\n系统生成的编号):" />
 
-                <EditText
+                <TextView
                     android:id="@+id/details_NO"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="商品类别:" />
 
                 <EditText
                     android:id="@+id/details_GOODS_TYPE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <TableRow>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/activity_vertical_margin3"
-                    android:paddingTop="@dimen/activity_vertical_margin3"
+                    android:layout_span="2"
                     android:text="@string/info_SUPPLIER"
                     android:textColor="#1E90FF"
                     android:textSize="20sp" />
+            </TableRow>
 
-            </RelativeLayout>
+            <TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2sp"
+                    android:layout_span="2"
+                    android:background="#cccccc" />
+            </TableRow>
+
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="单位名称:" />
 
                 <EditText
                     android:id="@+id/details_SUPPLIER"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="区域类型:" />
 
                 <Spinner
                     android:id="@+id/details_DOMESTIC_AREA"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="单位地址:" />
 
                 <EditText
                     android:id="@+id/details_SUPPLIER_ADDR"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="法人代表:" />
 
                 <EditText
                     android:id="@+id/details_SUPPLIER_LEGAL"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="年销售额:" />
 
                 <EditText
                     android:id="@+id/details_ANNUAL_SALES"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="营业执照号:" />
 
                 <EditText
                     android:id="@+id/details_BUSINESS_LICENCE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="联系人:" />
 
                 <EditText
                     android:id="@+id/details_SUPPLIER_PERSON"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="许可证类型:" />
 
                 <Spinner
                     android:id="@+id/details_SUPPLIER_PERMIT_TYPE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="许可证号:" />
 
                 <EditText
                     android:id="@+id/details_SUPPLIER_PERMIT_CODE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="电话:" />
 
                 <EditText
                     android:id="@+id/details_SUPPLIER_PHONE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="传真:" />
 
                 <EditText
                     android:id="@+id/details_SUPPLIER_FAX"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="邮编:" />
 
                 <EditText
                     android:id="@+id/details_SUPPLIER_ZIPCODE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="抽样地点:" />
 
                 <Spinner
                     android:id="@+id/details_DRAW_ADDR"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <TableRow>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_span="2"
                     android:paddingBottom="@dimen/activity_vertical_margin3"
                     android:paddingTop="@dimen/activity_vertical_margin3"
                     android:text="@string/info_sample"
                     android:textColor="#1E90FF"
                     android:textSize="20sp" />
+            </TableRow>
 
-            </RelativeLayout>
+            <TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2sp"
+                    android:layout_span="2"
+                    android:background="#cccccc" />
+            </TableRow>
+
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="样品来源:" />
 
                 <Spinner
                     android:id="@+id/details_SAMPLE_SOURCE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="样品属性:" />
 
                 <Spinner
                     android:id="@+id/details_SAMPLE_PROPERTY"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="样品类型:" />
 
                 <Spinner
                     android:id="@+id/details_SAMPLE_STYLE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="样品名称:" />
 
                 <EditText
                     android:id="@+id/details_GOODS_NAME"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="商标:" />
 
                 <EditText
                     android:id="@+id/details_TRADEMARK"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <Spinner
                     android:id="@+id/details_DATE_PRODUCT_TYPE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="生产日期:" />
 
                 <EditText
                     android:id="@+id/details_DATE_PRODUCT"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="规格型号:" />
 
                 <EditText
                     android:id="@+id/details_SAMPLE_MODEL"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="样品批号:" />
 
                 <EditText
                     android:id="@+id/details_SAMPLE_NUMBER"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="保质期:" />
 
                 <EditText
                     android:id="@+id/details_EXPIRATIONDATE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="执行标准/技术文件:" />
 
                 <EditText
                     android:id="@+id/details_TEST_FILE_NO"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="质量等级:" />
 
                 <EditText
                     android:id="@+id/details_SAMPLE_CLASS"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="生产许可证号:" />
 
                 <EditText
                     android:id="@+id/details_PRODUCTION_CERTIFICATE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="单价:" />
 
                 <EditText
                     android:id="@+id/details_UNIVALENT"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="是否出口:" />
 
                 <Spinner
                     android:id="@+id/details_I_AND_O"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="抽样基数/批量:" />
 
                 <EditText
                     android:id="@+id/details_DRAW_NUM"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="抽样数量(含备样):" />
 
                 <EditText
                     android:id="@+id/details_DRAW_AMOUNT"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="备样数量:" />
 
                 <EditText
                     android:id="@+id/details_STORAGESITE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="样品形态:" />
 
                 <Spinner
                     android:id="@+id/details_SAMPLE_STATUS"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="包装分类:" />
 
                 <Spinner
                     android:id="@+id/details_PACK_TYPE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="(标称)样品储存条件:" />
 
                 <Spinner
                     android:id="@+id/details_SAVE_MODE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="寄、送样品截止日期:" />
 
                 <EditText
                     android:id="@+id/details_SAMPLE_CLOSE_DATE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="寄、送样品地址:" />
 
                 <EditText
                     android:id="@+id/details_SAMPLE_ADDR"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="样品包装:" />
 
                 <Spinner
                     android:id="@+id/details_PACK"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="抽样方式:" />
 
                 <Spinner
                     android:id="@+id/details_DRAW_METHOD"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <TableRow>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_span="2"
                     android:paddingBottom="@dimen/activity_vertical_margin3"
                     android:paddingTop="@dimen/activity_vertical_margin3"
                     android:text="@string/info_MANU_COMPANY"
                     android:textColor="#1E90FF"
                     android:textSize="20sp" />
-            </RelativeLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2sp"
+                    android:layout_span="2"
+                    android:background="#cccccc" />
+            </TableRow>
+
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="生产者名称:" />
 
                 <EditText
                     android:id="@+id/details_MANU_COMPANY"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="生产者地址:" />
 
                 <EditText
                     android:id="@+id/details_MANU_COMPANY_ADDR"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="联系电话:" />
 
                 <EditText
                     android:id="@+id/details_MANU_COMPANY_PHONE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
+                    android:layout_span="2"
                     android:paddingBottom="@dimen/activity_vertical_margin3"
                     android:paddingTop="@dimen/activity_vertical_margin3"
                     android:text="@string/info_DRAW"
                     android:textColor="#1E90FF"
                     android:textSize="20sp" />
+            </TableRow>
 
-            </RelativeLayout>
+            <TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2sp"
+                    android:layout_span="2"
+                    android:background="#cccccc" />
+            </TableRow>
+
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="单位名称:" />
 
                 <EditText
                     android:id="@+id/details_DRAW_ORG"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="单位地址:" />
 
                 <EditText
                     android:id="@+id/details_DRAW_ORG_ADDR"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="联系人:" />
 
                 <EditText
                     android:id="@+id/details_DRAW_PERSON"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="电话:" />
 
                 <EditText
                     android:id="@+id/details_DRAW_PHONE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="传真:" />
 
                 <EditText
                     android:id="@+id/details_DRAW_FAX"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="邮编:" />
 
                 <EditText
                     android:id="@+id/details_DRAW_ZIPCODE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="抽样日期:" />
 
                 <EditText
                     android:id="@+id/details_DRAW_DATE"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="抽样人:" />
 
                 <EditText
                     android:id="@+id/details_DRAW_MAN"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
+            </TableRow>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <TableRow>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dip"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="备注:" />
 
                 <EditText
                     android:id="@+id/details_REMARK"
-                    android:layout_width="wrap_content"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
-        </LinearLayout>
+            </TableRow>
+        </TableLayout>
     </ScrollView>
 </LinearLayout>

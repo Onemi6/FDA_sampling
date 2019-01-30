@@ -7,7 +7,7 @@ import android.os.Looper;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
-import com.fda_sampling.activity.ScanActivity;
+import com.fda_sampling.view.ScanActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
 
 /**
