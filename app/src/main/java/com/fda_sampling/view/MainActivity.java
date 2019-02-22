@@ -16,6 +16,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -59,21 +61,25 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private int pos;
-    private long mExitTime;
+    private int pos, select_num;
+    private long mExitTime, mId;
+    private Toolbar toolbar;
     private RecyclerView rv_tasks;
+    private LinearLayout dialog_select;
+    private TextView tv_select_title, tv_select_num, tv_select_invert, tv_select_all;
+    private Button btn_select_confirm;
     private ProgressBar mProgressView;
     private LinearLayoutManager layoutmanager;
     private MaininfoAdapter adapter;
     public static final int MY_PERMISSIONS_REQUEST = 3000;
-    private String name, token, Emp_No, TAG_UPDATE = "update";
+    private String name, token, Emp_No, TAG_UPDATE = "update", IMAGE_PATH;
+    private boolean sdCardExist;
     private Context context;
     private SharedPreferences sharedPreferences;
     private UpdateInfo info;
     private ProgressDialog pd;
-    private long mId;
 
     //定义一个list，用于存储需要申请的权限
     private ArrayList<String> permissionList = new ArrayList<>();
@@ -84,7 +90,19 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         context = this;
-        Toolbar toolbar = findViewById(R.id.toolbar_maininfo);
+        toolbar = findViewById(R.id.toolbar_maininfo);
+
+        dialog_select = findViewById(R.id.dialog_select);
+        tv_select_title = findViewById(R.id.tv_select_title);
+        tv_select_num = findViewById(R.id.tv_select_num);
+        tv_select_invert = findViewById(R.id.tv_select_invert);
+        tv_select_all = findViewById(R.id.tv_select_all);
+        btn_select_confirm = findViewById(R.id.btn_select_confirm);
+
+        tv_select_invert.setOnClickListener(this);
+        tv_select_all.setOnClickListener(this);
+        btn_select_confirm.setOnClickListener(this);
+
         mProgressView = findViewById(R.id.tasks_progress);
         sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
         name = sharedPreferences.getString("NAME", null);
@@ -117,12 +135,29 @@ public class MainActivity extends AppCompatActivity {
             //设置Adapter
             adapter = new MaininfoAdapter(this, Tasks.list_task);
             rv_tasks.setAdapter(adapter);
+
             adapter.setOnClickListener(new MaininfoAdapter.OnClickListener() {
                 @Override
                 public void onClick(View view, int position) {
-                    Intent intent = new Intent(context, DetailsActivity.class);
-                    Tasks.position = position;
-                    startActivity(intent);
+                    if (adapter.getMode() == 0) {
+                        Intent intent = new Intent(context, DetailsActivity.class);
+                        Tasks.position = position;
+                        startActivity(intent);
+                    } else if (adapter.getMode() == 1) {
+                        if (Tasks.list_task.get(position).getIsSelect() == 0) {
+                            Tasks.list_task.get(position).setIsSelect(1);
+                        } else if (Tasks.list_task.get(position).getIsSelect() == 1) {
+                            Tasks.list_task.get(position).setIsSelect(0);
+                        }
+                        adapter.changList_add(Tasks.list_task);
+                        select_num = 0;
+                        for (int i = 0; i < Tasks.list_task.size(); i++) {
+                            if (Tasks.list_task.get(i).getIsSelect() == 1)
+                                select_num++;
+                        }
+                        tv_select_num.setText("" + select_num);
+                        setBtnEnabled(select_num);
+                    }
                 }
             });
 
@@ -176,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
             getPermission();
             //初始化List数据
             attempgetTasks();
+            Filedir();
         }
     }
 
@@ -207,8 +243,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (response.code() == 200) {
                     if (response.body() != null) {
                         int num = response.body().size();
-                        List<Task> getTasks;
-                        getTasks = response.body();
+                        List<Task> getTasks = response.body();
                         if (num == 0) {
                             Tasks.list_task.clear();
                             adapter.changList_add(Tasks.list_task);
@@ -217,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
                                     .show();
                         } else {
                             Tasks.list_task = getTasks;
+                            Tasks.init();
                             adapter.changList_add(Tasks.list_task);
                             Snackbar.make(rv_tasks, "更新检测任务成功!",
                                     Snackbar.LENGTH_LONG).setAction("Action", null)
@@ -488,22 +524,6 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id) {
-            /*case R.id.action_scanner:
-                Intent intent_scan = new Intent();
-                intent_scan.setClass(MainActivity.this,
-                        TestActivity.class);
-                //finish();// 结束当前活动
-                startActivity(intent_scan);
-                break;*/
-            case R.id.action_refresh:
-                if (ClickUtil.isFastClick()) {
-                    attempgetTasks();
-                } else {
-                    Snackbar.make(rv_tasks, "刷新太快了，请稍后再试",
-                            Snackbar.LENGTH_LONG).setAction("Action", null)
-                            .show();
-                }
-                break;
             case android.R.id.home:
                 // 通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
                 AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -537,6 +557,39 @@ public class MainActivity extends AppCompatActivity {
                         });
                 // 显示出该对话框
                 builder.show();
+            case R.id.action_refresh:
+                if (ClickUtil.isFastClick()) {
+                    attempgetTasks();
+                } else {
+                    Snackbar.make(rv_tasks, "刷新太快了，请稍后再试",
+                            Snackbar.LENGTH_LONG).setAction("Action", null)
+                            .show();
+                }
+                break;
+            case R.id.action_payment:
+                dialog_select.setVisibility(View.VISIBLE);
+                tv_select_title.setText("付款凭证");
+                adapter.setMode(1);
+                toolbar.getMenu().findItem(R.id.action_refresh).setVisible(false);
+                toolbar.getMenu().findItem(R.id.action_cancel).setVisible(true);
+                //HttpUtils.OpenWeb(context, "applyNo", 1);
+                break;
+            case R.id.action_sampletag:
+                dialog_select.setVisibility(View.VISIBLE);
+                tv_select_title.setText("样品标签");
+                adapter.setMode(1);
+                toolbar.getMenu().findItem(R.id.action_refresh).setVisible(false);
+                toolbar.getMenu().findItem(R.id.action_cancel).setVisible(true);
+                //HttpUtils.OpenWeb(context, "applyNo", 2);
+                break;
+            case R.id.action_cancel:
+                tv_select_num.setText("0");
+                dialog_select.setVisibility(View.GONE);
+                adapter.setMode(0);
+                toolbar.getMenu().findItem(R.id.action_refresh).setVisible(true);
+                toolbar.getMenu().findItem(R.id.action_cancel).setVisible(false);
+                Tasks.init();
+                break;
             default:
                 break;
         }
@@ -544,8 +597,104 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_select_invert:
+                select_invert();
+                break;
+            case R.id.tv_select_all:
+                select_all();
+                break;
+            case R.id.btn_select_confirm:
+                select_confirm();
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         adapter.changList_add(Tasks.list_task);
+    }
+
+    public void Filedir() {
+        sdCardExist = android.os.Environment.getExternalStorageState().equals(android.os
+                .Environment
+                .MEDIA_MOUNTED);
+        if (sdCardExist) {
+            IMAGE_PATH = Environment.getExternalStorageDirectory() + "/FDA/Image/";
+        } else {
+            IMAGE_PATH = this.getCacheDir().toString() + "/";
+        }
+        File album = new File(IMAGE_PATH);
+        if (!album.exists()) {
+            album.mkdirs();
+        }
+    }
+
+    public void select_all() {
+        if (tv_select_all.getText().equals("全选")) {
+            Tasks.select_all();
+            tv_select_all.setText("取消全选");
+        } else if (tv_select_all.getText().equals("取消全选")) {
+            Tasks.select_clear();
+            tv_select_all.setText("全选");
+        }
+        adapter.changList_add(Tasks.list_task);
+        select_num = 0;
+        for (int i = 0; i < Tasks.list_task.size(); i++) {
+            if (Tasks.list_task.get(i).getIsSelect() == 1)
+                select_num++;
+        }
+        tv_select_num.setText("" + select_num);
+        setBtnEnabled(select_num);
+    }
+
+    public void select_invert() {
+        Tasks.select_invert();
+        adapter.changList_add(Tasks.list_task);
+        select_num = 0;
+        for (int i = 0; i < Tasks.list_task.size(); i++) {
+            if (Tasks.list_task.get(i).getIsSelect() == 1)
+                select_num++;
+        }
+        tv_select_num.setText("" + select_num);
+        setBtnEnabled(select_num);
+    }
+
+    public void select_confirm() {
+        if (select_num == 0) {
+            btn_select_confirm.setEnabled(false);
+            return;
+        }
+        String applyNo = "";
+        for (int i = 0; i < Tasks.list_task.size(); i++) {
+            if (Tasks.list_task.get(i).getIsSelect() == 1)
+                if (applyNo.equals("")) {
+                    applyNo = Tasks.list_task.get(i).getNO();
+                } else {
+                    applyNo = applyNo + "," + Tasks.list_task.get(i).getNO();
+                }
+
+        }
+        if (tv_select_title.getText().equals("付款凭证")) {
+            HttpUtils.OpenWeb(context, applyNo, 1);
+        } else if (tv_select_title.getText().equals("样品标签")) {
+            HttpUtils.OpenWeb(context, applyNo, 2);
+        }
+    }
+
+    private void setBtnEnabled(int select_num) {
+        if (select_num != 0) {
+            btn_select_confirm.setBackgroundResource(R.drawable.button_brown_bright);
+            btn_select_confirm.setEnabled(true);
+            btn_select_confirm.setTextColor(Color.WHITE);
+        } else {
+            btn_select_confirm.setBackgroundResource(R.drawable.button_brown_dark);
+            btn_select_confirm.setEnabled(false);
+            btn_select_confirm.setTextColor(ContextCompat.getColor(this, R.color.color_b7b8bd));
+        }
     }
 }

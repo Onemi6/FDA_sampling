@@ -11,7 +11,7 @@
         <item>景点</item>
     </string-array>
 
-    <string-array name="SUPPLIER_PERMIT_TYPE">
+    <string-array name="PERMIT_TYPE">
         <item>流通许可证</item>
         <item>餐饮服务许可证</item>
     </string-array>

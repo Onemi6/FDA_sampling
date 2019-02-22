@@ -10,8 +10,16 @@
     <string name="upload_img">上传图片</string>
     <string name="printf">生成抽样单</string>
     <string name="selectimg">选择图片</string>
-    <string name="scanner">扫描</string>
     <string name="refresh">刷新</string>
+    <string name="payment">付款凭证</string>
+    <string name="sampletag">样品标签</string>
+    <string name="select_title">付款凭证</string>
+    <string name="select_have">已选择</string>
+    <string name="select_num">0</string>
+    <string name="select_invert">反选</string>
+    <string name="select_all">全选</string>
+    <string name="select_confirm">确认</string>
+    <string name="select_cancel">取消</string>
     <string name="account">账号</string>
     <string name="password">密码</string>
     <string name="btn_login">登录</string>
@@ -21,5 +29,16 @@
     <string name="update_title">检测到新版本V%1$s</string>
     <string name="update_content">更新内容</string>
     <string name="update_btn">马上升级</string>
+    <string name="img_type_1">样品照片</string>
+    <string name="img_type_2">现场照片</string>
+    <string name="img_type_3">营业执照</string>
+    <string name="img_type_4">经营许可证</string>
+    <string name="img_type_5">告知书</string>
+    <string name="img_type_6">反馈单</string>
+    <string name="img_type_7">抽样单</string>
+    <string name="img_type_8">微信截图</string>
+    <string name="Image">已经上传的图片</string>
+    <string name="btn_upload_img">上传图片</string>
+
 
 </resources>

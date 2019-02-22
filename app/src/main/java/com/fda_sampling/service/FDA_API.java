@@ -1,5 +1,6 @@
 package com.fda_sampling.service;
 
+import com.fda_sampling.model.ImageInfo;
 import com.fda_sampling.model.LoginStatus;
 import com.fda_sampling.model.SubmitStatus;
 import com.fda_sampling.model.Task;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -39,6 +41,10 @@ public interface FDA_API {
             id, @Part("type") RequestBody type, @Part
                                         MultipartBody.Part file);
 
+    @POST("api/Apply/ImageInfo")
+    Call<List<ImageInfo>> ImageInfo(@Header("LIMS_Token") String LIMS_Token, @Query("Apply_No")
+            String Apply_No);
+
     @POST("api/Apply/Image")
-    Call<List<Task>> Image(@Header("LIMS_Token") String LIMS_Token, @Query("id") String id);
+    Call<ResponseBody> Image(@Header("LIMS_Token") String LIMS_Token, @Query("id") int id);
 }

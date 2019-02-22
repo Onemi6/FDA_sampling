@@ -12,8 +12,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -27,6 +29,7 @@ import com.fda_sampling.model.Tasks;
 import com.fda_sampling.service.FDA_API;
 import com.fda_sampling.service.HttpUtils;
 import com.fda_sampling.util.ClickUtil;
+import com.fda_sampling.util.DatePickerDialog;
 import com.fda_sampling.util.MyApplication;
 import com.google.gson.Gson;
 
@@ -36,6 +39,9 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,34 +52,33 @@ public class DetailsActivity extends AppCompatActivity {
     private Task task;
     private Context context;
     private Toolbar toolbar;
-    private Spinner sp_SAMPLE_TYPE, sp_DOMESTIC_AREA, sp_SUPPLIER_PERMIT_TYPE, sp_DRAW_ADDR,
+    private Spinner sp_SAMPLE_TYPE, sp_DOMESTIC_AREA, sp_PERMIT_TYPE, sp_DRAW_ADDR,
             sp_SAMPLE_SOURCE,
             sp_SAMPLE_PROPERTY, sp_SAMPLE_STYLE, sp_DATE_PRODUCT_TYPE, sp_I_AND_O, sp_SAMPLE_STATUS,
             sp_PACK_TYPE, sp_SAVE_MODE, sp_PACK, sp_DRAW_METHOD;
-    private ArrayAdapter ada_SAMPLE_TYPE, ada_DOMESTIC_AREA, ada_SUPPLIER_PERMIT_TYPE,
+    private ArrayAdapter ada_SAMPLE_TYPE, ada_DOMESTIC_AREA, ada_PERMIT_TYPE,
             ada_DRAW_ADDR, ada_SAMPLE_SOURCE,
             ada_SAMPLE_PROPERTY, ada_SAMPLE_STYLE, ada_DATE_PRODUCT_TYPE, ada_I_AND_O,
             ada_SAMPLE_STATUS,
             ada_PACK_TYPE, ada_SAVE_MODE, ada_PACK, ada_DRAW_METHOD;
     private LinearLayout tr_return;
-    private TextView tv_STATE, tv_CHECK_INFO, tv_NO;
-    private EditText et_CUSTOM_NO, et_GOODS_NAME, et_BUSINESS_SOURCE, et_DRAW_NO,
+    private TextView tv_STATE, tv_CHECK_INFO, tv_NO, tv_DATE_PRODUCT, tv_DRAW_DATE;
+    private EditText et_CUSTOM_NO, et_GOODS_NAME, et_BUSINESS_SOURCE,
             et_SUPPLIER,
             et_SUPPLIER_ADDR, et_SUPPLIER_LEGAL, et_ANNUAL_SALES, et_BUSINESS_LICENCE,
             et_SUPPLIER_PERSON,
-            et_SUPPLIER_PERMIT_CODE, et_SUPPLIER_PHONE, et_SUPPLIER_FAX, et_SUPPLIER_ZIPCODE,
-            et_TRADEMARK,
-            et_DATE_PRODUCT, et_SAMPLE_MODEL, et_SAMPLE_NUMBER, et_EXPIRATIONDATE, et_TEST_FILE_NO,
+            et_PERMIT_NUM, et_SUPPLIER_PHONE, et_SUPPLIER_FAX, et_SUPPLIER_ZIPCODE,
+            et_TRADEMARK, et_SAMPLE_MODEL, et_SAMPLE_NUMBER, et_EXPIRATIONDATE, et_TEST_FILE_NO,
             et_SAMPLE_CLASS, et_PRODUCTION_CERTIFICATE, et_UNIVALENT, et_DRAW_NUM, et_DRAW_AMOUNT,
             et_STORAGESITE, et_MANU_COMPANY, et_MANU_COMPANY_PHONE, et_MANU_COMPANY_ADDR,
             et_SAMPLE_CLOSE_DATE,
             et_SAMPLE_ADDR, et_DRAW_ORG, et_DRAW_ORG_ADDR, et_DRAW_PERSON, et_DRAW_PHONE,
             et_DRAW_FAX,
-            et_DRAW_ZIPCODE, et_REMARK, et_DRAW_DATE, et_GOODS_TYPE, et_DRAW_MAN;
+            et_DRAW_ZIPCODE, et_REMARK, et_GOODS_TYPE, et_DRAW_MAN;
     private SharedPreferences sharedPreferences;
-    private String token;
-    private Boolean havenullvalue = false;
+    private String token, str_DATE_PRODUCT, str_DRAW_DATE;
     private ProgressDialog mypDialog;
+    private int mYear, mMonth, mDay;
 
 
     @Override
@@ -91,7 +96,6 @@ public class DetailsActivity extends AppCompatActivity {
         tv_NO = findViewById(R.id.details_NO);
         et_GOODS_NAME = findViewById(R.id.details_GOODS_NAME);
         et_BUSINESS_SOURCE = findViewById(R.id.details_BUSINESS_SOURCE);
-        et_DRAW_NO = findViewById(R.id.details_DRAW_NO);
         sp_SAMPLE_TYPE = findViewById(R.id.details_SAMPLE_TYPE);
         et_SUPPLIER = findViewById(R.id.details_SUPPLIER);
         sp_DOMESTIC_AREA = findViewById(R.id.details_DOMESTIC_AREA);
@@ -100,8 +104,8 @@ public class DetailsActivity extends AppCompatActivity {
         et_ANNUAL_SALES = findViewById(R.id.details_ANNUAL_SALES);
         et_BUSINESS_LICENCE = findViewById(R.id.details_BUSINESS_LICENCE);
         et_SUPPLIER_PERSON = findViewById(R.id.details_SUPPLIER_PERSON);
-        sp_SUPPLIER_PERMIT_TYPE = findViewById(R.id.details_SUPPLIER_PERMIT_TYPE);
-        et_SUPPLIER_PERMIT_CODE = findViewById(R.id.details_SUPPLIER_PERMIT_CODE);
+        sp_PERMIT_TYPE = findViewById(R.id.details_PERMIT_TYPE);
+        et_PERMIT_NUM = findViewById(R.id.details_PERMIT_NUM);
         et_SUPPLIER_PHONE = findViewById(R.id.details_SUPPLIER_PHONE);
         et_SUPPLIER_FAX = findViewById(R.id.details_SUPPLIER_FAX);
         et_SUPPLIER_ZIPCODE = findViewById(R.id.details_SUPPLIER_ZIPCODE);
@@ -111,7 +115,7 @@ public class DetailsActivity extends AppCompatActivity {
         sp_SAMPLE_STYLE = findViewById(R.id.details_SAMPLE_STYLE);
         et_TRADEMARK = findViewById(R.id.details_TRADEMARK);
         sp_DATE_PRODUCT_TYPE = findViewById(R.id.details_DATE_PRODUCT_TYPE);
-        et_DATE_PRODUCT = findViewById(R.id.details_DATE_PRODUCT);
+        tv_DATE_PRODUCT = findViewById(R.id.details_DATE_PRODUCT);
         et_SAMPLE_MODEL = findViewById(R.id.details_SAMPLE_MODEL);
         et_SAMPLE_NUMBER = findViewById(R.id.details_SAMPLE_NUMBER);
         et_EXPIRATIONDATE = findViewById(R.id.details_EXPIRATIONDATE);
@@ -140,7 +144,7 @@ public class DetailsActivity extends AppCompatActivity {
         et_DRAW_FAX = findViewById(R.id.details_DRAW_FAX);
         et_DRAW_ZIPCODE = findViewById(R.id.details_DRAW_ZIPCODE);
         et_REMARK = findViewById(R.id.details_REMARK);
-        et_DRAW_DATE = findViewById(R.id.details_DRAW_DATE);
+        tv_DRAW_DATE = findViewById(R.id.details_DRAW_DATE);
         et_GOODS_TYPE = findViewById(R.id.details_GOODS_TYPE);
         et_DRAW_MAN = findViewById(R.id.details_DRAW_MAN);
 
@@ -150,9 +154,9 @@ public class DetailsActivity extends AppCompatActivity {
         ada_DOMESTIC_AREA = ArrayAdapter.createFromResource(context, R.array.DOMESTIC_AREA,
                 android.R.layout.simple_spinner_dropdown_item);
         sp_DOMESTIC_AREA.setAdapter(ada_DOMESTIC_AREA);
-        ada_SUPPLIER_PERMIT_TYPE = ArrayAdapter.createFromResource(context, R.array
-                .SUPPLIER_PERMIT_TYPE, android.R.layout.simple_spinner_dropdown_item);
-        sp_SUPPLIER_PERMIT_TYPE.setAdapter(ada_SUPPLIER_PERMIT_TYPE);
+        ada_PERMIT_TYPE = ArrayAdapter.createFromResource(context, R.array
+                .PERMIT_TYPE, android.R.layout.simple_spinner_dropdown_item);
+        sp_PERMIT_TYPE.setAdapter(ada_PERMIT_TYPE);
         ada_DRAW_ADDR = ArrayAdapter.createFromResource(context, R.array.DRAW_ADDR, android.R
                 .layout.simple_spinner_dropdown_item);
         sp_DRAW_ADDR.setAdapter(ada_DRAW_ADDR);
@@ -198,6 +202,53 @@ public class DetailsActivity extends AppCompatActivity {
         //toolbar.setOnMenuItemClickListener(onMenuItemClick);
 
         initdata();
+
+        Calendar calendar = Calendar.getInstance();
+        mYear = calendar.get(Calendar.YEAR);
+        mMonth = calendar.get(Calendar.MONTH);
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+        tv_DRAW_DATE.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO 自动生成的方法存
+                new DatePickerDialog(context, 0,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker DatePicker,
+                                                  int Year, int MonthOfYear, int DayOfMonth) {
+                                /*str_DRAW_DATE = Year + "-" + String.format("%02d",
+                                        (MonthOfYear + 1)) + "-" + String.format("%02d",
+                                        DayOfMonth);*/
+                                str_DRAW_DATE = String.format(Locale.CHINA, "%02d-%02d-%02d",
+                                        Year, (MonthOfYear + 1), DayOfMonth);
+                                tv_DRAW_DATE.setText(str_DRAW_DATE);
+                            }
+                        }, mYear, mMonth, mDay, true).show();
+            }
+        });
+
+        tv_DATE_PRODUCT.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO 自动生成的方法存
+                new DatePickerDialog(context, 0,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker DatePicker,
+                                                  int Year, int MonthOfYear, int DayOfMonth) {
+                                /*str_DATE_PRODUCT = Year + "-" + String.format("%02d",
+                                        (MonthOfYear + 1)) + "-" + String.format("%02d",
+                                        DayOfMonth);*/
+                                str_DATE_PRODUCT = String.format(Locale.CHINA, "%02d-%02d-%02d",
+                                        Year, (MonthOfYear + 1), DayOfMonth);
+                                tv_DATE_PRODUCT.setText(str_DATE_PRODUCT);
+                            }
+                        }, mYear, mMonth, mDay, true).show();
+            }
+        });
     }
 
     public void doSaveData() {
@@ -205,7 +256,6 @@ public class DetailsActivity extends AppCompatActivity {
         //task.setNO(tv_NO.getText().toString());
         task.setGOODS_NAME(et_GOODS_NAME.getText().toString());
         task.setBUSINESS_SOURCE(et_BUSINESS_SOURCE.getText().toString());
-        task.setDRAW_NO(et_DRAW_NO.getText().toString());
         task.setSAMPLE_TYPE(sp_SAMPLE_TYPE.getSelectedItem().toString());
         task.setSUPPLIER(et_SUPPLIER.getText().toString());
         task.setDOMESTIC_AREA(sp_DOMESTIC_AREA.getSelectedItem().toString());
@@ -214,9 +264,9 @@ public class DetailsActivity extends AppCompatActivity {
         task.setANNUAL_SALES(et_ANNUAL_SALES.getText().toString());
         task.setBUSINESS_LICENCE(et_BUSINESS_LICENCE.getText().toString());
         task.setSUPPLIER_PERSON(et_SUPPLIER_PERSON.getText().toString());
-        task.setSUPPLIER_PERMIT_TYPE(sp_SUPPLIER_PERMIT_TYPE.getSelectedItem()
+        task.setPERMIT_TYPE(sp_PERMIT_TYPE.getSelectedItem()
                 .toString());
-        task.setSUPPLIER_PERMIT_CODE(et_SUPPLIER_PERMIT_CODE.getText().toString());
+        task.setPERMIT_NUM(et_PERMIT_NUM.getText().toString());
         task.setSUPPLIER_PHONE(et_SUPPLIER_PHONE.getText().toString());
         task.setSUPPLIER_FAX(et_SUPPLIER_FAX.getText().toString());
         task.setSUPPLIER_ZIPCODE(et_SUPPLIER_ZIPCODE.getText().toString());
@@ -226,7 +276,7 @@ public class DetailsActivity extends AppCompatActivity {
         task.setSAMPLE_STYLE(sp_SAMPLE_STYLE.getSelectedItem().toString());
         task.setTRADEMARK(et_TRADEMARK.getText().toString());
         task.setDATE_PRODUCT_TYPE(sp_DATE_PRODUCT_TYPE.getSelectedItem().toString());
-        task.setDATE_PRODUCT(et_DATE_PRODUCT.getText().toString());
+        task.setDATE_PRODUCT(tv_DATE_PRODUCT.getText().toString());
         task.setSAMPLE_MODEL(et_SAMPLE_MODEL.getText().toString());
         task.setSAMPLE_NUMBER(et_SAMPLE_NUMBER.getText().toString());
         task.setEXPIRATIONDATE(et_EXPIRATIONDATE.getText().toString());
@@ -255,13 +305,11 @@ public class DetailsActivity extends AppCompatActivity {
         task.setDRAW_FAX(et_DRAW_FAX.getText().toString());
         task.setDRAW_ZIPCODE(et_DRAW_ZIPCODE.getText().toString());
         task.setREMARK(et_REMARK.getText().toString());
-        task.setDRAW_DATE(et_DRAW_DATE.getText().toString());
+        task.setDRAW_DATE(tv_DRAW_DATE.getText().toString());
         task.setGOODS_TYPE(et_GOODS_TYPE.getText().toString());
         task.setDRAW_MAN(et_DRAW_MAN.getText().toString());
-
         //更新列表
         Tasks.list_task.set(Tasks.position, task);
-        attempSubmit();
     }
 
     public void attempSubmit() {
@@ -300,7 +348,7 @@ public class DetailsActivity extends AppCompatActivity {
                     startActivity(intent_login);
                 } else if (response.code() == 200) {
                     if (response.body() != null) {
-                        Log.v("Submit请求成功!", "response.body() is not null");
+                        Log.v("Submit请求成功!", "response.body is not null");
                         SubmitStatus submitStatus = response.body();
                         if (submitStatus.getMessage().equals("执行完成！")) {
                             Snackbar.make(toolbar, "提交成功!",
@@ -312,14 +360,14 @@ public class DetailsActivity extends AppCompatActivity {
                                     .show();
                         }
                     } else {
-                        Log.v("Submit请求成功!", "response.body() is null");
-                        Snackbar.make(toolbar, "提交失败!请稍后再试",
+                        Log.v("Submit请求成功!", "response.body is null");
+                        Snackbar.make(toolbar, "提交失败!(response.body is null)请稍后再试",
                                 Snackbar.LENGTH_LONG).setAction("Action", null)
                                 .show();
                     }
                 } else {
-                    Log.v("Submit请求成功!", "" + response.code());
-                    Snackbar.make(toolbar, "提交失败!请稍后再试",
+                    Log.v("Submit请求成功!", "提交失败!(" + response.code() + ")请稍后再试");
+                    Snackbar.make(toolbar, "" + response.code(),
                             Snackbar.LENGTH_LONG).setAction("Action", null)
                             .show();
                 }
@@ -329,9 +377,8 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SubmitStatus> call, Throwable t) {
                 Log.v("Submit请求失败!", t.getMessage());
-                Snackbar.make(toolbar, "提交失败!请稍后再试",
-                        Snackbar.LENGTH_LONG).setAction("Action", null)
-                        .show();
+                Snackbar.make(toolbar, "提交失败!(Submit请求失败)请稍后再试",
+                        Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 mypDialog.dismiss();
             }
         });
@@ -358,7 +405,7 @@ public class DetailsActivity extends AppCompatActivity {
         map.put("ANNUAL_SALES", task.getANNUAL_SALES());
         map.put("BUSINESS_LICENCE", task.getBUSINESS_LICENCE());
         map.put("SUPPLIER_PERSON", task.getSUPPLIER_PERSON());
-        map.put("SUPPLIER_PERMIT_CODE", task.getSUPPLIER_PERMIT_CODE());
+        map.put("PERMIT_NUM", task.getPERMIT_NUM());
         map.put("SUPPLIER_PHONE", task.getSUPPLIER_PHONE());
         map.put("SUPPLIER_FAX", task.getSUPPLIER_FAX());
         map.put("SUPPLIER_ZIPCODE", task.getSUPPLIER_ZIPCODE());
@@ -503,19 +550,18 @@ public class DetailsActivity extends AppCompatActivity {
             tv_NO.setText(task.getNO());
             et_GOODS_NAME.setText(task.getGOODS_NAME());
             et_BUSINESS_SOURCE.setText(task.getBUSINESS_SOURCE());
-            et_DRAW_NO.setText(task.getDRAW_NO());
             et_SUPPLIER.setText(task.getSUPPLIER());
             et_SUPPLIER_ADDR.setText(task.getSUPPLIER_ADDR());
             et_SUPPLIER_LEGAL.setText(task.getSUPPLIER_LEGAL());
             et_ANNUAL_SALES.setText(task.getANNUAL_SALES());
             et_BUSINESS_LICENCE.setText(task.getBUSINESS_LICENCE());
             et_SUPPLIER_PERSON.setText(task.getSUPPLIER_PERSON());
-            et_SUPPLIER_PERMIT_CODE.setText(task.getSUPPLIER_PERMIT_CODE());
+            et_PERMIT_NUM.setText(task.getPERMIT_NUM());
             et_SUPPLIER_PHONE.setText(task.getSUPPLIER_PHONE());
             et_SUPPLIER_FAX.setText(task.getSUPPLIER_FAX());
             et_SUPPLIER_ZIPCODE.setText(task.getSUPPLIER_ZIPCODE());
             et_TRADEMARK.setText(task.getTRADEMARK());
-            et_DATE_PRODUCT.setText(task.getDATE_PRODUCT());
+            //tv_DATE_PRODUCT.setText(task.getDATE_PRODUCT());
             et_SAMPLE_MODEL.setText(task.getSAMPLE_MODEL());
             et_SAMPLE_NUMBER.setText(task.getSAMPLE_NUMBER());
             et_EXPIRATIONDATE.setText(task.getEXPIRATIONDATE());
@@ -538,9 +584,22 @@ public class DetailsActivity extends AppCompatActivity {
             et_DRAW_FAX.setText(task.getDRAW_FAX());
             et_DRAW_ZIPCODE.setText(task.getDRAW_ZIPCODE());
             et_REMARK.setText(task.getREMARK());
-            et_DRAW_DATE.setText(task.getDRAW_DATE());
+            //tv_DRAW_DATE.setText(task.getDRAW_DATE());
             et_GOODS_TYPE.setText(task.getGOODS_TYPE());
             et_DRAW_MAN.setText(task.getDRAW_MAN());
+
+            str_DATE_PRODUCT = str_DRAW_DATE = new SimpleDateFormat("yyyy-MM-dd", Locale
+                    .getDefault()).format(Calendar.getInstance().getTime());
+            if (task.getDATE_PRODUCT().equals("")) {
+                tv_DATE_PRODUCT.setText(str_DATE_PRODUCT);
+            } else {
+                tv_DATE_PRODUCT.setText(task.getDATE_PRODUCT());
+            }
+            if (task.getDRAW_DATE().equals("")) {
+                tv_DRAW_DATE.setText(str_DRAW_DATE);
+            } else {
+                tv_DRAW_DATE.setText(task.getDRAW_DATE());
+            }
 
             SpinnerAdapter adapter1 = sp_SAMPLE_TYPE.getAdapter();
             for (int i = 0; i < adapter1.getCount(); i++) {
@@ -558,10 +617,10 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             }
 
-            SpinnerAdapter adapter3 = sp_SUPPLIER_PERMIT_TYPE.getAdapter();
+            SpinnerAdapter adapter3 = sp_PERMIT_TYPE.getAdapter();
             for (int i = 0; i < adapter3.getCount(); i++) {
-                if (task.getSUPPLIER_PERMIT_TYPE().equals(adapter3.getItem(i).toString())) {
-                    sp_SUPPLIER_PERMIT_TYPE.setSelection(i, true);
+                if (task.getPERMIT_TYPE().equals(adapter3.getItem(i).toString())) {
+                    sp_PERMIT_TYPE.setSelection(i, true);
                     break;
                 }
             }
@@ -674,7 +733,7 @@ public class DetailsActivity extends AppCompatActivity {
             /*name = name.replaceFirst(name.substring(0, 1), name.substring(0, 1)
                     .toUpperCase());*/
             if (type == 1) {
-                if (!name.equals("Samples")) {
+                if (!name.equals("Samples") || !name.equals("$change")) {
                     Method getMethod = task.getClass().getMethod("get" + name);
                     //Log.v("getMethod", getMethod.getName().toString());
                     value = getMethod.invoke(task);
@@ -683,27 +742,7 @@ public class DetailsActivity extends AppCompatActivity {
                         setMethod.invoke(task, "");
                     }
                 }
-            } else if (type == 2) {
-                if (name.equals("CLIENT") || name.equals("CLIENT_PERSON") || name.equals
-                        ("CLIENT_ADDR") || name.equals("CHECKSEALED") || name.equals
-                        ("GOODS_TYPE_NO") || name.equals("APPLY_KIND_NO") || name.equals
-                        ("LAB_NO") || name.equals("RECORDER") || name.equals("FOOD_KIND1") ||
-                        name.equals("FOOD_KIND2") || name.equals("FOOD_KIND3") || name.equals
-                        ("FOOD_KIND4") || name.equals("PLAN_EXEC_ID") || name.equals("Samples") ||
-                        name.equals("STATE") || name.equals("CHECK_INFO")) {
-                } else {
-                    Method getMethod = task.getClass().getMethod("get" + name);
-                    //Log.v("getMethod", getMethod.getName().toString());
-                    value = getMethod.invoke(task);
-                    if (value == null || value.equals("")) {
-                        havenullvalue = true;
-                        break;
-                        /*Method setMethod = task.getClass().getMethod("set" + name, String.class);
-                        setMethod.invoke(task, "");*/
-                    }
-                }
             }
-
         }
     }
 
@@ -724,6 +763,7 @@ public class DetailsActivity extends AppCompatActivity {
             case R.id.action_submit:
                 if (ClickUtil.isFastClick()) {
                     doSaveData();
+                    attempSubmit();
                 } else {
                     Snackbar.make(toolbar, "提交太快了，请稍后再试",
                             Snackbar.LENGTH_LONG).setAction("Action", null)
@@ -734,7 +774,7 @@ public class DetailsActivity extends AppCompatActivity {
                 Intent intent_uplodimg = new Intent();
                 intent_uplodimg.setClass(DetailsActivity.this,
                         ImgUploadActivity.class);
-                intent_uplodimg.putExtra("custom_no", et_CUSTOM_NO.getText().toString());
+                intent_uplodimg.putExtra("NO", tv_NO.getText().toString());
                 //finish();// 结束当前活动
                 startActivity(intent_uplodimg);
                 break;
@@ -765,5 +805,17 @@ public class DetailsActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onPause() {
+        doSaveData();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        doSaveData();
+        super.onDestroy();
     }
 }

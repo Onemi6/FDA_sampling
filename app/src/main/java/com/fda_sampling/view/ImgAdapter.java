@@ -1,7 +1,6 @@
 package com.fda_sampling.view;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
@@ -17,8 +16,6 @@ import android.widget.ImageView;
 import com.fda_sampling.R;
 
 import java.util.List;
-
-import me.nereo.multi_image_selector.MultiImageSelector;
 
 public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View
         .OnClickListener, View.OnLongClickListener {
@@ -53,41 +50,17 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
             if (position == 0 && picPath.equals("加号")) {
                 ((ViewHolder) holder).img_add.setImageResource(R.mipmap.ic_add);
                 //((ViewHolder) holder).itemView.setTag(position);
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                /*holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MultiImageSelector.create()
-                                .start(mactivity, 2);
+
                     }
-                });
+                });*/
+            } else if (position == 0 && picPath.equals("空白")) {
+                //((ViewHolder) holder).img_add.setImageResource(R.mipmap.logo);
             } else {
-                if (!TextUtils.isEmpty(picPath)) {
-                    Options opt = new Options();
-                    opt.inJustDecodeBounds = true;
-                    BitmapFactory.decodeFile(picPath, opt);
-                    int imageHeight = opt.outHeight;
-                    int imageWidth = opt.outWidth;
-
-                    Display display = mactivity.getWindowManager().getDefaultDisplay();
-                    Point point = new Point();
-                    // 该方法已过时，使用getRealSize()方法替代。也可以使用getSize()，但是不能准确的获取到分辨率
-                    // int screenHeight = display.getHeight();
-                    // int screenWidth = display.getWidth();
-                    display.getRealSize(point);
-                    int screenHeight = point.y;
-                    int screenWidth = point.x;
-
-                    int scale = 1;
-                    int scaleWidth = imageWidth / screenWidth / 3;
-                    int scaleHeigh = imageHeight / screenHeight;
-                    if (scaleWidth >= scaleHeigh && scaleWidth > 1) {
-                        scale = scaleWidth;
-                    } else if (scaleWidth < scaleHeigh && scaleHeigh > 1) {
-                        scale = scaleHeigh;
-                    }
-                    opt.inSampleSize = scale;
-                    opt.inJustDecodeBounds = false;
-                    Bitmap bm = BitmapFactory.decodeFile(picPath, opt);
+                Bitmap bm = getBM(picPath);
+                if (bm != null) {
                     ((ViewHolder) holder).img_add.setImageBitmap(bm);
                 }
             }
@@ -182,4 +155,38 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
             img_add = view.findViewById(R.id.imageView);
         }
     }
+
+    public Bitmap getBM(String path) {
+        if (!TextUtils.isEmpty(path)) {
+            Options opt = new Options();
+            opt.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(path, opt);
+            int imageHeight = opt.outHeight;
+            int imageWidth = opt.outWidth;
+
+            Display display = mactivity.getWindowManager().getDefaultDisplay();
+            Point point = new Point();
+            // 该方法已过时，使用getRealSize()方法替代。也可以使用getSize()，但是不能准确的获取到分辨率
+            // int screenHeight = display.getHeight();
+            // int screenWidth = display.getWidth();
+            display.getRealSize(point);
+            int screenHeight = point.y;
+            int screenWidth = point.x;
+
+            int scale = 1;
+            int scaleWidth = imageWidth / screenWidth / 3;
+            int scaleHeigh = imageHeight / screenHeight;
+            if (scaleWidth >= scaleHeigh && scaleWidth > 1) {
+                scale = scaleWidth;
+            } else if (scaleWidth < scaleHeigh && scaleHeigh > 1) {
+                scale = scaleHeigh;
+            }
+            opt.inSampleSize = scale;
+            opt.inJustDecodeBounds = false;
+            Bitmap bm = BitmapFactory.decodeFile(path, opt);
+            return bm;
+        }
+        return null;
+    }
+
 }

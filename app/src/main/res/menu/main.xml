@@ -4,16 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".view.TestActivity">
 
-    <!--<item
-        android:id="@+id/action_scanner"
+    <item
+        android:id="@+id/action_cancel"
         android:orderInCategory="100"
-        android:title="@string/scanner"
-        app:showAsAction="ifRoom" />-->
+        android:title="@string/select_cancel"
+        android:visible="false"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_refresh"
         android:orderInCategory="100"
         android:title="@string/refresh"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_payment"
+        android:orderInCategory="100"
+        android:title="@string/payment"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sampletag"
+        android:orderInCategory="100"
+        android:title="@string/sampletag"
+        app:showAsAction="never" />
 
 </menu>

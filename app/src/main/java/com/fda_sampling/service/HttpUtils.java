@@ -1,5 +1,9 @@
 package com.fda_sampling.service;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -10,6 +14,10 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 public class HttpUtils {
     //private static String ip = "http://test.3tpi.com:7050/";
     private static String ip = "http://124.117.209.42:8088/WebApi/";
+    private static String url1 = "http://124.117.209.42:8088/WebReport/ReportServer?reportlet" +
+            "=付款凭证.cpt&applyNo=";
+    private static String url2 = "http://124.117.209.42:8088/WebReport/ReportServer?reportlet" +
+            "=样品标签.cpt&applyNo=";
 
     public static FDA_API GsonApi() {
         OkHttpClient client = new OkHttpClient.Builder()
@@ -56,5 +64,16 @@ public class HttpUtils {
                 .build();
         //创建 网络请求接口 的实例
         return retrofit.create(FDA_API.class);
+    }
+
+    public static void OpenWeb(Context context, String applyNo, int type) {
+        Uri uri = null;
+        if (type == 1) {
+            uri = Uri.parse(url1 + applyNo);
+        } else if (type == 2) {
+            uri = Uri.parse(url2 + applyNo);
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        context.startActivity(intent);
     }
 }

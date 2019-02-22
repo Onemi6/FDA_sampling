@@ -107,21 +107,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:paddingEnd="@dimen/activity_vertical_margin4"
-                    android:text="NO:" />
-
-                <EditText
-                    android:id="@+id/details_DRAW_NO"
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
-            </TableRow>
-
-            <TableRow>
-
-                <TextView
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="任务来源:" />
 
                 <EditText
@@ -310,7 +295,7 @@
                     android:text="许可证类型:" />
 
                 <Spinner
-                    android:id="@+id/details_SUPPLIER_PERMIT_TYPE"
+                    android:id="@+id/details_PERMIT_TYPE"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content" />
             </TableRow>
@@ -322,10 +307,10 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:paddingEnd="@dimen/activity_vertical_margin4"
-                    android:text="许可证号:" />
+                    android:text="许可证编号:" />
 
                 <EditText
-                    android:id="@+id/details_SUPPLIER_PERMIT_CODE"
+                    android:id="@+id/details_PERMIT_NUM"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content" />
             </TableRow>
@@ -497,7 +482,7 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="生产日期:" />
 
-                <EditText
+                <TextView
                     android:id="@+id/details_DATE_PRODUCT"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content" />
@@ -962,10 +947,11 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="抽样日期:" />
 
-                <EditText
+                <TextView
                     android:id="@+id/details_DRAW_DATE"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content" />
+
             </TableRow>
 
             <TableRow>
