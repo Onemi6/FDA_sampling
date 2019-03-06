@@ -18,6 +18,8 @@ public class HttpUtils {
             "=付款凭证.cpt&applyNo=";
     private static String url2 = "http://124.117.209.42:8088/WebReport/ReportServer?reportlet" +
             "=样品标签.cpt&applyNo=";
+    private static String url = "http://124.117.209.42:8088/WebReport/ReportServer?reportlet=样品标签" +
+            ".cpt&applyNo=01WTS201703498,01WTS201703499" + "&op=export&format=pdf";
 
     public static FDA_API GsonApi() {
         OkHttpClient client = new OkHttpClient.Builder()
@@ -72,6 +74,8 @@ public class HttpUtils {
             uri = Uri.parse(url1 + applyNo);
         } else if (type == 2) {
             uri = Uri.parse(url2 + applyNo);
+        } else if (type == 3) {
+            uri = Uri.parse(url);
         }
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         context.startActivity(intent);

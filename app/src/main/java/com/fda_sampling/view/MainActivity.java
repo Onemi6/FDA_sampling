@@ -12,7 +12,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -63,7 +62,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private int pos, select_num;
+    private int pos, select_num, isHome = 0;
     private long mExitTime, mId;
     private Toolbar toolbar;
     private RecyclerView rv_tasks;
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private LinearLayoutManager layoutmanager;
     private MaininfoAdapter adapter;
     public static final int MY_PERMISSIONS_REQUEST = 3000;
-    private String name, token, Emp_No, TAG_UPDATE = "update", IMAGE_PATH;
+    private String name, token, Emp_No, TAG_UPDATE = "update", IMAGE_PATH, versionname;
     private boolean sdCardExist;
     private Context context;
     private SharedPreferences sharedPreferences;
@@ -113,16 +112,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             finish();
             startActivity(intent_login);
         } else {
-            toolbar.setSubtitle(name);
-            //toolbar.setTitle("未登录");
-            //toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-            //设置toolbar
-            setSupportActionBar(toolbar);
-            //左边的小箭头（注意需要在setSupportActionBar(toolbar)之后才有效果）
-            //toolbar.setNavigationIcon(R.drawable.ic_account_circle_white);
-            //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
-            //toolbar.setOnMenuItemClickListener(onMenuItemClick);
-
+            try {
+                versionname = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+                toolbar.setTitle(String.format(getResources().getString(R.string.app_versionName)
+                        , versionname));
+                toolbar.setSubtitle(name);
+                //toolbar.setTitle("未登录");
+                //toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+                //设置toolbar
+                setSupportActionBar(toolbar);
+                //左边的小箭头（注意需要在setSupportActionBar(toolbar)之后才有效果）
+                //toolbar.setNavigationIcon(R.drawable.ic_account_circle_white);
+                //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
+                //toolbar.setOnMenuItemClickListener(onMenuItemClick);
+            } catch (PackageManager.NameNotFoundException e) {
+                Log.i(TAG_UPDATE, "获取APP版本出错");
+                e.printStackTrace();
+            }
             CrashHandler.getInstance().init(context);
             //初始化RecyclerView
             rv_tasks = findViewById(R.id.rv_maininfo_add);
@@ -271,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onFailure(Call<List<Task>> call, Throwable t) {
                 Log.v("getTasks请求失败!", t.getMessage());
-                Snackbar.make(rv_tasks, "更新检测任务失败!",
+                Snackbar.make(rv_tasks, "检测任务请求失败!",
                         Snackbar.LENGTH_LONG).setAction("Action", null)
                         .show();
                 mProgressView.setVisibility(View.GONE);
@@ -287,24 +293,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(Call<UpdateInfo> call, Response<UpdateInfo> response) {
                 if (response.body() != null) {
-                    try {
-                        /* 获取packagemanager的实例*/
-                        PackageManager packageManager = getPackageManager();
-                        /* getPackageName()是你当前类的包名，0代表是获取版本信息*/
-                        PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(), 0);
-                        String versionname = packInfo.versionName;
-                        info = response.body();
-                        if (Double.parseDouble(info.getVersion()) > Double
-                                .parseDouble(versionname)) {
-                            Log.i(TAG_UPDATE, "服务器版本号大于本地 ,提示用户升级 ");
-                            showUpdataDialog();
-                        } else if (Double.parseDouble(info.getVersion()) == Double
-                                .parseDouble(versionname)) {
-                            Log.i(TAG_UPDATE, "无需升级");
-                        }
-                    } catch (PackageManager.NameNotFoundException e) {
-                        Log.i(TAG_UPDATE, "获取APP版本出错");
-                        e.printStackTrace();
+                    info = response.body();
+                    if (Double.parseDouble(info.getVersion()) > Double
+                            .parseDouble(versionname)) {
+                        Log.i(TAG_UPDATE, "服务器版本号大于本地 ,提示用户升级 ");
+                        showUpdataDialog();
+                    } else if (Double.parseDouble(info.getVersion()) == Double
+                            .parseDouble(versionname)) {
+                        Log.i(TAG_UPDATE, "无需升级");
                     }
                 } else {
                     Log.v("update请求成功!", "response.body is null");
@@ -525,6 +521,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
+                isHome = 1;
                 // 通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
                 AlertDialog.Builder builder = new AlertDialog.Builder(
                         context);
@@ -558,13 +555,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 显示出该对话框
                 builder.show();
             case R.id.action_refresh:
-                if (ClickUtil.isFastClick()) {
-                    attempgetTasks();
-                } else {
-                    Snackbar.make(rv_tasks, "刷新太快了，请稍后再试",
-                            Snackbar.LENGTH_LONG).setAction("Action", null)
-                            .show();
+                if (isHome == 0) {
+                    if (ClickUtil.isFastClick()) {
+                        attempgetTasks();
+                    } else {
+                        Snackbar.make(rv_tasks, "刷新太快了，请稍后再试",
+                                Snackbar.LENGTH_LONG).setAction("Action", null)
+                                .show();
+                    }
                 }
+                isHome = 0;
                 break;
             case R.id.action_payment:
                 dialog_select.setVisibility(View.VISIBLE);
@@ -682,7 +682,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (tv_select_title.getText().equals("付款凭证")) {
             HttpUtils.OpenWeb(context, applyNo, 1);
         } else if (tv_select_title.getText().equals("样品标签")) {
-            HttpUtils.OpenWeb(context, applyNo, 2);
+            HttpUtils.OpenWeb(context, applyNo, 3);
+        } else {
         }
     }
 

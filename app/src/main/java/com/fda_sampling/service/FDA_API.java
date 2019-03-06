@@ -1,11 +1,15 @@
 package com.fda_sampling.service;
 
+import com.fda_sampling.model.ChildFoodKind;
+import com.fda_sampling.model.FoodKind;
 import com.fda_sampling.model.ImageInfo;
 import com.fda_sampling.model.LoginStatus;
 import com.fda_sampling.model.SubmitStatus;
 import com.fda_sampling.model.Task;
+import com.fda_sampling.model.Unit;
 import com.fda_sampling.model.UpdateInfo;
 import com.fda_sampling.model.UploadImg;
+import com.fda_sampling.model.sampleEnterprise;
 
 import java.util.List;
 
@@ -47,4 +51,25 @@ public interface FDA_API {
 
     @POST("api/Apply/Image")
     Call<ResponseBody> Image(@Header("LIMS_Token") String LIMS_Token, @Query("id") int id);
+
+    @POST("api/Apply/sampleEnterprises")
+    Call<List<sampleEnterprise>> sampleEnterprises(@Header("LIMS_Token") String LIMS_Token,
+                                                   @Query("Key") String Key);
+
+    @POST("api/Apply/allSampleEnterprises")
+    Call<List<sampleEnterprise>> allSampleEnterprises(@Header("LIMS_Token") String LIMS_Token);
+
+    @POST("api/Apply/getUnit")
+    Call<List<Unit>> getUnit(@Header("LIMS_Token") String LIMS_Token, @Query("Unit_Type") String
+            Unit_Type);
+
+    @POST("api/Apply/getFoodKind")
+    Call<List<FoodKind>> getFoodKind(@Header("LIMS_Token") String LIMS_Token, @Query
+            ("Food_Kind_Type") String Food_Kind_Type, @Query("Parent_Food_Kind_Name") String
+                                             Parent_Food_Kind_Name);
+
+    @POST("api/Apply/getChildFoodKind")
+    Call<List<ChildFoodKind>> getChildFoodKind(@Header("LIMS_Token") String LIMS_Token, @Query
+            ("PFK_ID") int PFK_ID);
+
 }

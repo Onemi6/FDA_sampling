@@ -42,7 +42,7 @@ dependencies {
     implementation 'com.github.lovetuzitong:MultiImageSelector:1.2'
     /*implementation 'com.leon:lfilepickerlibrary:1.8.0'*/
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.0.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.squareup.retrofit2:converter-simplexml:2.0.2'
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
     implementation 'com.google.code.gson:gson:2.8.0'

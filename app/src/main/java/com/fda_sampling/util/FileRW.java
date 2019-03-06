@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.fda_sampling.model.Task;
 import com.fda_sampling.model.Tasks;
+import com.fda_sampling.model.sampleEnterprise;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -27,6 +28,7 @@ import java.util.List;
 public class FileRW {
     private static String str_json;
     private static List<Task> list = new ArrayList<>();
+    private static List<sampleEnterprise> sampleEnterprises;
 
     public static List<Task> readFile(String filepath) {
         try {
@@ -81,5 +83,35 @@ public class FileRW {
             e.printStackTrace();
             Toast.makeText(context, "保存文件失败", Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    public static List<sampleEnterprise> allSampleEnterprises(String filepath) {
+        try {
+            InputStream is = new FileInputStream(filepath);
+            InputStreamReader in = new InputStreamReader(is, "UTF-8");
+            BufferedReader read = new BufferedReader(in);
+            Gson gson = new Gson();
+            sampleEnterprises = gson.fromJson(read.readLine().toString(), new
+                    TypeToken<List<sampleEnterprise>>() {
+                    }.getType());
+            read.close();
+            in.close();
+            is.close();
+            return sampleEnterprises;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.v("选择文件", "没找到此文件");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            Log.v("选择文件", "文件编码错误");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.v("选择文件", "文件读取失败");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.v("选择文件", "文件解析失败");
+        }
+        return null;
     }
 }

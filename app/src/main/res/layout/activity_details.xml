@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:stretchColumns="*">
 
-            <TableRow>
+            <TableRow android:paddingBottom="@dimen/activity_horizontal_margin4">
 
                 <TextView
                     android:layout_width="1dip"
@@ -94,7 +94,7 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="抽样单编号:" />
 
-                <EditText
+                <TextView
                     android:id="@+id/details_CUSTOM_NO"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content" />
@@ -109,7 +109,7 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="任务来源:" />
 
-                <EditText
+                <TextView
                     android:id="@+id/details_BUSINESS_SOURCE"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content" />
@@ -157,7 +157,28 @@
                 <EditText
                     android:id="@+id/details_GOODS_TYPE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SAMPLING_NOTICE_CODE"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="告知书编号:" />
+
+                <EditText
+                    android:id="@+id/details_SAMPLING_NOTICE_CODE"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SUPPLIER"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -189,10 +210,15 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="单位名称:" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/details_SUPPLIER"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:completionThreshold="1"
+                    android:dropDownWidth="fill_parent"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SUPPLIER_ADDR"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -222,7 +248,10 @@
                 <EditText
                     android:id="@+id/details_SUPPLIER_ADDR"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SUPPLIER_LEGAL"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -237,7 +266,10 @@
                 <EditText
                     android:id="@+id/details_SUPPLIER_LEGAL"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_ANNUAL_SALES"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -252,7 +284,10 @@
                 <EditText
                     android:id="@+id/details_ANNUAL_SALES"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_BUSINESS_LICENCE"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -267,7 +302,10 @@
                 <EditText
                     android:id="@+id/details_BUSINESS_LICENCE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SUPPLIER_PERSON"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -282,7 +320,10 @@
                 <EditText
                     android:id="@+id/details_SUPPLIER_PERSON"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_PERMIT_NUM"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -312,7 +353,10 @@
                 <EditText
                     android:id="@+id/details_PERMIT_NUM"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SUPPLIER_PHONE"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -327,7 +371,10 @@
                 <EditText
                     android:id="@+id/details_SUPPLIER_PHONE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SUPPLIER_FAX"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -342,7 +389,10 @@
                 <EditText
                     android:id="@+id/details_SUPPLIER_FAX"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SUPPLIER_ZIPCODE"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -357,7 +407,10 @@
                 <EditText
                     android:id="@+id/details_SUPPLIER_ZIPCODE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_DRAW_ADDR_OTHER"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -373,6 +426,43 @@
                     android:id="@+id/details_DRAW_ADDR"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="其他:" />
+
+                <EditText
+                    android:id="@+id/details_DRAW_ADDR_OTHER"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:hint="地点为其他时才有效"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_FOOD_BUSINESS_PERMIT"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="食品经营许可证:" />
+
+                <EditText
+                    android:id="@+id/details_FOOD_BUSINESS_PERMIT"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_GOODS_NAME"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -454,7 +544,10 @@
                 <EditText
                     android:id="@+id/details_GOODS_NAME"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_TRADEMARK"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -469,7 +562,10 @@
                 <EditText
                     android:id="@+id/details_TRADEMARK"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SAMPLE_MODEL"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -500,7 +596,10 @@
                 <EditText
                     android:id="@+id/details_SAMPLE_MODEL"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SAMPLE_NUMBER"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -515,7 +614,10 @@
                 <EditText
                     android:id="@+id/details_SAMPLE_NUMBER"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_EXPIRATIONDATE"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -530,7 +632,10 @@
                 <EditText
                     android:id="@+id/details_EXPIRATIONDATE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_TEST_FILE_NO"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -545,7 +650,10 @@
                 <EditText
                     android:id="@+id/details_TEST_FILE_NO"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SAMPLE_CLASS"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -560,7 +668,10 @@
                 <EditText
                     android:id="@+id/details_SAMPLE_CLASS"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_PRODUCTION_CERTIFICATE"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -575,7 +686,10 @@
                 <EditText
                     android:id="@+id/details_PRODUCTION_CERTIFICATE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_UNIVALENT"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -590,8 +704,28 @@
                 <EditText
                     android:id="@+id/details_UNIVALENT"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_DRAW_NUM"
+                    android:singleLine="true" />
+
             </TableRow>
+
+            <TableRow>
+
+                <View
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4" />
+
+                <Spinner
+                    android:id="@+id/details_UNIVALENT_UNIT"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content" />
+
+            </TableRow>
+
 
             <TableRow>
 
@@ -620,7 +754,26 @@
                 <EditText
                     android:id="@+id/details_DRAW_NUM"
                     android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_DRAW_AMOUNT"
+                    android:singleLine="true" />
+
+            </TableRow>
+
+            <TableRow>
+
+                <View
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4" />
+
+                <Spinner
+                    android:id="@+id/details_DRAW_NUM_UNIT"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
+
             </TableRow>
 
             <TableRow>
@@ -635,7 +788,26 @@
                 <EditText
                     android:id="@+id/details_DRAW_AMOUNT"
                     android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_STORAGESITE"
+                    android:singleLine="true" />
+
+            </TableRow>
+
+            <TableRow>
+
+                <View
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4" />
+
+                <Spinner
+                    android:id="@+id/details_DRAW_AMOUNT_UNIT"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
+
             </TableRow>
 
             <TableRow>
@@ -650,7 +822,26 @@
                 <EditText
                     android:id="@+id/details_STORAGESITE"
                     android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SAMPLE_CLOSE_DATE"
+                    android:singleLine="true" />
+
+            </TableRow>
+
+            <TableRow>
+
+                <View
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4" />
+
+                <Spinner
+                    android:id="@+id/details_STORAGESITE_UNIT"
+                    android:layout_width="1dip"
                     android:layout_height="wrap_content" />
+
             </TableRow>
 
             <TableRow>
@@ -710,7 +901,10 @@
                 <EditText
                     android:id="@+id/details_SAMPLE_CLOSE_DATE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SAMPLE_ADDR"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -725,7 +919,10 @@
                 <EditText
                     android:id="@+id/details_SAMPLE_ADDR"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_MANU_COMPANY"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -754,6 +951,81 @@
 
                 <Spinner
                     android:id="@+id/details_DRAW_METHOD"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="食品分类1:" />
+
+                <Spinner
+                    android:id="@+id/details_FOOD_KIND1"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="食品分类2:" />
+
+                <Spinner
+                    android:id="@+id/details_FOOD_KIND2"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="食品分类3:" />
+
+                <Spinner
+                    android:id="@+id/details_FOOD_KIND3"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="食品分类4:" />
+
+                <Spinner
+                    android:id="@+id/details_FOOD_KIND4"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="地区/合同:" />
+
+                <Spinner
+                    android:id="@+id/details_CHILD_FOOD_KIND_ID"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content" />
             </TableRow>
@@ -792,7 +1064,10 @@
                 <EditText
                     android:id="@+id/details_MANU_COMPANY"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_MANU_COMPANY_ADDR"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -807,7 +1082,10 @@
                 <EditText
                     android:id="@+id/details_MANU_COMPANY_ADDR"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_MANU_COMPANY_PHONE"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -822,7 +1100,10 @@
                 <EditText
                     android:id="@+id/details_MANU_COMPANY_PHONE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_DRAW_ORG"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -860,7 +1141,10 @@
                 <EditText
                     android:id="@+id/details_DRAW_ORG"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_DRAW_ORG_ADDR"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -875,7 +1159,10 @@
                 <EditText
                     android:id="@+id/details_DRAW_ORG_ADDR"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_DRAW_PERSON"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -890,7 +1177,10 @@
                 <EditText
                     android:id="@+id/details_DRAW_PERSON"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_DRAW_PHONE"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -905,7 +1195,10 @@
                 <EditText
                     android:id="@+id/details_DRAW_PHONE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_DRAW_FAX"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -920,7 +1213,10 @@
                 <EditText
                     android:id="@+id/details_DRAW_FAX"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_DRAW_ZIPCODE"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -935,7 +1231,10 @@
                 <EditText
                     android:id="@+id/details_DRAW_ZIPCODE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_DRAW_MAN"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -966,7 +1265,10 @@
                 <EditText
                     android:id="@+id/details_DRAW_MAN"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_REMARK"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
