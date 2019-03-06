@@ -12,6 +12,7 @@ import com.fda_sampling.model.UploadImg;
 import com.fda_sampling.model.sampleEnterprise;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -23,6 +24,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 public interface FDA_API {
 
@@ -32,6 +34,9 @@ public interface FDA_API {
 
     @GET("update.xml")
     Call<UpdateInfo> UpdateXML();
+
+    @GET("ReportServer")
+    Call<ResponseBody> ReportServer(@QueryMap Map<String, String> params);
 
     @POST("api/Login")
     Call<LoginStatus> Login(@Query("data") String data);

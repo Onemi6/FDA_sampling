@@ -6,13 +6,16 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -40,6 +43,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fda_sampling.R;
 import com.fda_sampling.model.Task;
@@ -50,12 +54,20 @@ import com.fda_sampling.service.HttpUtils;
 import com.fda_sampling.util.ClickUtil;
 import com.fda_sampling.util.CrashHandler;
 import com.fda_sampling.util.MyApplication;
+import com.fda_sampling.util.NetworkUtil;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -67,14 +79,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Toolbar toolbar;
     private RecyclerView rv_tasks;
     private LinearLayout dialog_select;
-    private TextView tv_select_title, tv_select_num, tv_select_invert, tv_select_all;
+    private TextView tv_select_title, tv_select_num, tv_select_all;
     private Button btn_select_confirm;
     private ProgressBar mProgressView;
-    private LinearLayoutManager layoutmanager;
     private MaininfoAdapter adapter;
     public static final int MY_PERMISSIONS_REQUEST = 3000;
-    private String name, token, Emp_No, TAG_UPDATE = "update", IMAGE_PATH, versionname;
-    private boolean sdCardExist;
+    private String token, TAG_UPDATE = "update", versionname;
     private Context context;
     private SharedPreferences sharedPreferences;
     private UpdateInfo info;
@@ -94,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dialog_select = findViewById(R.id.dialog_select);
         tv_select_title = findViewById(R.id.tv_select_title);
         tv_select_num = findViewById(R.id.tv_select_num);
-        tv_select_invert = findViewById(R.id.tv_select_invert);
+        TextView tv_select_invert = findViewById(R.id.tv_select_invert);
         tv_select_all = findViewById(R.id.tv_select_all);
         btn_select_confirm = findViewById(R.id.btn_select_confirm);
 
@@ -104,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mProgressView = findViewById(R.id.tasks_progress);
         sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
-        name = sharedPreferences.getString("NAME", null);
+        String name = sharedPreferences.getString("NAME", null);
         if (name == null) {
             Intent intent_login = new Intent();
             intent_login.setClass(MainActivity.this, LoginActivity.class);
@@ -135,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //rv_tasks.setHasFixedSize(true);
 
             //创建LinearLayoutManager 对象 这里使用 LinearLayoutManager 是线性布局的意思
-            layoutmanager = new LinearLayoutManager(this);
+            LinearLayoutManager layoutmanager = new LinearLayoutManager(this);
             //设置RecyclerView 布局
             rv_tasks.setLayoutManager(layoutmanager);
             //设置Adapter
@@ -223,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void attempgetTasks() {
         mProgressView.setVisibility(View.VISIBLE);
+        String Emp_No;
         FDA_API request = HttpUtils.GsonApi();
         if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
@@ -620,17 +631,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void Filedir() {
-        sdCardExist = android.os.Environment.getExternalStorageState().equals(android.os
-                .Environment
-                .MEDIA_MOUNTED);
+        boolean sdCardExist = android.os.Environment.getExternalStorageState().equals(android.os
+                .Environment.MEDIA_MOUNTED);
+        String IMAGE_PATH, PAYMENT_PATH, SAMPLETAG_PATH, CRASH_PATH;
         if (sdCardExist) {
             IMAGE_PATH = Environment.getExternalStorageDirectory() + "/FDA/Image/";
+            PAYMENT_PATH = Environment.getExternalStorageDirectory() + "/FDA/payment/";
+            SAMPLETAG_PATH = Environment.getExternalStorageDirectory() + "/FDA/sampletag/";
+            CRASH_PATH = Environment.getExternalStorageDirectory() + "/FDA/crash/";
         } else {
-            IMAGE_PATH = this.getCacheDir().toString() + "/";
+            IMAGE_PATH = PAYMENT_PATH = SAMPLETAG_PATH = CRASH_PATH = this.getCacheDir().toString
+                    () + "/";
         }
-        File album = new File(IMAGE_PATH);
-        if (!album.exists()) {
-            album.mkdirs();
+        File image = new File(IMAGE_PATH), payment = new File(PAYMENT_PATH), sampletag = new File
+                (SAMPLETAG_PATH), crash = new File(CRASH_PATH);
+        if (!image.exists()) {
+            image.mkdirs();
+        }
+        if (!payment.exists()) {
+            payment.mkdirs();
+        }
+        if (!sampletag.exists()) {
+            sampletag.mkdirs();
+        }
+        if (!crash.exists()) {
+            crash.mkdirs();
         }
     }
 
@@ -680,10 +705,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
         if (tv_select_title.getText().equals("付款凭证")) {
-            HttpUtils.OpenWeb(context, applyNo, 1);
+            attempReportServer(1, applyNo);
+            //HttpUtils.OpenWeb(context, applyNo, 1);
         } else if (tv_select_title.getText().equals("样品标签")) {
-            HttpUtils.OpenWeb(context, applyNo, 3);
-        } else {
+            //HttpUtils.OpenWeb(context, applyNo, 3);
+            attempReportServer(2, applyNo);
         }
     }
 
@@ -697,5 +723,158 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             btn_select_confirm.setEnabled(false);
             btn_select_confirm.setTextColor(ContextCompat.getColor(this, R.color.color_b7b8bd));
         }
+    }
+
+    private void attempReportServer(int type, String applyNo) {
+        String pdf_path = null, reportlet = null;
+        if (type == 1) {
+            pdf_path = Environment.getExternalStorageDirectory() + "/FDA/payment/" + applyNo +
+                    ".pdf";
+            reportlet = "付款凭证.cpt";
+        } else if (type == 2) {
+            pdf_path = Environment.getExternalStorageDirectory() + "/FDA/sampletag/" + applyNo +
+                    ".pdf";
+            reportlet = "样品标签.cpt";
+        }
+        final File file_pdf = new File(pdf_path);
+        if (file_pdf.exists()) {
+            Log.v("pdf", "已经存在");
+            doPrintword(file_pdf);
+        } else {
+            if (NetworkUtil.isNetworkAvailable(context)) {
+                FDA_API request = HttpUtils.ReportApi();
+                Map<String, String> params = new HashMap<>();
+                params.put("reportlet", reportlet);
+                params.put("applyNo", applyNo);
+                params.put("op", "export");
+                params.put("format", "pdf");
+                Call<ResponseBody> call = request.ReportServer(params);
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody>
+                            response) {
+                        if (response.code() == 200) {
+                            if (response.body() != null) {
+                                try {
+                                    // 获取文件的输出流对象
+                                    FileOutputStream outStream = new FileOutputStream(file_pdf);
+                                    // 获取字符串对象的byte数组并写入文件流
+                                    outStream.write(response.body().bytes());
+                                    // 最后关闭文件输出流
+                                    outStream.close();
+                                    Log.v("pdf", "下载成功");
+                                    doPrintword(file_pdf);
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                    Log.v("ResponseBody", "FileNotFoundException");
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Log.v("ResponseBody", "IOException");
+                                }
+                            } else {
+                                Log.v("Report请求成功!", "response.body is null");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.v("Report请求失败!", t.getMessage());
+                    }
+                });
+            } else {
+                Toast.makeText(MainActivity.this, "当前无网络", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+    }
+
+    //调用手机中安装的可打开word的软件
+    private void doOpenWord(final File file_pdf) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                intent.addCategory("android.intent.category.DEFAULT");
+                intent.setDataAndType(Uri.fromFile(file_pdf), "application/pdf");
+                //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                try {
+                    MainActivity.this.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    /* 检测到系统尚未安装OliveOffice的apk程序*/
+                    Snackbar.make(rv_tasks, "未找到可用软件",
+                            Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                }
+            }
+        }, 1500);
+        /* 延时1.5s执行*/
+    }
+
+    private void doPrintword(final File file_pdf) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (appIsInstalled(context, "com.dynamixsoftware.printershare")) {
+                    Intent intent = new Intent();
+                    ComponentName comp = new ComponentName("com.dynamixsoftware.printershare",
+                            "com.dynamixsoftware.printershare.ActivityPrintDocuments");
+                    intent.setComponent(comp);
+                    intent.setAction("android.intent.action.VIEW");
+                    intent.setType("application/pdf");
+                    intent.setData(Uri.fromFile(file_pdf));
+                    startActivity(intent);
+                } else {
+                    Snackbar.make(rv_tasks, "未找到PrinterShare软件",
+                            Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    /* 安装apk*/
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    File file = getAssetFileToCacheDir(context, "PrinterShare.apk");
+                    intent.setDataAndType(Uri.fromFile(file), "application/vnd" +
+                            ".android.package-archive");
+                    MainActivity.this.startActivity(intent);
+                }
+            }
+        }, 1000); /* 延时2s执行*/
+    }
+
+    // 判断apk是否安装
+    public static boolean appIsInstalled(Context context, String pageName) {
+        try {
+            context.getPackageManager().getPackageInfo(pageName, 0);
+            return true;
+        } catch (NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    // 把Asset下的apk拷贝到sdcard下 /Android/data/你的包名/cache 目录下
+    public File getAssetFileToCacheDir(Context context, String fileName) {
+        try {
+            File cacheDir = getCacheDir(context);
+            final String cachePath = cacheDir.getAbsolutePath() + File.separator + fileName;
+            InputStream is = context.getAssets().open(fileName);
+            File file = new File(cachePath);
+            file.createNewFile();
+            FileOutputStream fos = new FileOutputStream(file);
+            byte[] temp = new byte[1024];
+            int i = 0;
+            while ((i = is.read(temp)) > 0) fos.write(temp, 0, i);
+            fos.close();
+            is.close();
+            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // 获取sdcard中的缓存目录
+    public static File getCacheDir(Context context) {
+        String APP_DIR_NAME = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                "/Android/data/";
+        File dir = new File(APP_DIR_NAME + context.getPackageName() + "/cache/");
+        if (!dir.exists()) dir.mkdirs();
+        return dir;
     }
 }

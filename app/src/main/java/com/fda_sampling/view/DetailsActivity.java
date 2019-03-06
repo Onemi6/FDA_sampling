@@ -244,8 +244,7 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // TODO 自动生成的方法存
-                new DatePickerDialog(context, 0,
-                        new DatePickerDialog.OnDateSetListener() {
+                new DatePickerDialog(context, 0, new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker DatePicker,
                                                   int Year, int MonthOfYear, int DayOfMonth) {

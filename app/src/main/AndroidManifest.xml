@@ -4,15 +4,16 @@
     android:versionCode="1"
     android:versionName="1.7">
 
-    <uses-permission android:name="android.permission.INTERNET" /><!-- 网络 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /><!-- 从SDCard读取数据权限 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /><!-- 往SDCard写入数据权限 -->
-    <uses-permission android:name="android.permission.VIBRATE" /><!-- 震动权限 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 网络 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 从SDCard读取数据权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 往SDCard写入数据权限 -->
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 震动权限 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /><!-- 使用Wi-Fi等WLAN无线网络-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 使用Wi-Fi等WLAN无线网络 -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
     <application
         android:name=".util.MyApplication"
@@ -57,11 +58,13 @@
             android:authorities="com.fda_sampling.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
+
             <!-- 元数据 -->
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
     </application>
 
 </manifest>

@@ -9,7 +9,6 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -135,7 +134,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * 保存错误信息到文件中     *
+     * 保存错误信息到文件中
      *
      * @param ex * @return  返回文件名称,便于将文件传送到服务器
      */
@@ -160,14 +159,15 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         try {
             long timestamp = System.currentTimeMillis();
             String time = format.format(new Date());
-            String fileName = "FDA-crash-" + time + "-" + timestamp + ".log";
+            String fileName = "FDA-" + time + "-" + timestamp + ".log";
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/crash/";
-                Log.i("TEST", path);
+                String path = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                        "/FDA/crash/";
+                /*Log.i("TEST", path);
                 File dir = new File(path);
                 if (!dir.exists()) {
                     dir.mkdirs();
-                }
+                }*/
                 FileOutputStream fos = new FileOutputStream(path + fileName);
                 fos.write(sb.toString().getBytes());
                 fos.close();
