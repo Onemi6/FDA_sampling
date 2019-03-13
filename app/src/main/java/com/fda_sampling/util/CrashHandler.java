@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class CrashHandler implements Thread.UncaughtExceptionHandler {
@@ -35,7 +36,8 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     /**
      * 格式化时间
      */
-    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale
+            .getDefault());
     private String TAG = "TEST";//this.getClass().getSimpleName();
     private static CrashHandler mInstance;
 

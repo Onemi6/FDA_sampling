@@ -15,14 +15,13 @@ import java.io.IOException;
 public class MyApplication extends Application {
 
     private String TOKEN, NAME, NO;
-    private boolean isDebug;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         //增加上报进程控制,只在主进程下上报数据
-        isDebug = false;
+        boolean isDebug = false;
         Context context = getApplicationContext();
         // 获取当前包名
         String packageName = context.getPackageName();

@@ -11,16 +11,16 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/maininfo_check"
+            android:id="@+id/mainInfo_check"
             android:layout_width="20sp"
             android:layout_height="20sp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:src="@mipmap/ic_uncheck"
+            android:src="@mipmap/ic_check_no"
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/maininfo_num"
+            android:id="@+id/mainInfo_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -46,11 +46,11 @@
                     android:text="抽样单编号:" />
 
                 <TextView
-                    android:id="@+id/maininfo_CUSTOM_NO"
+                    android:id="@+id/mainInfo_CUSTOM_NO"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="11dip" />
+                    android:layout_marginStart="11dip" />
             </LinearLayout>
 
             <LinearLayout
@@ -65,11 +65,11 @@
                     android:text="报验编号:" />
 
                 <TextView
-                    android:id="@+id/maininfo_NO"
+                    android:id="@+id/mainInfo_NO"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="11dip" />
+                    android:layout_marginStart="11dip" />
             </LinearLayout>
 
             <LinearLayout
@@ -84,11 +84,11 @@
                     android:text="任务来源:" />
 
                 <TextView
-                    android:id="@+id/maininfo_BUSINESS_SOURCE"
+                    android:id="@+id/mainInfo_BUSINESS_SOURCE"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="11dip" />
+                    android:layout_marginStart="11dip" />
             </LinearLayout>
 
             <LinearLayout
@@ -103,11 +103,11 @@
                     android:text="样品名称:" />
 
                 <TextView
-                    android:id="@+id/maininfo_GOODS_NAME"
+                    android:id="@+id/mainInfo_GOODS_NAME"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="11dip" />
+                    android:layout_marginStart="11dip" />
             </LinearLayout>
         </LinearLayout>
 

@@ -77,4 +77,7 @@ public interface FDA_API {
     Call<List<ChildFoodKind>> getChildFoodKind(@Header("LIMS_Token") String LIMS_Token, @Query
             ("PFK_ID") int PFK_ID);
 
+    @POST("api/Apply/getSamplingBill")
+    Call<ResponseBody> getSamplingBill(@Header("LIMS_Token") String LIMS_Token, @Query("applyNo")
+            String applyNo);
 }

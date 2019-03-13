@@ -7,14 +7,14 @@
     tools:context=".view.ImgUploadActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbarlayout_imgupload"
+        android:id="@+id/AppBarLayout_ImgUpload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_imgupload"
+            android:id="@+id/toolbar_ImgUpload"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_uploadImage"
-        android:layout_below="@+id/appbarlayout_imgupload"
+        android:layout_below="@+id/AppBarLayout_ImgUpload"
         android:padding="@dimen/activity_vertical_margin3">
 
         <LinearLayout
@@ -35,6 +35,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:baselineAligned="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">

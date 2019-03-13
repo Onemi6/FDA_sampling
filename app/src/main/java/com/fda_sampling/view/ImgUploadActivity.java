@@ -54,15 +54,15 @@ import retrofit2.Response;
 public class ImgUploadActivity extends AppCompatActivity {
 
     private Context _context;
-    private Button btn_uploadimg;
+    private Button btn_uploadImg;
     private String number = null, token;
     private List<String> picList_1 = new ArrayList<>(), picList_2 = new ArrayList<>(), picList_3
             = new ArrayList<>(), picList_4 = new ArrayList<>(), picList_5 = new ArrayList<>(),
             picList_6 = new ArrayList<>(), picList_7 = new ArrayList<>(), picList_8 = new
             ArrayList<>(), uploadImage = new ArrayList<>(), status = new ArrayList<>();
-    private List<ImageInfo> imageInfos = new ArrayList<>();
+    private List<ImageInfo> imageInfoList = new ArrayList<>();
     private ImgAdapter adapter_img_1, adapter_img_2, adapter_img_3, adapter_img_4, adapter_img_5,
-            adapter_img_6, adapter_img_7, adapter_img_8, adapter_uploadimg;
+            adapter_img_6, adapter_img_7, adapter_img_8, adapter_uploadImg;
     private int fail_num = 0;
     private ProgressDialog mypDialog;
     private SharedPreferences sharedPreferences;
@@ -97,9 +97,9 @@ public class ImgUploadActivity extends AppCompatActivity {
         RecyclerView rv_add_img_8 = findViewById(R.id.rv_img_add_8);
 
         RecyclerView rv_upload_img = findViewById(R.id.rv_upload_img);
-        btn_uploadimg = findViewById(R.id.btn_uploadImage);
+        btn_uploadImg = findViewById(R.id.btn_uploadImage);
 
-        Toolbar toolbar = findViewById(R.id.toolbar_imgupload);
+        Toolbar toolbar = findViewById(R.id.toolbar_ImgUpload);
         toolbar.setTitle("图片上传");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         //设置toolbar
@@ -112,84 +112,84 @@ public class ImgUploadActivity extends AppCompatActivity {
         initdata();
 
         //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
-        GridLayoutManager layoutmanager_1 = new GridLayoutManager(this, 2);
-        layoutmanager_1.setOrientation(GridLayoutManager.VERTICAL);
+        GridLayoutManager layoutManager_1 = new GridLayoutManager(this, 2);
+        layoutManager_1.setOrientation(GridLayoutManager.VERTICAL);
         //设置RecyclerView 布局
-        rv_add_img_1.setLayoutManager(layoutmanager_1);
+        rv_add_img_1.setLayoutManager(layoutManager_1);
         //设置Adapter
         adapter_img_1 = new ImgAdapter(this, picList_1);
         rv_add_img_1.setAdapter(adapter_img_1);
 
         //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
-        GridLayoutManager layoutmanager_2 = new GridLayoutManager(this, 2);
-        layoutmanager_2.setOrientation(GridLayoutManager.VERTICAL);
+        GridLayoutManager layoutManager_2 = new GridLayoutManager(this, 2);
+        layoutManager_2.setOrientation(GridLayoutManager.VERTICAL);
         //设置RecyclerView 布局
-        rv_add_img_2.setLayoutManager(layoutmanager_2);
+        rv_add_img_2.setLayoutManager(layoutManager_2);
         //设置Adapter
         adapter_img_2 = new ImgAdapter(this, picList_2);
         rv_add_img_2.setAdapter(adapter_img_2);
 
         //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
-        GridLayoutManager layoutmanager_3 = new GridLayoutManager(this, 2);
-        layoutmanager_3.setOrientation(GridLayoutManager.VERTICAL);
+        GridLayoutManager layoutManager_3 = new GridLayoutManager(this, 2);
+        layoutManager_3.setOrientation(GridLayoutManager.VERTICAL);
         //设置RecyclerView 布局
-        rv_add_img_3.setLayoutManager(layoutmanager_3);
+        rv_add_img_3.setLayoutManager(layoutManager_3);
         //设置Adapter
         adapter_img_3 = new ImgAdapter(this, picList_3);
         rv_add_img_3.setAdapter(adapter_img_3);
 
         //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
-        GridLayoutManager layoutmanager_4 = new GridLayoutManager(this, 2);
-        layoutmanager_4.setOrientation(GridLayoutManager.VERTICAL);
+        GridLayoutManager layoutManager_4 = new GridLayoutManager(this, 2);
+        layoutManager_4.setOrientation(GridLayoutManager.VERTICAL);
         //设置RecyclerView 布局
-        rv_add_img_4.setLayoutManager(layoutmanager_4);
+        rv_add_img_4.setLayoutManager(layoutManager_4);
         //设置Adapter
         adapter_img_4 = new ImgAdapter(this, picList_4);
         rv_add_img_4.setAdapter(adapter_img_4);
 
         //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
-        GridLayoutManager layoutmanager_5 = new GridLayoutManager(this, 2);
-        layoutmanager_5.setOrientation(GridLayoutManager.VERTICAL);
+        GridLayoutManager layoutManager_5 = new GridLayoutManager(this, 2);
+        layoutManager_5.setOrientation(GridLayoutManager.VERTICAL);
         //设置RecyclerView 布局
-        rv_add_img_5.setLayoutManager(layoutmanager_5);
+        rv_add_img_5.setLayoutManager(layoutManager_5);
         //设置Adapter
         adapter_img_5 = new ImgAdapter(this, picList_5);
         rv_add_img_5.setAdapter(adapter_img_5);
 
         //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
-        GridLayoutManager layoutmanager_6 = new GridLayoutManager(this, 2);
-        layoutmanager_6.setOrientation(GridLayoutManager.VERTICAL);
+        GridLayoutManager layoutManager_6 = new GridLayoutManager(this, 2);
+        layoutManager_6.setOrientation(GridLayoutManager.VERTICAL);
         //设置RecyclerView 布局
-        rv_add_img_6.setLayoutManager(layoutmanager_6);
+        rv_add_img_6.setLayoutManager(layoutManager_6);
         //设置Adapter
         adapter_img_6 = new ImgAdapter(this, picList_6);
         rv_add_img_6.setAdapter(adapter_img_6);
 
         //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
-        GridLayoutManager layoutmanager_7 = new GridLayoutManager(this, 2);
-        layoutmanager_7.setOrientation(GridLayoutManager.VERTICAL);
+        GridLayoutManager layoutManager_7 = new GridLayoutManager(this, 2);
+        layoutManager_7.setOrientation(GridLayoutManager.VERTICAL);
         //设置RecyclerView 布局
-        rv_add_img_7.setLayoutManager(layoutmanager_7);
+        rv_add_img_7.setLayoutManager(layoutManager_7);
         //设置Adapter
         adapter_img_7 = new ImgAdapter(this, picList_7);
         rv_add_img_7.setAdapter(adapter_img_7);
 
         //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
-        GridLayoutManager layoutmanager_8 = new GridLayoutManager(this, 2);
-        layoutmanager_8.setOrientation(GridLayoutManager.VERTICAL);
+        GridLayoutManager layoutManager_8 = new GridLayoutManager(this, 2);
+        layoutManager_8.setOrientation(GridLayoutManager.VERTICAL);
         //设置RecyclerView 布局
-        rv_add_img_8.setLayoutManager(layoutmanager_8);
+        rv_add_img_8.setLayoutManager(layoutManager_8);
         //设置Adapter
         adapter_img_8 = new ImgAdapter(this, picList_8);
         rv_add_img_8.setAdapter(adapter_img_8);
 
         //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
-        GridLayoutManager layoutmanager_upload = new GridLayoutManager(this, 3);
-        layoutmanager_upload.setOrientation(GridLayoutManager.VERTICAL);
+        GridLayoutManager layoutManager_upload = new GridLayoutManager(this, 3);
+        layoutManager_upload.setOrientation(GridLayoutManager.VERTICAL);
         //设置RecyclerView 布局
-        rv_upload_img.setLayoutManager(layoutmanager_upload);
-        adapter_uploadimg = new ImgAdapter(this, uploadImage);
-        rv_upload_img.setAdapter(adapter_uploadimg);
+        rv_upload_img.setLayoutManager(layoutManager_upload);
+        adapter_uploadImg = new ImgAdapter(this, uploadImage);
+        rv_upload_img.setAdapter(adapter_uploadImg);
 
         adapter_img_1.setOnClickListener(new ImgAdapter.OnClickListener() {
             @Override
@@ -306,14 +306,14 @@ public class ImgUploadActivity extends AppCompatActivity {
             }
         });
 
-        adapter_uploadimg.setOnClickListener(new ImgAdapter.OnClickListener() {
+        adapter_uploadImg.setOnClickListener(new ImgAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position) {
                 ImgOnClick(position, TYPE_IMAGE_0);
             }
         });
 
-        btn_uploadimg.setOnClickListener(new View.OnClickListener() {
+        btn_uploadImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ImgUpload();
@@ -492,10 +492,10 @@ public class ImgUploadActivity extends AppCompatActivity {
                         startActivity(intent_login);
                     } else if (response.code() == 200) {
                         if (response.body() != null) {
-                            imageInfos = response.body();
-                            Log.v("imageInfos.size()", "" + imageInfos.size());
-                            if (imageInfos.size() > 0) {
-                                for (ImageInfo imageInfo : imageInfos) {
+                            imageInfoList = response.body();
+                            Log.v("imageInfoList.size()", "" + imageInfoList.size());
+                            if (imageInfoList.size() > 0) {
+                                for (ImageInfo imageInfo : imageInfoList) {
                                     Log.v("imageInfo", "" + imageInfo.getID());
                                     try {
                                         Thread.sleep(500);
@@ -532,7 +532,7 @@ public class ImgUploadActivity extends AppCompatActivity {
         if (image.exists()) {
             Log.v("图片", "已经存在");
             uploadImage.add(image_path);
-            adapter_uploadimg.changList_add(uploadImage);
+            adapter_uploadImg.changList_add(uploadImage);
         } else {
             if (NetworkUtil.isNetworkAvailable(_context)) {
                 FDA_API request = HttpUtils.GsonApi();
@@ -564,7 +564,7 @@ public class ImgUploadActivity extends AppCompatActivity {
                                     outStream.close();
                                     Log.v("图片", "下载成功");
                                     uploadImage.add(image_path);
-                                    adapter_uploadimg.changList_add(uploadImage);
+                                    adapter_uploadImg.changList_add(uploadImage);
                                 } catch (FileNotFoundException e) {
                                     e.printStackTrace();
                                     Log.v("ResponseBody", "FileNotFoundException");
@@ -604,11 +604,11 @@ public class ImgUploadActivity extends AppCompatActivity {
             int screenWidth = point.x;
             int scale = 1;
             int scaleWidth = imageWidth / screenWidth;
-            int scaleHeigh = imageHeight / screenHeight;
-            if (scaleWidth >= scaleHeigh && scaleWidth > 1) {
+            int scaleHeight = imageHeight / screenHeight;
+            if (scaleWidth >= scaleHeight && scaleWidth > 1) {
                 scale = scaleWidth;
-            } else if (scaleWidth < scaleHeigh && scaleHeigh > 1) {
-                scale = scaleHeigh;
+            } else if (scaleWidth < scaleHeight && scaleHeight > 1) {
+                scale = scaleHeight;
             }
             opt.inSampleSize = scale;
             opt.inJustDecodeBounds = false;
@@ -740,9 +740,8 @@ public class ImgUploadActivity extends AppCompatActivity {
                 .size() == 1 && adapter_img_7.getImgList().size() == 1 &&
                 adapter_img_8.getImgList().size() == 1) {
             mypDialog.dismiss();
-            Snackbar.make(btn_uploadimg, "至少选择一张图片",
-                    Snackbar.LENGTH_LONG).setAction("Action", null)
-                    .show();
+            Snackbar.make(btn_uploadImg, "至少选择一张图片", Snackbar.LENGTH_LONG).setAction("Action",
+                    null).show();
         } else {
             picList_1 = adapter_img_1.getImgList();
             picList_2 = adapter_img_2.getImgList();
@@ -752,44 +751,44 @@ public class ImgUploadActivity extends AppCompatActivity {
             picList_6 = adapter_img_6.getImgList();
             picList_7 = adapter_img_7.getImgList();
             picList_8 = adapter_img_8.getImgList();
-            for (String onepath : picList_1) {
-                if (!onepath.equals("加号")) {
-                    attempImgUpload("样品照片", onepath);
+            for (String pic : picList_1) {
+                if (!pic.equals("加号")) {
+                    attempImgUpload("样品照片", pic);
                 }
             }
-            for (String onepath : picList_2) {
-                if (!onepath.equals("加号")) {
-                    attempImgUpload("现场照片", onepath);
+            for (String pic : picList_2) {
+                if (!pic.equals("加号")) {
+                    attempImgUpload("现场照片", pic);
                 }
             }
-            for (String onepath : picList_3) {
-                if (!onepath.equals("加号")) {
-                    attempImgUpload("营业执照", onepath);
+            for (String pic : picList_3) {
+                if (!pic.equals("加号")) {
+                    attempImgUpload("营业执照", pic);
                 }
             }
-            for (String onepath : picList_4) {
-                if (!onepath.equals("加号")) {
-                    attempImgUpload("经营许可证", onepath);
+            for (String pic : picList_4) {
+                if (!pic.equals("加号")) {
+                    attempImgUpload("经营许可证", pic);
                 }
             }
-            for (String onepath : picList_5) {
-                if (!onepath.equals("加号")) {
-                    attempImgUpload("告知书", onepath);
+            for (String pic : picList_5) {
+                if (!pic.equals("加号")) {
+                    attempImgUpload("告知书", pic);
                 }
             }
-            for (String onepath : picList_6) {
-                if (!onepath.equals("加号")) {
-                    attempImgUpload("反馈单", onepath);
+            for (String pic : picList_6) {
+                if (!pic.equals("加号")) {
+                    attempImgUpload("反馈单", pic);
                 }
             }
-            for (String onepath : picList_7) {
-                if (!onepath.equals("加号")) {
-                    attempImgUpload("抽样单", onepath);
+            for (String pic : picList_7) {
+                if (!pic.equals("加号")) {
+                    attempImgUpload("抽样单", pic);
                 }
             }
-            for (String onepath : picList_8) {
-                if (!onepath.equals("加号")) {
-                    attempImgUpload("微信截图", onepath);
+            for (String pic : picList_8) {
+                if (!pic.equals("加号")) {
+                    attempImgUpload("微信截图", pic);
                 }
             }
                     /*new Handler().postDelayed(new Runnable() {

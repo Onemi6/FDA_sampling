@@ -13,4 +13,7 @@
     <dimen name="empty_margin">0dp</dimen>
     <dimen name="navigation_drawer_width">240dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
 </resources>

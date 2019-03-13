@@ -24,10 +24,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,8 +42,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -72,7 +78,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+        NavigationView.OnNavigationItemSelectedListener {
 
     private int pos, select_num, isHome = 0;
     private long mExitTime, mId;
@@ -82,9 +89,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tv_select_title, tv_select_num, tv_select_all;
     private Button btn_select_confirm;
     private ProgressBar mProgressView;
-    private MaininfoAdapter adapter;
+    private MainInfoAdapter adapter;
     public static final int MY_PERMISSIONS_REQUEST = 3000;
-    private String token, TAG_UPDATE = "update", versionname;
+    private String TAG_UPDATE = "update", versionName;
     private Context context;
     private SharedPreferences sharedPreferences;
     private UpdateInfo info;
@@ -99,7 +106,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         context = this;
-        toolbar = findViewById(R.id.toolbar_maininfo);
+        CrashHandler.getInstance().init(context);
+        toolbar = findViewById(R.id.toolbar_mainInfo);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        //获取头布局文件
+        //View headerLayout=navigationView.inflateHeaderView(R.layout.nav_header);
+        View headerView = navigationView.getHeaderView(0);
+        TextView tv_user_name = headerView.findViewById(R.id.user_name);
+        TextView tv_app_versionName = headerView.findViewById(R.id.app_versionName);
 
         dialog_select = findViewById(R.id.dialog_select);
         tv_select_title = findViewById(R.id.tv_select_title);
@@ -115,125 +131,130 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mProgressView = findViewById(R.id.tasks_progress);
         sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
         String name = sharedPreferences.getString("NAME", null);
-        if (name == null) {
-            Intent intent_login = new Intent();
-            intent_login.setClass(MainActivity.this, LoginActivity.class);
-            intent_login.putExtra("login_type", -1);
-            finish();
-            startActivity(intent_login);
-        } else {
-            try {
-                versionname = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-                toolbar.setTitle(String.format(getResources().getString(R.string.app_versionName)
-                        , versionname));
-                toolbar.setSubtitle(name);
-                //toolbar.setTitle("未登录");
-                //toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        try {
+            versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            if (name == null) {
+                Intent intent_login = new Intent();
+                intent_login.setClass(MainActivity.this, LoginActivity.class);
+                intent_login.putExtra("login_type", -1);
+                finish();
+                startActivity(intent_login);
+            } else {
                 //设置toolbar
                 setSupportActionBar(toolbar);
                 //左边的小箭头（注意需要在setSupportActionBar(toolbar)之后才有效果）
                 //toolbar.setNavigationIcon(R.drawable.ic_account_circle_white);
                 //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
                 //toolbar.setOnMenuItemClickListener(onMenuItemClick);
-            } catch (PackageManager.NameNotFoundException e) {
-                Log.i(TAG_UPDATE, "获取APP版本出错");
-                e.printStackTrace();
-            }
-            CrashHandler.getInstance().init(context);
-            //初始化RecyclerView
-            rv_tasks = findViewById(R.id.rv_maininfo_add);
-            //rv_tasks.setHasFixedSize(true);
 
-            //创建LinearLayoutManager 对象 这里使用 LinearLayoutManager 是线性布局的意思
-            LinearLayoutManager layoutmanager = new LinearLayoutManager(this);
-            //设置RecyclerView 布局
-            rv_tasks.setLayoutManager(layoutmanager);
-            //设置Adapter
-            adapter = new MaininfoAdapter(this, Tasks.list_task);
-            rv_tasks.setAdapter(adapter);
+                tv_user_name.setText(String.format(getResources().getString(R.string.user_name),
+                        name));
+                tv_app_versionName.setText(String.format(getResources().getString(R.string
+                        .app_versionName), versionName));
+                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                        this, drawer, toolbar, 0, 0);
+                drawer.addDrawerListener(toggle);
+                toggle.syncState();
+                navigationView.setNavigationItemSelectedListener(this);
 
-            adapter.setOnClickListener(new MaininfoAdapter.OnClickListener() {
-                @Override
-                public void onClick(View view, int position) {
-                    if (adapter.getMode() == 0) {
-                        Intent intent = new Intent(context, DetailsActivity.class);
-                        Tasks.position = position;
-                        startActivity(intent);
-                    } else if (adapter.getMode() == 1) {
-                        if (Tasks.list_task.get(position).getIsSelect() == 0) {
-                            Tasks.list_task.get(position).setIsSelect(1);
-                        } else if (Tasks.list_task.get(position).getIsSelect() == 1) {
-                            Tasks.list_task.get(position).setIsSelect(0);
+                //初始化RecyclerView
+                rv_tasks = findViewById(R.id.rv_mainInfo_add);
+                //rv_tasks.setHasFixedSize(true);
+
+                //创建LinearLayoutManager 对象 这里使用 LinearLayoutManager 是线性布局的意思
+                LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+                //设置RecyclerView 布局
+                rv_tasks.setLayoutManager(layoutManager);
+                //设置Adapter
+                adapter = new MainInfoAdapter(this, Tasks.list_task);
+                rv_tasks.setAdapter(adapter);
+
+                adapter.setOnClickListener(new MainInfoAdapter.OnClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        if (adapter.getMode() == 0) {
+                            Intent intent = new Intent(context, DetailsActivity.class);
+                            Tasks.position = position;
+                            startActivity(intent);
+                        } else if (adapter.getMode() == 1) {
+                            if (Tasks.list_task.get(position).getIsSelect() == 0) {
+                                Tasks.list_task.get(position).setIsSelect(1);
+                            } else if (Tasks.list_task.get(position).getIsSelect() == 1) {
+                                Tasks.list_task.get(position).setIsSelect(0);
+                            }
+                            adapter.changList_add(Tasks.list_task);
+                            select_num = 0;
+                            for (int i = 0; i < Tasks.list_task.size(); i++) {
+                                if (Tasks.list_task.get(i).getIsSelect() == 1)
+                                    select_num++;
+                            }
+                            tv_select_num.setText(String.format(getResources().getString(R.string
+                                    .select_num), String.valueOf(select_num)));
+                            setBtnEnabled(select_num);
                         }
-                        adapter.changList_add(Tasks.list_task);
-                        select_num = 0;
-                        for (int i = 0; i < Tasks.list_task.size(); i++) {
-                            if (Tasks.list_task.get(i).getIsSelect() == 1)
-                                select_num++;
-                        }
-                        tv_select_num.setText("" + select_num);
-                        setBtnEnabled(select_num);
                     }
-                }
-            });
+                });
 
-            adapter.setOnLongClickListener(new MaininfoAdapter.OnLongClickListener() {
-                @Override
-                public void onLongClick(View view, int position) {
-                    pos = position;
-                    // 通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
-                    AlertDialog.Builder builder = new AlertDialog.Builder(
-                            context);
-                    // 设置Title的图标
-                    builder.setIcon(R.mipmap.ic_launcher);
-                    // 设置Title的内容
-                    // builder.setTitle("弹出警告框");
-                    // 设置Content来显示一个信息
-                    builder.setMessage("确定删除？");
-                    // 设置一个PositiveButton
-                    builder.setPositiveButton("确定",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                    try {
-                                        adapter.removeItem(pos);
-                                        Snackbar.make(rv_tasks, "删除成功",
-                                                Snackbar.LENGTH_LONG).setAction("Action", null)
-                                                .show();
+                adapter.setOnLongClickListener(new MainInfoAdapter.OnLongClickListener() {
+                    @Override
+                    public void onLongClick(View view, int position) {
+                        pos = position;
+                        // 通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
+                        AlertDialog.Builder builder = new AlertDialog.Builder(
+                                context);
+                        // 设置Title的图标
+                        builder.setIcon(R.mipmap.ic_launcher);
+                        // 设置Title的内容
+                        // builder.setTitle("弹出警告框");
+                        // 设置Content来显示一个信息
+                        builder.setMessage("确定删除？");
+                        // 设置一个PositiveButton
+                        builder.setPositiveButton("确定",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        try {
+                                            adapter.removeItem(pos);
+                                            Snackbar.make(rv_tasks, "删除成功",
+                                                    Snackbar.LENGTH_LONG).setAction("Action", null)
+                                                    .show();
 
-                                    } catch (Exception e) {
-                                        // TODO 自动生成的 catch 块
-                                        e.printStackTrace();
-                                        Snackbar.make(rv_tasks, "删除失败",
-                                                Snackbar.LENGTH_LONG).setAction("Action", null)
-                                                .show();
+                                        } catch (Exception e) {
+                                            // TODO 自动生成的 catch 块
+                                            e.printStackTrace();
+                                            Snackbar.make(rv_tasks, "删除失败",
+                                                    Snackbar.LENGTH_LONG).setAction("Action", null)
+                                                    .show();
+                                        }
                                     }
-                                }
-                            });
-                    // 设置一个NegativeButton
-                    builder.setNegativeButton("取消",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog,
-                                                    int which) {
-                                }
-                            });
-                    // 显示出该对话框
-                    builder.show();
-                }
-            });
-            attempUpdate();
-            getPermission();
-            //初始化List数据
-            attempgetTasks();
-            Filedir();
+                                });
+                        // 设置一个NegativeButton
+                        builder.setNegativeButton("取消",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                    }
+                                });
+                        // 显示出该对话框
+                        builder.show();
+                    }
+                });
+                attemptUpdate();
+                getPermission();
+                //初始化List数据
+                attemptGetTasks();
+                FileDir();
+            }
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
-    public void attempgetTasks() {
+    public void attemptGetTasks() {
         mProgressView.setVisibility(View.VISIBLE);
-        String Emp_No;
+        String Emp_No, token;
         FDA_API request = HttpUtils.GsonApi();
         if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
@@ -296,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    public void attempUpdate() {
+    public void attemptUpdate() {
         //创建 网络请求接口 的实例
         FDA_API request = HttpUtils.XmlApi();
         Call<UpdateInfo> call = request.UpdateXML();
@@ -305,12 +326,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onResponse(Call<UpdateInfo> call, Response<UpdateInfo> response) {
                 if (response.body() != null) {
                     info = response.body();
+                    /*try {
+                        versionName = getPackageManager().getPackageInfo(getPackageName(), 0)
+                                .versionName;
+                    } catch (NameNotFoundException e) {
+                        e.printStackTrace();
+                    }*/
                     if (Double.parseDouble(info.getVersion()) > Double
-                            .parseDouble(versionname)) {
+                            .parseDouble(versionName)) {
                         Log.i(TAG_UPDATE, "服务器版本号大于本地 ,提示用户升级 ");
-                        showUpdataDialog();
+                        showUpdateDialog();
                     } else if (Double.parseDouble(info.getVersion()) == Double
-                            .parseDouble(versionname)) {
+                            .parseDouble(versionName)) {
                         Log.i(TAG_UPDATE, "无需升级");
                     }
                 } else {
@@ -326,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /* 弹出更新对话框 */
-    public void showUpdataDialog() {
+    public void showUpdateDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialog_update);
         LayoutInflater inflater = LayoutInflater.from(context);
         View v = inflater.inflate(R.layout.dialog_update, null);
@@ -568,7 +595,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.action_refresh:
                 if (isHome == 0) {
                     if (ClickUtil.isFastClick()) {
-                        attempgetTasks();
+                        attemptGetTasks();
                     } else {
                         Snackbar.make(rv_tasks, "刷新太快了，请稍后再试",
                                 Snackbar.LENGTH_LONG).setAction("Action", null)
@@ -583,15 +610,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 adapter.setMode(1);
                 toolbar.getMenu().findItem(R.id.action_refresh).setVisible(false);
                 toolbar.getMenu().findItem(R.id.action_cancel).setVisible(true);
-                //HttpUtils.OpenWeb(context, "applyNo", 1);
                 break;
-            case R.id.action_sampletag:
+            case R.id.action_sampleTag:
                 dialog_select.setVisibility(View.VISIBLE);
                 tv_select_title.setText("样品标签");
                 adapter.setMode(1);
                 toolbar.getMenu().findItem(R.id.action_refresh).setVisible(false);
                 toolbar.getMenu().findItem(R.id.action_cancel).setVisible(true);
-                //HttpUtils.OpenWeb(context, "applyNo", 2);
                 break;
             case R.id.action_cancel:
                 tv_select_num.setText("0");
@@ -630,21 +655,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.changList_add(Tasks.list_task);
     }
 
-    public void Filedir() {
+    public void FileDir() {
         boolean sdCardExist = android.os.Environment.getExternalStorageState().equals(android.os
                 .Environment.MEDIA_MOUNTED);
-        String IMAGE_PATH, PAYMENT_PATH, SAMPLETAG_PATH, CRASH_PATH;
+        String IMAGE_PATH, PAYMENT_PATH, SAMPLETAG_PATH, CRASH_PATH, RPT_PATH;
         if (sdCardExist) {
             IMAGE_PATH = Environment.getExternalStorageDirectory() + "/FDA/Image/";
             PAYMENT_PATH = Environment.getExternalStorageDirectory() + "/FDA/payment/";
             SAMPLETAG_PATH = Environment.getExternalStorageDirectory() + "/FDA/sampletag/";
             CRASH_PATH = Environment.getExternalStorageDirectory() + "/FDA/crash/";
+            RPT_PATH = Environment.getExternalStorageDirectory() + "/FDA/Rpt/";
         } else {
-            IMAGE_PATH = PAYMENT_PATH = SAMPLETAG_PATH = CRASH_PATH = this.getCacheDir().toString
-                    () + "/";
+            IMAGE_PATH = PAYMENT_PATH = SAMPLETAG_PATH = CRASH_PATH = RPT_PATH = this.getCacheDir
+                    ().toString() + "/";
         }
         File image = new File(IMAGE_PATH), payment = new File(PAYMENT_PATH), sampletag = new File
-                (SAMPLETAG_PATH), crash = new File(CRASH_PATH);
+                (SAMPLETAG_PATH), crash = new File(CRASH_PATH), rpt = new File(RPT_PATH);
         if (!image.exists()) {
             image.mkdirs();
         }
@@ -656,6 +682,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (!crash.exists()) {
             crash.mkdirs();
+        }
+        if (!rpt.exists()) {
+            rpt.mkdirs();
         }
     }
 
@@ -705,11 +734,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
         if (tv_select_title.getText().equals("付款凭证")) {
-            attempReportServer(1, applyNo);
+            attemptReportServer(1, applyNo);
             //HttpUtils.OpenWeb(context, applyNo, 1);
         } else if (tv_select_title.getText().equals("样品标签")) {
             //HttpUtils.OpenWeb(context, applyNo, 3);
-            attempReportServer(2, applyNo);
+            attemptReportServer(2, applyNo);
         }
     }
 
@@ -725,7 +754,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void attempReportServer(int type, String applyNo) {
+    private void attemptReportServer(int type, String applyNo) {
         String pdf_path = null, reportlet = null;
         if (type == 1) {
             pdf_path = Environment.getExternalStorageDirectory() + "/FDA/payment/" + applyNo +
@@ -739,7 +768,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final File file_pdf = new File(pdf_path);
         if (file_pdf.exists()) {
             Log.v("pdf", "已经存在");
-            doPrintword(file_pdf);
+            doPrintWord(file_pdf);
         } else {
             if (NetworkUtil.isNetworkAvailable(context)) {
                 FDA_API request = HttpUtils.ReportApi();
@@ -763,7 +792,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     // 最后关闭文件输出流
                                     outStream.close();
                                     Log.v("pdf", "下载成功");
-                                    doPrintword(file_pdf);
+                                    doPrintWord(file_pdf);
                                 } catch (FileNotFoundException e) {
                                     e.printStackTrace();
                                     Log.v("ResponseBody", "FileNotFoundException");
@@ -811,7 +840,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         /* 延时1.5s执行*/
     }
 
-    private void doPrintword(final File file_pdf) {
+    private void doPrintWord(final File file_pdf) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -876,5 +905,71 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         File dir = new File(APP_DIR_NAME + context.getPackageName() + "/cache/");
         if (!dir.exists()) dir.mkdirs();
         return dir;
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_account:
+                isHome = 1;
+                // 通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
+                AlertDialog.Builder builder = new AlertDialog.Builder(
+                        context);
+                // 设置Title的图标
+                builder.setIcon(R.mipmap.ic_launcher);
+                // 设置Title的内容
+                // builder.setTitle("弹出警告框");
+                // 设置Content来显示一个信息
+                builder.setMessage("确定切换账号？");
+                // 设置一个PositiveButton
+                builder.setPositiveButton("确定",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                Intent intent_login = new Intent();
+                                intent_login.setClass(MainActivity.this,
+                                        LoginActivity.class);
+                                intent_login.putExtra("login_type", -1);
+                                startActivity(intent_login);
+                            }
+                        });
+                // 设置一个NegativeButton
+                builder.setNegativeButton("取消",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                            }
+                        });
+                // 显示出该对话框
+                builder.show();
+                break;
+            case R.id.nav_share:
+                ShareAppCode();
+                break;
+            /*case R.id.nav_send:
+                //startActivity(new Intent(this, testActivity.class));
+                Snackbar.make(rv_tasks, "暂无此功能",
+                        Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                break;*/
+            default:
+                break;
+        }
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void ShareAppCode() {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.item_img, (ViewGroup) findViewById(R
+                .id.dialog_layout));
+        ImageView imageview = layout.findViewById(R.id.imageView);
+        imageview.setImageResource(R.mipmap.appcode);
+        AlertDialog.Builder dialog_img = new AlertDialog.Builder(context).setView(layout)
+                .setPositiveButton("确定", null);
+        dialog_img.show();
     }
 }

@@ -21,13 +21,12 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
         .OnClickListener, View.OnLongClickListener {
     private static final int VIEW_TYPE = -1;
     private List<String> imgList;
-    private Activity mactivity;
+    private Activity mActivity;
     private ImgAdapter.OnClickListener mOnClickListener = null;
     private ImgAdapter.OnLongClickListener mOnLongClickListener = null;
-    private int defItem = -1;
 
     public ImgAdapter(Activity activity, List<String> imgList) {
-        this.mactivity = activity;
+        this.mActivity = activity;
         this.imgList = imgList;
     }
 
@@ -35,7 +34,7 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(mactivity).inflate(R.layout.item_img, parent, false);
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.item_img, parent, false);
         view.setOnClickListener(this);
         view.setOnLongClickListener(this);
         return new ImgAdapter.ViewHolder(view);
@@ -87,12 +86,6 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
     public List<String> getImgList() {
         return this.imgList;
     }
-
-    /*public Info_Detail getItem(int position) {
-        this.defItem = position;
-        notifyDataSetChanged();
-        return maininfoList.get(position);
-    }*/
 
     public void removeItem(int position) {
         this.imgList.remove(position);
@@ -164,7 +157,7 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
             int imageHeight = opt.outHeight;
             int imageWidth = opt.outWidth;
 
-            Display display = mactivity.getWindowManager().getDefaultDisplay();
+            Display display = mActivity.getWindowManager().getDefaultDisplay();
             Point point = new Point();
             // 该方法已过时，使用getRealSize()方法替代。也可以使用getSize()，但是不能准确的获取到分辨率
             // int screenHeight = display.getHeight();

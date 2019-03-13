@@ -73,8 +73,6 @@ public class DatePickerDialog extends AlertDialog implements OnClickListener,
                     dayPicker = datePickerField.get(mDatePicker);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
                 }
                 // datePicker.getCalendarView().setVisibility(View.GONE);
                 ((View) dayPicker).setVisibility(View.GONE);

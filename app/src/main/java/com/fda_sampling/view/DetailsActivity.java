@@ -1,10 +1,15 @@
 package com.fda_sampling.view;
 
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -40,11 +45,14 @@ import com.fda_sampling.service.HttpUtils;
 import com.fda_sampling.util.ClickUtil;
 import com.fda_sampling.util.DatePickerDialog;
 import com.fda_sampling.util.MyApplication;
+import com.fda_sampling.util.NetworkUtil;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -54,6 +62,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -78,7 +87,7 @@ public class DetailsActivity extends AppCompatActivity {
     private AutoCompleteTextView actv_SUPPLIER;
     private List<String> SUPPLIERS = new ArrayList<>();
     private List<sampleEnterprise> sampleEnterprises = new ArrayList<>();
-    private sampleEnterprise onesampleEnterpris;
+    private sampleEnterprise oneSampleEnterprise;
     private List<Unit> getUnit_DRAW_AMOUNT = new ArrayList<>(), getUnit_UNIVALENT = new
             ArrayList<>(), getUnit_STORAGESITE = new ArrayList<>(), getUnit_DRAW_NUM = new
             ArrayList<>();
@@ -99,8 +108,7 @@ public class DetailsActivity extends AppCompatActivity {
             et_MANU_COMPANY, et_MANU_COMPANY_PHONE, et_MANU_COMPANY_ADDR, et_SAMPLE_CLOSE_DATE,
             et_SAMPLE_ADDR, et_DRAW_ORG, et_DRAW_ORG_ADDR, et_DRAW_PERSON, et_DRAW_PHONE,
             et_DRAW_FAX, et_DRAW_ZIPCODE, et_REMARK, et_GOODS_TYPE, et_DRAW_MAN;
-    private SharedPreferences sharedPreferences;
-    private String token, str_DATE_PRODUCT, str_DRAW_DATE;
+    private String token, DRAW_MAN_NO, str_DATE_PRODUCT, str_DRAW_DATE;
     private ProgressDialog mypDialog;
     private int mYear, mMonth, mDay;
 
@@ -110,10 +118,20 @@ public class DetailsActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_details);
         context = this;
-        sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
+        if (((MyApplication) getApplication()).getTOKEN() == null) {
+            token = sharedPreferences.getString("TOKEN", null);
+        } else {
+            token = ((MyApplication) getApplication()).getTOKEN();
+        }
+        if (((MyApplication) getApplication()).getNO() == null) {
+            DRAW_MAN_NO = sharedPreferences.getString("NO", null);
+        } else {
+            DRAW_MAN_NO = ((MyApplication) getApplication()).getNO();
+        }
 
-        initview();
-        initdata();
+        initView();
+        initData();
 
         actv_SUPPLIER.addTextChangedListener(new TextWatcher() {
             @Override
@@ -134,13 +152,13 @@ public class DetailsActivity extends AppCompatActivity {
                     if (actv_SUPPLIER.getTag() == null || time - (long) actv_SUPPLIER.getTag() >
                             1000) {
                         if (s.length() < 10) {
-                            Log.v("attemp", "1");
-                            attempSampleEnterprises(s.toString());
+                            Log.v("attempt", "1");
+                            attemptSampleEnterprises(s.toString());
                         } else {
                             Log.v("isSelect", "1");
                         }
                     } else {
-                        Log.v("attemp", "0");
+                        Log.v("attempt", "0");
                     }
                     actv_SUPPLIER.setTag(time);
                 }
@@ -151,7 +169,7 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int pos = SUPPLIERS.indexOf(actv_SUPPLIER.getText().toString());
-                onesampleEnterpris = sampleEnterprises.get(pos);
+                oneSampleEnterprise = sampleEnterprises.get(pos);
                 try {
                     FormatData(2);
                 } catch (NoSuchMethodException e) {
@@ -164,23 +182,23 @@ public class DetailsActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Log.v("FormatData()", "IllegalAccessException");
                 }
-                et_SUPPLIER_LEGAL.setText(onesampleEnterpris.getLEGAL());
-                et_SUPPLIER_FAX.setText(onesampleEnterpris.getFAX());
-                et_SUPPLIER_PERSON.setText(onesampleEnterpris.getPERSON());
-                et_SUPPLIER_ADDR.setText(onesampleEnterpris.getADDR());
-                et_SUPPLIER_PHONE.setText(onesampleEnterpris.getPHONE());
-                et_ANNUAL_SALES.setText(onesampleEnterpris.getANNUAL_SALES());
-                et_BUSINESS_LICENCE.setText(onesampleEnterpris.getBUSINESS_LICENCE());
+                et_SUPPLIER_LEGAL.setText(oneSampleEnterprise.getLEGAL());
+                et_SUPPLIER_FAX.setText(oneSampleEnterprise.getFAX());
+                et_SUPPLIER_PERSON.setText(oneSampleEnterprise.getPERSON());
+                et_SUPPLIER_ADDR.setText(oneSampleEnterprise.getADDR());
+                et_SUPPLIER_PHONE.setText(oneSampleEnterprise.getPHONE());
+                et_ANNUAL_SALES.setText(oneSampleEnterprise.getANNUAL_SALES());
+                et_BUSINESS_LICENCE.setText(oneSampleEnterprise.getBUSINESS_LICENCE());
                 SpinnerAdapter adapter3 = sp_PERMIT_TYPE.getAdapter();
                 for (int i = 0; i < adapter3.getCount(); i++) {
-                    if (onesampleEnterpris.getPERMIT_TYPE().equals(adapter3.getItem(i).toString()
+                    if (oneSampleEnterprise.getPERMIT_TYPE().equals(adapter3.getItem(i).toString()
                     )) {
                         sp_PERMIT_TYPE.setSelection(i, true);
                         break;
                     }
                 }
-                et_PERMIT_NUM.setText(onesampleEnterpris.getPERMIT_NUM());
-                et_SUPPLIER_ZIPCODE.setText(onesampleEnterpris.getZIPCODE());
+                et_PERMIT_NUM.setText(oneSampleEnterprise.getPERMIT_NUM());
+                et_SUPPLIER_ZIPCODE.setText(oneSampleEnterprise.getZIPCODE());
             }
         });
 
@@ -189,7 +207,7 @@ public class DetailsActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // TODO 自动生成的方法存根
                 et_GOODS_TYPE.setText(FoodKinds1[position]);
-                attempgetFoodKind("TYPE2", FoodKinds1[position]);
+                attemptGetFoodKind("TYPE2", FoodKinds1[position]);
             }
 
             @Override
@@ -201,7 +219,7 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // TODO 自动生成的方法存根
-                attempgetFoodKind("TYPE3", FoodKinds2[position]);
+                attemptGetFoodKind("TYPE3", FoodKinds2[position]);
             }
 
             @Override
@@ -213,7 +231,7 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // TODO 自动生成的方法存根
-                attempgetFoodKind("TYPE4", FoodKinds3[position]);
+                attemptGetFoodKind("TYPE4", FoodKinds3[position]);
             }
 
             @Override
@@ -225,7 +243,7 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // TODO 自动生成的方法存根
-                attempgetChildFoodKind(getFoodKind4.get(0).getID());
+                attemptGetChildFoodKind(getFoodKind4.get(0).getID());
             }
 
             @Override
@@ -245,14 +263,14 @@ public class DetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // TODO 自动生成的方法存
                 new DatePickerDialog(context, 0, new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker DatePicker,
-                                                  int Year, int MonthOfYear, int DayOfMonth) {
-                                str_DRAW_DATE = String.format(Locale.CHINA, "%02d-%02d-%02d",
-                                        Year, (MonthOfYear + 1), DayOfMonth);
-                                tv_DRAW_DATE.setText(str_DRAW_DATE);
-                            }
-                        }, mYear, mMonth, mDay, true).show();
+                    @Override
+                    public void onDateSet(DatePicker DatePicker,
+                                          int Year, int MonthOfYear, int DayOfMonth) {
+                        str_DRAW_DATE = String.format(Locale.CHINA, "%02d-%02d-%02d",
+                                Year, (MonthOfYear + 1), DayOfMonth);
+                        tv_DRAW_DATE.setText(str_DRAW_DATE);
+                    }
+                }, mYear, mMonth, mDay, true).show();
             }
         });
 
@@ -275,7 +293,7 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
-    public void initview() {
+    public void initView() {
         //退回layout
         layout_return = findViewById(R.id.details_return);
         tv_STATE = findViewById(R.id.details_STATE);
@@ -414,15 +432,15 @@ public class DetailsActivity extends AppCompatActivity {
         //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
         //toolbar.setOnMenuItemClickListener(onMenuItemClick);
 
-        attempgetUnit("DRAW_AMOUNT");
-        attempgetUnit("UNIVALENT");
-        attempgetUnit("STORAGESITE");
-        attempgetUnit("DRAW_NUM");
-        attempgetFoodKind("TYPE1", "1");
-        //attempSampleEnterprises("新疆家乐福");
+        attemptGetUnit("DRAW_AMOUNT");
+        attemptGetUnit("UNIVALENT");
+        attemptGetUnit("STORAGESITE");
+        attemptGetUnit("DRAW_NUM");
+        attemptGetFoodKind("TYPE1", "1");
+        //attemptSampleEnterprises("新疆家乐福");
     }
 
-    public void initdata() {
+    public void initData() {
         if (Tasks.position != -1) {
             task = Tasks.list_task.get(Tasks.position);
         }
@@ -658,12 +676,12 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-    public void attempSampleEnterprises(String key) {
-        if (((MyApplication) getApplication()).getTOKEN() == null) {
+    public void attemptSampleEnterprises(String key) {
+        /*if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
-        }
+        }*/
         FDA_API request = HttpUtils.GsonApi();
         Call<List<sampleEnterprise>> call = request.sampleEnterprises(token, key);
         call.enqueue(new Callback<List<sampleEnterprise>>() {
@@ -708,12 +726,12 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
-    public void attempgetUnit(final String Unit_Type) {
-        if (((MyApplication) getApplication()).getTOKEN() == null) {
-            token = sharedPreferences.getString("TOKEN", null);
+    public void attemptGetUnit(final String Unit_Type) {
+        /*if (((MyApplication) GetApplication()).GetTOKEN() == null) {
+            token = sharedPreferences.GetString("TOKEN", null);
         } else {
-            token = ((MyApplication) getApplication()).getTOKEN();
-        }
+            token = ((MyApplication) GetApplication()).GetTOKEN();
+        }*/
         FDA_API request = HttpUtils.GsonApi();
         Call<List<Unit>> call = request.getUnit(token, Unit_Type);
         call.enqueue(new Callback<List<Unit>>() {
@@ -818,12 +836,12 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
-    public void attempgetFoodKind(final String Food_Kind_Type, String Parent_Food_Kind_Name) {
-        if (((MyApplication) getApplication()).getTOKEN() == null) {
+    public void attemptGetFoodKind(final String Food_Kind_Type, String Parent_Food_Kind_Name) {
+        /*if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
-        }
+        }*/
         FDA_API request = HttpUtils.GsonApi();
         Call<List<FoodKind>> call = request.getFoodKind(token, Food_Kind_Type,
                 Parent_Food_Kind_Name);
@@ -851,7 +869,7 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_FOOD_KIND1 = new ArrayAdapter<>(context,
                                     android.R.layout.simple_list_item_1, FoodKinds1);
                             sp_FOOD_KIND1.setAdapter(ada_FOOD_KIND1);
-                            //attempgetFoodKind("TYPE2", FoodKinds1[0]);
+                            //attemptgetFoodKind("TYPE2", FoodKinds1[0]);
                         } else if (Food_Kind_Type.equals("TYPE2")) {
                             Log.v("getFoodKind2请求成功!", "response.body is not null");
                             getFoodKind2 = response.body();
@@ -863,7 +881,7 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_FOOD_KIND2 = new ArrayAdapter<>(context,
                                     android.R.layout.simple_list_item_1, FoodKinds2);
                             sp_FOOD_KIND2.setAdapter(ada_FOOD_KIND2);
-                            //attempgetFoodKind("TYPE3", FoodKinds2[0]);
+                            //attemptgetFoodKind("TYPE3", FoodKinds2[0]);
                         } else if (Food_Kind_Type.equals("TYPE3")) {
                             Log.v("getFoodKind3请求成功!", "response.body is not null");
                             getFoodKind3 = response.body();
@@ -875,7 +893,7 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_FOOD_KIND3 = new ArrayAdapter<>(context,
                                     android.R.layout.simple_list_item_1, FoodKinds3);
                             sp_FOOD_KIND3.setAdapter(ada_FOOD_KIND3);
-                            //attempgetFoodKind("TYPE4", FoodKinds3[0]);
+                            //attemptgetFoodKind("TYPE4", FoodKinds3[0]);
                         } else if (Food_Kind_Type.equals("TYPE4")) {
                             Log.v("getFoodKind4请求成功!", "response.body is not null");
                             getFoodKind4 = response.body();
@@ -887,7 +905,7 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_FOOD_KIND4 = new ArrayAdapter<>(context,
                                     android.R.layout.simple_list_item_1, FoodKinds4);
                             sp_FOOD_KIND4.setAdapter(ada_FOOD_KIND4);
-                            //attempgetChildFoodKind(getFoodKind4.get(0).getID());
+                            //attemptgetChildFoodKind(getFoodKind4.get(0).getID());
                         }
                     } else {
                         Log.v("getFoodKind请求成功!", "response.body is null");
@@ -904,12 +922,12 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
-    public void attempgetChildFoodKind(int PFK_ID) {
-        if (((MyApplication) getApplication()).getTOKEN() == null) {
+    public void attemptGetChildFoodKind(int PFK_ID) {
+        /*if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
-        }
+        }*/
         FDA_API request = HttpUtils.GsonApi();
         Call<List<ChildFoodKind>> call = request.getChildFoodKind(token, PFK_ID);
         call.enqueue(new Callback<List<ChildFoodKind>>() {
@@ -1037,6 +1055,7 @@ public class DetailsActivity extends AppCompatActivity {
             task.setDRAW_DATE(tv_DRAW_DATE.getText().toString());
             task.setGOODS_TYPE(et_GOODS_TYPE.getText().toString());
             task.setDRAW_MAN(et_DRAW_MAN.getText().toString());
+            task.setDRAW_MAN_NO(DRAW_MAN_NO);
 
             //更新列表
             Tasks.list_task.set(Tasks.position, task);
@@ -1047,7 +1066,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-    public void attempSubmit() {
+    public void attemptSubmit() {
         mypDialog = new ProgressDialog(DetailsActivity.this);
         // 实例化
         mypDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -1060,11 +1079,11 @@ public class DetailsActivity extends AppCompatActivity {
         // 设置ProgressDialog 是否可以按退回按键取消
         mypDialog.show();
         // 让ProgressDialog显示
-        if (((MyApplication) getApplication()).getTOKEN() == null) {
+        /*if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
-        }
+        }*/
         final Task task_submit = Tasks.list_task.get(Tasks.position);
         Gson gson = new Gson();
         String data = gson.toJson(task_submit);
@@ -1119,142 +1138,127 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
-    public void doPrintfWord() {
-        /*str_outname = task.getCUSTOM_NO() + ".doc";
+    public void attemptGetSamplingBill(String applyNo) {
+        String rpt_path = Environment.getExternalStorageDirectory() + "/FDA/Rpt/" + applyNo +
+                ".pdf";
+        final File rpt_pdf = new File(rpt_path);
+        if (rpt_pdf.exists()) {
+            Log.v("pdf", "已经存在");
+            doPrintPdf(rpt_pdf);
+        } else {
+            if (NetworkUtil.isNetworkAvailable(context)) {
+                FDA_API request = HttpUtils.GsonApi();
+                Call<ResponseBody> call = request.getSamplingBill(token, applyNo);
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody>
+                            response) {
+                        if (response.code() == 401) {
+                            Log.v("getSamplingBill请求", "token过期");
+                            Intent intent_login = new Intent();
+                            intent_login.setClass(DetailsActivity.this, LoginActivity.class);
+                            intent_login.putExtra("login_type", 1);
+                            startActivity(intent_login);
+                        } else if (response.code() == 200) {
+                            if (response.body() != null) {
+                                try {
+                                    // 获取文件的输出流对象
+                                    FileOutputStream outStream = new FileOutputStream(rpt_pdf);
+                                    // 获取字符串对象的byte数组并写入文件流
+                                    outStream.write(response.body().bytes());
+                                    // 最后关闭文件输出流
+                                    outStream.close();
+                                    Log.v("pdf", "下载成功");
+                                    doPrintPdf(rpt_pdf);
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                    Log.v("ResponseBody", "FileNotFoundException");
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Log.v("ResponseBody", "IOException");
+                                }
+                            } else {
+                                Log.v("getSamplingBill请求成功!", "response.body is null");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Log.v("getSamplingBill请求失败!", t.getMessage());
+                    }
+                });
+            } else {
+                Snackbar.make(toolbar, "当前无网络",
+                        Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+        }
+    }
+
+    private void doPrintPdf(final File rpt_pdf) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (appIsInstalled(context, "com.dynamixsoftware.printershare")) {
+                    Intent intent = new Intent();
+                    ComponentName comp = new ComponentName("com.dynamixsoftware.printershare",
+                            "com.dynamixsoftware.printershare.ActivityPrintDocuments");
+                    intent.setComponent(comp);
+                    intent.setAction("android.intent.action.VIEW");
+                    intent.setType("application/pdf");
+                    intent.setData(Uri.fromFile(rpt_pdf));
+                    startActivity(intent);
+                } else {
+                    Snackbar.make(toolbar, "未找到PrinterShare软件",
+                            Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    /* 安装apk*/
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    File file = getAssetFileToCacheDir(context, "PrinterShare.apk");
+                    intent.setDataAndType(Uri.fromFile(file), "application/vnd.android" +
+                            ".package-archive");
+                    startActivity(intent);
+                }
+            }
+        }, 1000); /* 延时2s执行*/
+    }
+
+    // 判断apk是否安装
+    public static boolean appIsInstalled(Context context, String pageName) {
         try {
-            FormatData();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+            context.getPackageManager().getPackageInfo(pageName, 0);
+            return true;
+        } catch (NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    // 把Asset下的apk拷贝到sdcard下 /Android/data/你的包名/cache 目录下
+    public File getAssetFileToCacheDir(Context context, String fileName) {
+        try {
+            File cacheDir = getCacheDir(context);
+            final String cachePath = cacheDir.getAbsolutePath() + File.separator + fileName;
+            InputStream is = context.getAssets().open(fileName);
+            File file = new File(cachePath);
+            file.createNewFile();
+            FileOutputStream fos = new FileOutputStream(file);
+            byte[] temp = new byte[1024];
+            int i;
+            while ((i = is.read(temp)) > 0) fos.write(temp, 0, i);
+            fos.close();
+            is.close();
+            return file;
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("CUSTOM_NO", task.getCUSTOM_NO());
-        map.put("DRAW_NO", task.getDRAW_NO());
-        map.put("BUSINESS_SOURCE", task.getBUSINESS_SOURCE());
-        map.put("SUPPLIER_NAME", task.getSUPPLIER());
-        map.put("SUPPLIER_ADDR", task.getSUPPLIER_ADDR());
-        map.put("SUPPLIER_LEGAL", task.getSUPPLIER_LEGAL());
-        map.put("ANNUAL_SALES", task.getANNUAL_SALES());
-        map.put("BUSINESS_LICENCE", task.getBUSINESS_LICENCE());
-        map.put("SUPPLIER_PERSON", task.getSUPPLIER_PERSON());
-        map.put("PERMIT_NUM", task.getPERMIT_NUM());
-        map.put("SUPPLIER_PHONE", task.getSUPPLIER_PHONE());
-        map.put("SUPPLIER_FAX", task.getSUPPLIER_FAX());
-        map.put("SUPPLIER_ZIPCODE", task.getSUPPLIER_ZIPCODE());
-        map.put("GOODS_NAME", task.getGOODS_NAME());
-        map.put("TRADEMARK", task.getTRADEMARK());
-        map.put("DATE_PRODUCT", task.getDATE_PRODUCT());
-        map.put("SAMPLE_MODEL", task.getSAMPLE_MODEL());
-        map.put("SAMPLE_NUMBER", task.getSAMPLE_NUMBER());
-        map.put("EXPIRATIONDATE", task.getEXPIRATIONDATE());
-        map.put("TEST_FILE_NO", task.getTEST_FILE_NO());
-        map.put("SAMPLE_CLASS", task.getSAMPLE_CLASS());
-        map.put("PRODUCTION_CERTIFICATE", task.getPRODUCTION_CERTIFICATE());
-        map.put("UNIVALENT", task.getUNIVALENT());
-        map.put("DRAW_NUM", task.getDRAW_NUM());
-        map.put("DRAW_AMOUNT", task.getDRAW_AMOUNT());
-        map.put("STORAGESITE", task.getSTORAGESITE());
-        map.put("MANU_COMPANY_NAME", task.getMANU_COMPANY());
-        map.put("MANU_COMPANY_ADDR", task.getMANU_COMPANY_ADDR());
-        map.put("MANU_COMPANY_PHONE", task.getMANU_COMPANY_PHONE());
-        map.put("SAMPLE_CLOSE_DATE", task.getSAMPLE_CLOSE_DATE());
-        map.put("REMARK", task.getREMARK());
-        map.put("DRAW_DATE", task.getDRAW_DATE());
-
-        map.put("01-01", task.get任务类别_监督抽检());
-        map.put("01-02", task.get任务类别_风险监测());
-        map.put("02-01", task.get区域类型_城市());
-        map.put("02-02", task.get区域类型_乡村());
-        map.put("02-03", task.get区域类型_景点());
-        map.put("03-01", task.get许可证_流通许可证());
-        map.put("03-02", task.get许可证_餐饮服务许可证());
-        map.put("04-01", task.get抽样地点_原辅料库());
-        map.put("04-02", task.get抽样地点_生产线());
-        map.put("04-03", task.get抽样地点_半成品库());
-        map.put("04-04", task.get抽样地点_成品库_待检());
-        map.put("04-05", task.get抽样地点_成品库_已检());
-        map.put("04-06", task.get抽样地点_农贸市场());
-        map.put("04-07", task.get抽样地点_菜市场());
-        map.put("04-08", task.get抽样地点_批发市场());
-        map.put("04-09", task.get抽样地点_商场());
-        map.put("04-10", task.get抽样地点_超市());
-        map.put("04-11", task.get抽样地点_小食杂店());
-        map.put("04-12", task.get抽样地点_网购());
-        map.put("04-13", task.get抽样地点_流通环节_其他());
-        map.put("04-str1", task.get抽样地点_流通环节_其他_TXT());
-        map.put("04-14", task.get抽样地点_餐馆_特大型());
-        map.put("04-15", task.get抽样地点_餐馆_大型());
-        map.put("04-16", task.get抽样地点_餐馆_中型());
-        map.put("04-17", task.get抽样地点_餐馆_小型());
-        map.put("04-18", task.get抽样地点_机关食堂());
-        map.put("04-19", task.get抽样地点_学校食堂());
-        map.put("04-20", task.get抽样地点_企事业单位食堂());
-        map.put("04-21", task.get抽样地点_建筑工地食堂());
-        map.put("04-22", task.get抽样地点_小吃店());
-        map.put("04-23", task.get抽样地点_快餐店());
-        //map.put("04-24", task.get抽样地点_饮品店);
-        map.put("04-25", task.get抽样地点_配送单位());
-        map.put("04-26", task.get抽样地点_中央厨房());
-        map.put("04-27", task.get抽样地点_餐饮环节_其他());
-        map.put("04-str2", task.get抽样地点_餐饮环节_其他_TXT());
-        map.put("05-01", task.get样品来源_加工自制());
-        map.put("05-02", task.get样品来源_委托生产());
-        map.put("05-03", task.get样品来源_外购());
-        map.put("05-04", task.get样品来源_其他());
-        map.put("06-01", task.get样品属性_普通食品());
-        map.put("06-02", task.get样品属性_特殊膳食食品());
-        map.put("06-03", task.get样品属性_节令食品());
-        map.put("06-04", task.get样品属性_重大活动保障食品());
-        map.put("07-01", task.get样品类型_食品农产品());
-        map.put("07-02", task.get样品类型_工业加工食品());
-        map.put("07-03", task.get样品类型_餐饮加工食品());
-        map.put("07-04", task.get样品类型_食品添加剂());
-        map.put("07-05", task.get样品类型_食品相关产品());
-        map.put("07-06", task.get样品类型_其他());
-        map.put("07-str1", " ");
-        //map.put("07-str1", task.getSAMPLE_STYLE());
-        map.put("08-01", task.get样品信息_生产日期());
-        map.put("08-02", task.get样品信息_加工日期());
-        map.put("08-03", task.get样品信息_购进日期());
-        map.put("09-01", task.get是否出口_是());
-        map.put("09-02", task.get是否出口_否());
-        map.put("10-01", task.get样品形态_固体());
-        map.put("10-02", task.get样品形态_半固体());
-        map.put("10-03", task.get样品形态_液体());
-        map.put("10-04", task.get样品形态_气体());
-        map.put("11-01", task.get包装分类_散装());
-        map.put("11-02", task.get包装分类_预包装());
-        map.put("12-01", task.get样品储存条件_常温());
-        map.put("12-02", task.get样品储存条件_冷藏());
-        map.put("12-03", task.get样品储存条件_冷冻());
-        map.put("12-04", task.get样品储存条件_避光());
-        map.put("12-05", task.get样品储存条件_密闭());
-        map.put("12-06", task.get样品储存条件_其他());
-        map.put("12-str1", task.get样品储存条件_其他_TXT());
-        map.put("13-01", task.get抽样样品包装_玻璃瓶());
-        map.put("13-02", task.get抽样样品包装_塑料瓶());
-        map.put("13-03", task.get抽样样品包装_塑料袋());
-        map.put("13-04", task.get抽样样品包装_无菌袋());
-        map.put("13-05", task.get抽样样品包装_其他());
-        map.put("13-str1", task.get抽样样品包装_其他_TXT());
-        map.put("14-01", task.get抽样方式_无菌抽样());
-        map.put("14-02", task.get抽样方式_非无菌抽样());
-        try {
-            dodoc("yuan.doc", str_outname, map);
-            Toast.makeText(context, "生成抽样单" + str_outname + "成功", Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    // do something
-                    doOpenWord();
-                }
-            }, 2000); // 延时3s执行
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+        return null;
+    }
+    // 获取sdcard中的缓存目录
+    public static File getCacheDir(Context context) {
+        String APP_DIR_NAME = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                "/Android/data/";
+        File dir = new File(APP_DIR_NAME + context.getPackageName() + "/cache/");
+        if (!dir.exists()) dir.mkdirs();
+        return dir;
     }
 
     public void FormatData(int type) throws NoSuchMethodException,
@@ -1263,7 +1267,7 @@ public class DetailsActivity extends AppCompatActivity {
         if (type == 1) {
             fields = task.getClass().getDeclaredFields();
         } else if (type == 2) {
-            fields = onesampleEnterpris.getClass().getDeclaredFields();
+            fields = oneSampleEnterprise.getClass().getDeclaredFields();
         }
         String name;
         Field f;
@@ -1290,13 +1294,13 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             } else if (type == 2) {
                 if (!name.equals("$change")) {
-                    Method getMethod = onesampleEnterpris.getClass().getMethod("get" + name);
+                    Method getMethod = oneSampleEnterprise.getClass().getMethod("get" + name);
                     //Log.v("getMethod", getMethod.getName().toString());
-                    value = getMethod.invoke(onesampleEnterpris);
+                    value = getMethod.invoke(oneSampleEnterprise);
                     if (value == null) {
-                        Method setMethod = onesampleEnterpris.getClass().getMethod("set" + name,
+                        Method setMethod = oneSampleEnterprise.getClass().getMethod("set" + name,
                                 String.class);
-                        setMethod.invoke(onesampleEnterpris, "");
+                        setMethod.invoke(oneSampleEnterprise, "");
                     }
                 }
             }
@@ -1320,48 +1324,28 @@ public class DetailsActivity extends AppCompatActivity {
             case R.id.action_submit:
                 if (ClickUtil.isFastClick()) {
                     doSaveData();
-                    attempSubmit();
+                    attemptSubmit();
                 } else {
                     Snackbar.make(toolbar, "提交太快了，请稍后再试",
                             Snackbar.LENGTH_LONG).setAction("Action", null)
                             .show();
                 }
                 break;
-            case R.id.action_uploadimg:
-                Intent intent_uplodimg = new Intent();
-                intent_uplodimg.setClass(DetailsActivity.this,
+            case R.id.action_uploadImg:
+                Intent intent_uploadImg = new Intent();
+                intent_uploadImg.setClass(DetailsActivity.this,
                         ImgUploadActivity.class);
-                intent_uplodimg.putExtra("NO", tv_NO.getText().toString());
+                intent_uploadImg.putExtra("NO", tv_NO.getText().toString());
                 //finish();// 结束当前活动
-                startActivity(intent_uplodimg);
+                startActivity(intent_uploadImg);
                 break;
-            //case R.id.action_printf:
-            //doPrintfWord();
-            // break;
+            case R.id.action_printf:
+                attemptGetSamplingBill(task.getNO());
+                break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void closeStream(InputStream is) {
-        if (is != null) {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void closeStream(OutputStream os) {
-        if (os != null) {
-            try {
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override

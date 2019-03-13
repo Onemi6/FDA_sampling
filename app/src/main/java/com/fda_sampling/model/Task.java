@@ -158,6 +158,8 @@ public class Task {
 
     private List<Samples> Samples;
 
+    private String DRAW_MAN_NO;
+
     public void setIsSelect(int isSelect) {
         this.isSelect = isSelect;
     }
@@ -774,4 +776,11 @@ public class Task {
         return this.Samples;
     }
 
+    public void setDRAW_MAN_NO(String DRAW_MAN_NO) {
+        this.DRAW_MAN_NO = DRAW_MAN_NO;
+    }
+
+    public String getDRAW_MAN_NO() {
+        return this.DRAW_MAN_NO;
+    }
 }

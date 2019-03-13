@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.fda_sampling.view.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context="com.fda_sampling.view.MainActivity">
+    <!--tools:showIn="@layout/activity_main"-->
 
     <LinearLayout
         android:id="@+id/layout_main_top"
@@ -33,7 +33,7 @@
             android:textSize="22sp" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_maininfo_add"
+            android:id="@+id/rv_mainInfo_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center" />
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/activity_horizontal_margin4"
             android:gravity="center"
-            android:text="标题" />
+            android:text="@string/select_title" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,6 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/activity_horizontal_margin4"
                 android:paddingEnd="@dimen/activity_horizontal_margin4"
+                android:paddingStart="@dimen/activity_horizontal_margin4"
                 android:text="@string/select_have" />
 
             <TextView

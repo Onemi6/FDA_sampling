@@ -51,7 +51,7 @@ public class LoginActivity extends Activity {
         Intent intent = getIntent();
         login_type = intent.getIntExtra("login_type", 0);
         sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
-        initview();
+        initView();
         if (login_type == 1) {
             account = sharedPreferences.getString("Login_Name", null);
             password = sharedPreferences.getString("Password", null);
@@ -84,15 +84,15 @@ public class LoginActivity extends Activity {
         });
     }
 
-    private void initview() {
+    private void initView() {
         et_mAccount = findViewById(R.id.account);
         et_mPassword = findViewById(R.id.password);
         remember_password = findViewById(R.id.remember_password);
         btn_login = findViewById(R.id.btn_login);
         mProgressView = findViewById(R.id.login_progress);
         if (sharedPreferences != null) {
-            boolean isremember = sharedPreferences.getBoolean("isremember", false);
-            if (isremember) {
+            boolean isRemember = sharedPreferences.getBoolean("isRemember", false);
+            if (isRemember) {
                 et_mAccount.setText(sharedPreferences.getString("Login_Name", null));
                 et_mPassword.setText(sharedPreferences.getString("Password", null));
                 remember_password.setChecked(true);
@@ -115,16 +115,16 @@ public class LoginActivity extends Activity {
             // 加密
             byte[] encryptByte = RSAUtil.encryptData(password.getBytes(), publicKey);
             // 为了方便观察吧加密后的数据用base64加密转一下，要不然看起来是乱码,所以解密是也是要用Base64先转换
-            String password_afterencrypt = Base64.encodeToString(encryptByte, Base64.DEFAULT);
-            //String password_URLEncoder = URLEncoder.encode(password_afterencrypt, "UTF-8");
-            //Log.e("rsa", "原文:" + password + "密文:" + password_afterencrypt);
+            String password_afterEncrypt = Base64.encodeToString(encryptByte, Base64.DEFAULT);
+            //String password_URLEncoder = URLEncoder.encode(password_afterEncrypt, "UTF-8");
+            //Log.e("rsa", "原文:" + password + "密文:" + password_afterEncrypt);
             /*Map<String, Object> map = new HashMap<>();
             map.put("Login_Name", account);
-            map.put("Password", password_afterencrypt);
+            map.put("Password", password_afterEncrypt);
             Gson gson = new Gson();
             String data = gson.toJson(map);*/
             String data = "{\"Login_Name\":\"" + account + "\"," + "\"Password\":\"" +
-                    password_afterencrypt + "\"}";
+                    password_afterEncrypt + "\"}";
             //Log.e("data=", data);
             FDA_API request = HttpUtils.GsonApi();
             Call<LoginStatus> call = request.Login(data);
@@ -132,18 +132,18 @@ public class LoginActivity extends Activity {
                 @Override
                 public void onResponse(Call<LoginStatus> call, Response<LoginStatus> response) {
                     if (response.body() != null) {
-                        Log.v("请求成功!", "response.body() is not null");
+                        Log.v("Login请求成功!", "response.body() is not null");
                         if (response.body().getMESSAGE() == null) {
                             editor = sharedPreferences.edit();
                             if (remember_password.isChecked()) {
-                                editor.putBoolean("isremember", true);
+                                editor.putBoolean("isRemember", true);
                                 editor.putString("Login_Name", account);
                                 editor.putString("Password", password);
                                 editor.putString("TOKEN", response.body().getTOKEN());
                                 editor.putString("NAME", response.body().getNAME());
                                 editor.putString("NO", response.body().getNO());
                             } else {
-                                editor.putBoolean("isremember", false);
+                                editor.putBoolean("isRemember", false);
                                 editor.putString("Login_Name", account);
                                 editor.putString("Password", password);
                                 editor.putString("TOKEN", response.body().getTOKEN());
@@ -182,7 +182,7 @@ public class LoginActivity extends Activity {
                             et_mAccount.setError(response.body().getMESSAGE());
                         }
                     } else {
-                        Log.v("请求成功!", "response.body() is null");
+                        Log.v("Login请求成功!", "response.body() is null");
                         Snackbar.make(btn_login, "登录失败(请求成功)", Snackbar.LENGTH_LONG).setAction
                                 ("Action", null).show();
                     }
@@ -192,7 +192,7 @@ public class LoginActivity extends Activity {
                 @Override
                 public void onFailure(Call<LoginStatus> call, Throwable t) {
                     mProgressView.setVisibility(View.GONE);
-                    Log.v("请求失败!", t.getMessage());
+                    Log.v("Login请求成功!", t.getMessage());
                     Snackbar.make(btn_login, "登录失败(请求失败)", Snackbar.LENGTH_LONG).setAction
                             ("Action", null).show();
                 }
