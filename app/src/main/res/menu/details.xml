@@ -5,6 +5,12 @@
     tools:context=".view.DetailsActivity">
 
     <item
+        android:id="@+id/action_prov_submit"
+        android:orderInCategory="100"
+        android:title="@string/prov_submit"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_submit"
         android:orderInCategory="100"
         android:title="@string/submit"

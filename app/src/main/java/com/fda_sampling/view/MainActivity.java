@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void attemptGetTasks() {
         mProgressView.setVisibility(View.VISIBLE);
         String Emp_No, token;
-        FDA_API request = HttpUtils.GsonApi();
+        FDA_API request = HttpUtils.JsonApi();
         if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
         } else {
@@ -768,53 +768,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final File file_pdf = new File(pdf_path);
         if (file_pdf.exists()) {
             Log.v("pdf", "已经存在");
-            doPrintWord(file_pdf);
-        } else {
-            if (NetworkUtil.isNetworkAvailable(context)) {
-                FDA_API request = HttpUtils.ReportApi();
-                Map<String, String> params = new HashMap<>();
-                params.put("reportlet", reportlet);
-                params.put("applyNo", applyNo);
-                params.put("op", "export");
-                params.put("format", "pdf");
-                Call<ResponseBody> call = request.ReportServer(params);
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody>
-                            response) {
-                        if (response.code() == 200) {
-                            if (response.body() != null) {
-                                try {
-                                    // 获取文件的输出流对象
-                                    FileOutputStream outStream = new FileOutputStream(file_pdf);
-                                    // 获取字符串对象的byte数组并写入文件流
-                                    outStream.write(response.body().bytes());
-                                    // 最后关闭文件输出流
-                                    outStream.close();
-                                    Log.v("pdf", "下载成功");
-                                    doPrintWord(file_pdf);
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                    Log.v("ResponseBody", "FileNotFoundException");
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    Log.v("ResponseBody", "IOException");
-                                }
-                            } else {
-                                Log.v("Report请求成功!", "response.body is null");
+            //doPrintWord(file_pdf);
+            file_pdf.delete();
+        }
+        if (NetworkUtil.isNetworkAvailable(context)) {
+            FDA_API request = HttpUtils.ReportApi();
+            Map<String, String> params = new HashMap<>();
+            params.put("reportlet", reportlet);
+            params.put("applyNo", applyNo);
+            params.put("op", "export");
+            params.put("format", "pdf");
+            Call<ResponseBody> call = request.ReportServer(params);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody>
+                        response) {
+                    if (response.code() == 200) {
+                        if (response.body() != null) {
+                            try {
+                                // 获取文件的输出流对象
+                                FileOutputStream outStream = new FileOutputStream(file_pdf);
+                                // 获取字符串对象的byte数组并写入文件流
+                                outStream.write(response.body().bytes());
+                                // 最后关闭文件输出流
+                                outStream.close();
+                                Log.v("pdf", "下载成功");
+                                doPrintWord(file_pdf);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                                Log.v("ResponseBody", "FileNotFoundException");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Log.v("ResponseBody", "IOException");
                             }
+                        } else {
+                            Log.v("Report请求成功!", "response.body is null");
                         }
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.v("Report请求失败!", t.getMessage());
-                    }
-                });
-            } else {
-                Toast.makeText(MainActivity.this, "当前无网络", Toast.LENGTH_SHORT)
-                        .show();
-            }
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.v("Report请求失败!", t.getMessage());
+                }
+            });
+        } else {
+            Toast.makeText(MainActivity.this, "当前无网络", Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 
@@ -911,7 +911,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.nav_account:
+            case R.id.nav_change_account:
                 isHome = 1;
                 // 通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
                 AlertDialog.Builder builder = new AlertDialog.Builder(
@@ -945,6 +945,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         });
                 // 显示出该对话框
                 builder.show();
+                break;
+            case R.id.nav_task_plan:
+                startActivity(new Intent(this, TaskPlanActivity.class));
                 break;
             case R.id.nav_share:
                 ShareAppCode();

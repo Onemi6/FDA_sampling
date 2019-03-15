@@ -109,7 +109,7 @@ public class ImgUploadActivity extends AppCompatActivity {
         //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
         //toolbar.setOnMenuItemClickListener(onMenuItemClick);
 
-        initdata();
+        initData();
 
         //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
         GridLayoutManager layoutManager_1 = new GridLayoutManager(this, 2);
@@ -379,7 +379,7 @@ public class ImgUploadActivity extends AppCompatActivity {
         adapter_img_8.changList_add(picList_8);
     }
 
-    public void initdata() {
+    public void initData() {
         picList_1.add("加号");
         picList_2.add("加号");
         picList_3.add("加号");
@@ -389,7 +389,7 @@ public class ImgUploadActivity extends AppCompatActivity {
         picList_7.add("加号");
         picList_8.add("加号");
         //uploadImage.add("空白");
-        attempImageInfo();
+        attemptImageInfo();
     }
 
     @Override
@@ -405,9 +405,9 @@ public class ImgUploadActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void attempImgUpload(String image_type, String image_path) {
+    public void attemptImgUpload(String image_type, String image_path) {
         if (NetworkUtil.isNetworkAvailable(_context)) {
-            FDA_API request = HttpUtils.GsonApi();
+            FDA_API request = HttpUtils.JsonApi();
             if (((MyApplication) getApplication()).getTOKEN() == null) {
                 token = sharedPreferences.getString("TOKEN", null);
             } else {
@@ -470,9 +470,9 @@ public class ImgUploadActivity extends AppCompatActivity {
         }
     }
 
-    public void attempImageInfo() {
+    public void attemptImageInfo() {
         if (NetworkUtil.isNetworkAvailable(_context)) {
-            FDA_API request = HttpUtils.GsonApi();
+            FDA_API request = HttpUtils.JsonApi();
             if (((MyApplication) getApplication()).getTOKEN() == null) {
                 token = sharedPreferences.getString("TOKEN", null);
             } else {
@@ -499,7 +499,7 @@ public class ImgUploadActivity extends AppCompatActivity {
                                     Log.v("imageInfo", "" + imageInfo.getID());
                                     try {
                                         Thread.sleep(500);
-                                        attempImage(imageInfo.getID());
+                                        attemptImage(imageInfo.getID());
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -525,7 +525,7 @@ public class ImgUploadActivity extends AppCompatActivity {
         }
     }
 
-    public void attempImage(final int id) {
+    public void attemptImage(final int id) {
         final String image_path = Environment.getExternalStorageDirectory() + "/FDA/Image/" + id
                 + ".jpg";
         final File image = new File(image_path);
@@ -535,7 +535,7 @@ public class ImgUploadActivity extends AppCompatActivity {
             adapter_uploadImg.changList_add(uploadImage);
         } else {
             if (NetworkUtil.isNetworkAvailable(_context)) {
-                FDA_API request = HttpUtils.GsonApi();
+                FDA_API request = HttpUtils.JsonApi();
                 if (((MyApplication) getApplication()).getTOKEN() == null) {
                     token = sharedPreferences.getString("TOKEN", null);
                 } else {
@@ -753,42 +753,42 @@ public class ImgUploadActivity extends AppCompatActivity {
             picList_8 = adapter_img_8.getImgList();
             for (String pic : picList_1) {
                 if (!pic.equals("加号")) {
-                    attempImgUpload("样品照片", pic);
+                    attemptImgUpload("样品照片", pic);
                 }
             }
             for (String pic : picList_2) {
                 if (!pic.equals("加号")) {
-                    attempImgUpload("现场照片", pic);
+                    attemptImgUpload("现场照片", pic);
                 }
             }
             for (String pic : picList_3) {
                 if (!pic.equals("加号")) {
-                    attempImgUpload("营业执照", pic);
+                    attemptImgUpload("营业执照", pic);
                 }
             }
             for (String pic : picList_4) {
                 if (!pic.equals("加号")) {
-                    attempImgUpload("经营许可证", pic);
+                    attemptImgUpload("经营许可证", pic);
                 }
             }
             for (String pic : picList_5) {
                 if (!pic.equals("加号")) {
-                    attempImgUpload("告知书", pic);
+                    attemptImgUpload("告知书", pic);
                 }
             }
             for (String pic : picList_6) {
                 if (!pic.equals("加号")) {
-                    attempImgUpload("反馈单", pic);
+                    attemptImgUpload("反馈单", pic);
                 }
             }
             for (String pic : picList_7) {
                 if (!pic.equals("加号")) {
-                    attempImgUpload("抽样单", pic);
+                    attemptImgUpload("抽样单", pic);
                 }
             }
             for (String pic : picList_8) {
                 if (!pic.equals("加号")) {
-                    attempImgUpload("微信截图", pic);
+                    attemptImgUpload("微信截图", pic);
                 }
             }
                     /*new Handler().postDelayed(new Runnable() {

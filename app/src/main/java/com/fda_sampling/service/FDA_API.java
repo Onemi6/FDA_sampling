@@ -44,6 +44,10 @@ public interface FDA_API {
     @POST("api/Apply/Submit")
     Call<SubmitStatus> Submit(@Header("LIMS_Token") String LIMS_Token, @Query("data") String data);
 
+    @POST("api/Apply/provSubmit")
+    Call<SubmitStatus> provSubmit(@Header("LIMS_Token") String LIMS_Token, @Query("data") String
+            data);
+
     @Multipart
     @POST("api/Apply/ImageUpload")
     Call<UploadImg> ImageUpload(@Header("LIMS_Token") String LIMS_Token, @Part("id") RequestBody

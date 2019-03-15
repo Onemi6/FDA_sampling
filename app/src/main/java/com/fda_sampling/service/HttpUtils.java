@@ -12,7 +12,7 @@ public class HttpUtils {
     private static String ip = "http://124.117.209.42:8088/WebApi/";
     private static String ip_WebReport = "http://124.117.209.42:8088/WebReport/";
 
-    public static FDA_API GsonApi() {
+    public static FDA_API JsonApi() {
         OkHttpClient client = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)//默认重试一次，若需要重试N次，则要实现拦截器。
                 .connectTimeout(100, TimeUnit.SECONDS)
@@ -73,5 +73,9 @@ public class HttpUtils {
                 .build();
         //创建 网络请求接口 的实例
         return retrofit.create(FDA_API.class);
+    }
+
+    public static String getIp_WebReport() {
+        return ip_WebReport;
     }
 }

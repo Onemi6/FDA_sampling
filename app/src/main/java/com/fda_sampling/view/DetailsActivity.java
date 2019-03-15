@@ -368,42 +368,35 @@ public class DetailsActivity extends AppCompatActivity {
         et_DRAW_MAN = findViewById(R.id.details_DRAW_MAN);
 
         ArrayAdapter ada_SAMPLE_TYPE = ArrayAdapter.createFromResource(context, R.array
-                .SAMPLE_TYPE, android.R
-                .layout.simple_spinner_dropdown_item);
+                .SAMPLE_TYPE, android.R.layout.simple_spinner_dropdown_item);
         sp_SAMPLE_TYPE.setAdapter(ada_SAMPLE_TYPE);
         ArrayAdapter ada_DOMESTIC_AREA = ArrayAdapter.createFromResource(context, R.array
-                        .DOMESTIC_AREA,
-                android.R.layout.simple_spinner_dropdown_item);
+                .DOMESTIC_AREA, android.R.layout.simple_spinner_dropdown_item);
         sp_DOMESTIC_AREA.setAdapter(ada_DOMESTIC_AREA);
         ArrayAdapter ada_PERMIT_TYPE = ArrayAdapter.createFromResource(context, R.array
                 .PERMIT_TYPE, android.R.layout.simple_spinner_dropdown_item);
         sp_PERMIT_TYPE.setAdapter(ada_PERMIT_TYPE);
         ArrayAdapter ada_DRAW_ADDR = ArrayAdapter.createFromResource(context, R.array.DRAW_ADDR,
-                android.R
-                        .layout.simple_spinner_dropdown_item);
+                android.R.layout.simple_spinner_dropdown_item);
         sp_DRAW_ADDR.setAdapter(ada_DRAW_ADDR);
         ArrayAdapter ada_SAMPLE_SOURCE = ArrayAdapter.createFromResource(context, R.array
                         .SAMPLE_SOURCE,
                 android.R.layout.simple_spinner_dropdown_item);
         sp_SAMPLE_SOURCE.setAdapter(ada_SAMPLE_SOURCE);
         ArrayAdapter ada_SAMPLE_PROPERTY = ArrayAdapter.createFromResource(context, R.array
-                        .SAMPLE_PROPERTY,
-                android.R.layout.simple_spinner_dropdown_item);
+                .SAMPLE_PROPERTY, android.R.layout.simple_spinner_dropdown_item);
         sp_SAMPLE_PROPERTY.setAdapter(ada_SAMPLE_PROPERTY);
         ArrayAdapter ada_SAMPLE_STYLE = ArrayAdapter.createFromResource(context, R.array
-                .SAMPLE_STYLE, android
-                .R.layout.simple_spinner_dropdown_item);
+                .SAMPLE_STYLE, android.R.layout.simple_spinner_dropdown_item);
         sp_SAMPLE_STYLE.setAdapter(ada_SAMPLE_STYLE);
         ArrayAdapter ada_DATE_PRODUCT_TYPE = ArrayAdapter.createFromResource(context, R.array
                 .DATE_PRODUCT_TYPE, android.R.layout.simple_spinner_dropdown_item);
         sp_DATE_PRODUCT_TYPE.setAdapter(ada_DATE_PRODUCT_TYPE);
         ArrayAdapter ada_I_AND_O = ArrayAdapter.createFromResource(context, R.array.I_AND_O,
-                android.R.layout
-                        .simple_spinner_dropdown_item);
+                android.R.layout.simple_spinner_dropdown_item);
         sp_I_AND_O.setAdapter(ada_I_AND_O);
         ArrayAdapter ada_SAMPLE_STATUS = ArrayAdapter.createFromResource(context, R.array
-                        .SAMPLE_STATUS,
-                android.R.layout.simple_spinner_dropdown_item);
+                .SAMPLE_STATUS, android.R.layout.simple_spinner_dropdown_item);
         sp_SAMPLE_STATUS.setAdapter(ada_SAMPLE_STATUS);
         ArrayAdapter ada_PACK_TYPE = ArrayAdapter.createFromResource(context, R.array.PACK_TYPE,
                 android.R
@@ -437,7 +430,6 @@ public class DetailsActivity extends AppCompatActivity {
         attemptGetUnit("STORAGESITE");
         attemptGetUnit("DRAW_NUM");
         attemptGetFoodKind("TYPE1", "1");
-        //attemptSampleEnterprises("新疆家乐福");
     }
 
     public void initData() {
@@ -682,7 +674,7 @@ public class DetailsActivity extends AppCompatActivity {
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
         }*/
-        FDA_API request = HttpUtils.GsonApi();
+        FDA_API request = HttpUtils.JsonApi();
         Call<List<sampleEnterprise>> call = request.sampleEnterprises(token, key);
         call.enqueue(new Callback<List<sampleEnterprise>>() {
             @Override
@@ -732,7 +724,7 @@ public class DetailsActivity extends AppCompatActivity {
         } else {
             token = ((MyApplication) GetApplication()).GetTOKEN();
         }*/
-        FDA_API request = HttpUtils.GsonApi();
+        FDA_API request = HttpUtils.JsonApi();
         Call<List<Unit>> call = request.getUnit(token, Unit_Type);
         call.enqueue(new Callback<List<Unit>>() {
             @Override
@@ -842,7 +834,7 @@ public class DetailsActivity extends AppCompatActivity {
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
         }*/
-        FDA_API request = HttpUtils.GsonApi();
+        FDA_API request = HttpUtils.JsonApi();
         Call<List<FoodKind>> call = request.getFoodKind(token, Food_Kind_Type,
                 Parent_Food_Kind_Name);
         call.enqueue(new Callback<List<FoodKind>>() {
@@ -928,7 +920,7 @@ public class DetailsActivity extends AppCompatActivity {
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
         }*/
-        FDA_API request = HttpUtils.GsonApi();
+        FDA_API request = HttpUtils.JsonApi();
         Call<List<ChildFoodKind>> call = request.getChildFoodKind(token, PFK_ID);
         call.enqueue(new Callback<List<ChildFoodKind>>() {
             @Override
@@ -1061,9 +1053,79 @@ public class DetailsActivity extends AppCompatActivity {
             Tasks.list_task.set(Tasks.position, task);
         } catch (NullPointerException e) {
             e.printStackTrace();
-            /*Snackbar.make(toolbar, "数据还没加载完,请稍后再点击", Snackbar.LENGTH_LONG).setAction("Action",
-                    null).show();*/
         }
+    }
+
+    public void attemptProvSubmit() {
+        mypDialog = new ProgressDialog(DetailsActivity.this);
+        // 实例化
+        mypDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        // 设置进度条风格，风格为圆形，旋转的
+        mypDialog.setTitle("暂存信息中...");
+        // 设置ProgressDialog 标题
+        mypDialog.setIndeterminate(false);
+        // 设置ProgressDialog 的进度条是否不明确
+        mypDialog.setCancelable(false);
+        // 设置ProgressDialog 是否可以按退回按键取消
+        mypDialog.show();
+        // 让ProgressDialog显示
+        /*if (((MyApplication) getApplication()).getTOKEN() == null) {
+            token = sharedPreferences.getString("TOKEN", null);
+        } else {
+            token = ((MyApplication) getApplication()).getTOKEN();
+        }*/
+        final Task task_submit = Tasks.list_task.get(Tasks.position);
+        Gson gson = new Gson();
+        String data = gson.toJson(task_submit);
+        FDA_API request = HttpUtils.JsonApi();
+        Call<SubmitStatus> call = request.provSubmit(token, data);
+        call.enqueue(new Callback<SubmitStatus>() {
+            @Override
+            public void onResponse(Call<SubmitStatus> call, Response<SubmitStatus> response) {
+                if (response.code() == 401) {
+                    Log.v("provSubmit请求", "token过期");
+                    Intent intent_login = new Intent();
+                    intent_login.setClass(DetailsActivity.this,
+                            LoginActivity.class);
+                    intent_login.putExtra("login_type", 1);
+                    mypDialog.dismiss();
+                    startActivity(intent_login);
+                } else if (response.code() == 200) {
+                    if (response.body() != null) {
+                        Log.v("provSubmit请求成功!", "response.body is not null");
+                        SubmitStatus submitStatus = response.body();
+                        if (submitStatus.getMessage().equals("执行完成！")) {
+                            Snackbar.make(toolbar, "提交成功!",
+                                    Snackbar.LENGTH_LONG).setAction("Action", null)
+                                    .show();
+                        } else {
+                            Snackbar.make(toolbar, submitStatus.getMessage(),
+                                    Snackbar.LENGTH_LONG).setAction("Action", null)
+                                    .show();
+                        }
+                    } else {
+                        Log.v("provSubmit请求成功!", "response.body is null");
+                        Snackbar.make(toolbar, "提交失败!(response.body is null)请稍后再试",
+                                Snackbar.LENGTH_LONG).setAction("Action", null)
+                                .show();
+                    }
+                } else {
+                    Log.v("provSubmit请求成功!", "提交失败!(" + response.code() + ")请稍后再试");
+                    Snackbar.make(toolbar, "" + response.code(),
+                            Snackbar.LENGTH_LONG).setAction("Action", null)
+                            .show();
+                }
+                mypDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<SubmitStatus> call, Throwable t) {
+                Log.v("provSubmit请求失败!", t.getMessage());
+                Snackbar.make(toolbar, "提交失败!(provSubmit请求失败)请稍后再试",
+                        Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                mypDialog.dismiss();
+            }
+        });
     }
 
     public void attemptSubmit() {
@@ -1087,7 +1149,7 @@ public class DetailsActivity extends AppCompatActivity {
         final Task task_submit = Tasks.list_task.get(Tasks.position);
         Gson gson = new Gson();
         String data = gson.toJson(task_submit);
-        FDA_API request = HttpUtils.GsonApi();
+        FDA_API request = HttpUtils.JsonApi();
         Call<SubmitStatus> call = request.Submit(token, data);
         call.enqueue(new Callback<SubmitStatus>() {
             @Override
@@ -1147,7 +1209,7 @@ public class DetailsActivity extends AppCompatActivity {
             doPrintPdf(rpt_pdf);
         } else {
             if (NetworkUtil.isNetworkAvailable(context)) {
-                FDA_API request = HttpUtils.GsonApi();
+                FDA_API request = HttpUtils.JsonApi();
                 Call<ResponseBody> call = request.getSamplingBill(token, applyNo);
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -1252,6 +1314,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
         return null;
     }
+
     // 获取sdcard中的缓存目录
     public static File getCacheDir(Context context) {
         String APP_DIR_NAME = Environment.getExternalStorageDirectory().getAbsolutePath() +
@@ -1320,6 +1383,16 @@ public class DetailsActivity extends AppCompatActivity {
         switch (id) {
             case android.R.id.home:
                 finish();
+                break;
+            case R.id.action_prov_submit:
+                if (ClickUtil.isFastClick()) {
+                    doSaveData();
+                    attemptProvSubmit();
+                } else {
+                    Snackbar.make(toolbar, "提交太快了，请稍后再试",
+                            Snackbar.LENGTH_LONG).setAction("Action", null)
+                            .show();
+                }
                 break;
             case R.id.action_submit:
                 if (ClickUtil.isFastClick()) {

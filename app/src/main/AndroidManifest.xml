@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fda_sampling"
     android:versionCode="1"
-    android:versionName="1.8">
+    android:versionName="1.9">
 
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 网络 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 从SDCard读取数据权限 -->
@@ -42,6 +42,9 @@
         <activity
             android:name=".view.ImgUploadActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.TaskPlanActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <!-- Image Selector Entry -->
         <activity
@@ -51,6 +54,7 @@
         <activity android:name=".view.TestActivity" />
         <activity android:name=".view.ScanActivity" />
         <activity android:name=".view.LoginActivity" />
+
 
         <!-- 适配7.0 apk安装 -->
         <provider
@@ -64,7 +68,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

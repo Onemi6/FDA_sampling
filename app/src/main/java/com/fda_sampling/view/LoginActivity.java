@@ -126,7 +126,7 @@ public class LoginActivity extends Activity {
             String data = "{\"Login_Name\":\"" + account + "\"," + "\"Password\":\"" +
                     password_afterEncrypt + "\"}";
             //Log.e("data=", data);
-            FDA_API request = HttpUtils.GsonApi();
+            FDA_API request = HttpUtils.JsonApi();
             Call<LoginStatus> call = request.Login(data);
             call.enqueue(new Callback<LoginStatus>() {
                 @Override

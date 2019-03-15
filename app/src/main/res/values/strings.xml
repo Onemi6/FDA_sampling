@@ -7,6 +7,7 @@
     <string name="info_SUPPLIER">被抽样单位信息</string>
     <string name="info_sample">样品信息</string>
     <string name="details">详细情况</string>
+    <string name="prov_submit">暂存</string>
     <string name="submit">提交</string>
     <string name="upload_img">上传图片</string>
     <string name="printf">打印抽样单</string>
@@ -47,6 +48,7 @@
     <string name="unit_name">宁波市食品检验检测研究院</string>
     <string name="settings">设置</string>
     <string name="change_account">切换账号</string>
+    <string name="task_plan">任务安排</string>
     <string name="share">分享</string>
     <string name="feedback">反馈</string>
     <string name="more">更多</string>
