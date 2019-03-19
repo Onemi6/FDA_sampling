@@ -23,9 +23,15 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_printf"
+        android:id="@+id/action_printf_SamplingBill"
         android:orderInCategory="100"
-        android:title="@string/printf"
+        android:title="@string/printf_SamplingBill"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_printf_SamplingFeedback"
+        android:orderInCategory="100"
+        android:title="@string/printf_SamplingFeedback"
         app:showAsAction="never" />
 
 </menu>

@@ -375,6 +375,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                File apkFile = getExternalFilesDir("DownLoad/FDA_sampling.apk");
+                if (apkFile.exists()) {
+                    apkFile.delete();
+                }
                 downloadApp();
             }
         });
@@ -658,19 +662,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void FileDir() {
         boolean sdCardExist = android.os.Environment.getExternalStorageState().equals(android.os
                 .Environment.MEDIA_MOUNTED);
-        String IMAGE_PATH, PAYMENT_PATH, SAMPLETAG_PATH, CRASH_PATH, RPT_PATH;
+        String IMAGE_PATH, PAYMENT_PATH, SAMPLETAG_PATH, CRASH_PATH, BILL_PATH, FEEDBACK_PATH;
         if (sdCardExist) {
             IMAGE_PATH = Environment.getExternalStorageDirectory() + "/FDA/Image/";
             PAYMENT_PATH = Environment.getExternalStorageDirectory() + "/FDA/payment/";
             SAMPLETAG_PATH = Environment.getExternalStorageDirectory() + "/FDA/sampletag/";
             CRASH_PATH = Environment.getExternalStorageDirectory() + "/FDA/crash/";
-            RPT_PATH = Environment.getExternalStorageDirectory() + "/FDA/Rpt/";
+            BILL_PATH = Environment.getExternalStorageDirectory() + "/FDA/Bill/";
+            FEEDBACK_PATH = Environment.getExternalStorageDirectory() + "/FDA/Feedback/";
         } else {
-            IMAGE_PATH = PAYMENT_PATH = SAMPLETAG_PATH = CRASH_PATH = RPT_PATH = this.getCacheDir
-                    ().toString() + "/";
+            IMAGE_PATH = PAYMENT_PATH = SAMPLETAG_PATH = CRASH_PATH = BILL_PATH = FEEDBACK_PATH =
+                    this.getCacheDir().toString() + "/";
         }
         File image = new File(IMAGE_PATH), payment = new File(PAYMENT_PATH), sampletag = new File
-                (SAMPLETAG_PATH), crash = new File(CRASH_PATH), rpt = new File(RPT_PATH);
+                (SAMPLETAG_PATH), crash = new File(CRASH_PATH), bill = new File(BILL_PATH), feedback
+                = new File(FEEDBACK_PATH);
         if (!image.exists()) {
             image.mkdirs();
         }
@@ -683,8 +689,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!crash.exists()) {
             crash.mkdirs();
         }
-        if (!rpt.exists()) {
-            rpt.mkdirs();
+        if (!bill.exists()) {
+            bill.mkdirs();
+        }
+        if (!feedback.exists()) {
+            feedback.mkdirs();
         }
     }
 

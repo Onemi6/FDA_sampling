@@ -1201,63 +1201,120 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     public void attemptGetSamplingBill(String applyNo) {
-        String rpt_path = Environment.getExternalStorageDirectory() + "/FDA/Rpt/" + applyNo +
+        String bill_path = Environment.getExternalStorageDirectory() + "/FDA/Bill/" + applyNo +
                 ".pdf";
-        final File rpt_pdf = new File(rpt_path);
-        if (rpt_pdf.exists()) {
+        final File bill_pdf = new File(bill_path);
+        if (bill_pdf.exists()) {
             Log.v("pdf", "已经存在");
-            doPrintPdf(rpt_pdf);
-        } else {
-            if (NetworkUtil.isNetworkAvailable(context)) {
-                FDA_API request = HttpUtils.JsonApi();
-                Call<ResponseBody> call = request.getSamplingBill(token, applyNo);
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody>
-                            response) {
-                        if (response.code() == 401) {
-                            Log.v("getSamplingBill请求", "token过期");
-                            Intent intent_login = new Intent();
-                            intent_login.setClass(DetailsActivity.this, LoginActivity.class);
-                            intent_login.putExtra("login_type", 1);
-                            startActivity(intent_login);
-                        } else if (response.code() == 200) {
-                            if (response.body() != null) {
-                                try {
-                                    // 获取文件的输出流对象
-                                    FileOutputStream outStream = new FileOutputStream(rpt_pdf);
-                                    // 获取字符串对象的byte数组并写入文件流
-                                    outStream.write(response.body().bytes());
-                                    // 最后关闭文件输出流
-                                    outStream.close();
-                                    Log.v("pdf", "下载成功");
-                                    doPrintPdf(rpt_pdf);
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                    Log.v("ResponseBody", "FileNotFoundException");
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    Log.v("ResponseBody", "IOException");
-                                }
-                            } else {
-                                Log.v("getSamplingBill请求成功!", "response.body is null");
+            bill_pdf.delete();
+            //doPrintPdf(bill_pdf);
+        }
+        if (NetworkUtil.isNetworkAvailable(context)) {
+            FDA_API request = HttpUtils.JsonApi();
+            Call<ResponseBody> call = request.getSamplingBill(token, applyNo);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody>
+                        response) {
+                    if (response.code() == 401) {
+                        Log.v("getSamplingBill请求", "token过期");
+                        Intent intent_login = new Intent();
+                        intent_login.setClass(DetailsActivity.this, LoginActivity.class);
+                        intent_login.putExtra("login_type", 1);
+                        startActivity(intent_login);
+                    } else if (response.code() == 200) {
+                        if (response.body() != null) {
+                            try {
+                                // 获取文件的输出流对象
+                                FileOutputStream outStream = new FileOutputStream(bill_pdf);
+                                // 获取字符串对象的byte数组并写入文件流
+                                outStream.write(response.body().bytes());
+                                // 最后关闭文件输出流
+                                outStream.close();
+                                Log.v("pdf", "下载成功");
+                                doPrintPdf(bill_pdf);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                                Log.v("ResponseBody", "FileNotFoundException");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Log.v("ResponseBody", "IOException");
                             }
+                        } else {
+                            Log.v("getSamplingBill请求成功!", "response.body is null");
                         }
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.v("getSamplingBill请求失败!", t.getMessage());
-                    }
-                });
-            } else {
-                Snackbar.make(toolbar, "当前无网络",
-                        Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            }
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.v("getSamplingBill请求失败!", t.getMessage());
+                }
+            });
+        } else {
+            Snackbar.make(toolbar, "当前无网络",
+                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
         }
     }
 
-    private void doPrintPdf(final File rpt_pdf) {
+    public void attemptGetSamplingFeedback(String applyNo) {
+        String feedback_path = Environment.getExternalStorageDirectory() + "/FDA/Feedback/" +
+                applyNo + ".pdf";
+        final File feedback_pdf = new File(feedback_path);
+        if (feedback_pdf.exists()) {
+            Log.v("pdf", "已经存在");
+            feedback_pdf.delete();
+            //doPrintPdf(feedback_pdf);
+        }
+        if (NetworkUtil.isNetworkAvailable(context)) {
+            FDA_API request = HttpUtils.JsonApi();
+            Call<ResponseBody> call = request.getSamplingFeedback(token, applyNo);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody>
+                        response) {
+                    if (response.code() == 401) {
+                        Log.v("SamplingFeedback请求", "token过期");
+                        Intent intent_login = new Intent();
+                        intent_login.setClass(DetailsActivity.this, LoginActivity.class);
+                        intent_login.putExtra("login_type", 1);
+                        startActivity(intent_login);
+                    } else if (response.code() == 200) {
+                        if (response.body() != null) {
+                            try {
+                                // 获取文件的输出流对象
+                                FileOutputStream outStream = new FileOutputStream(feedback_pdf);
+                                // 获取字符串对象的byte数组并写入文件流
+                                outStream.write(response.body().bytes());
+                                // 最后关闭文件输出流
+                                outStream.close();
+                                Log.v("pdf", "下载成功");
+                                doPrintPdf(feedback_pdf);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                                Log.v("ResponseBody", "FileNotFoundException");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Log.v("ResponseBody", "IOException");
+                            }
+                        } else {
+                            Log.v("SamplingFeedback请求成功!", "response.body is null");
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.v("SamplingFeedback请求失败!", t.getMessage());
+                }
+            });
+        } else {
+            Snackbar.make(toolbar, "当前无网络",
+                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
+    }
+
+    private void doPrintPdf(final File file_pdf) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1268,7 +1325,7 @@ public class DetailsActivity extends AppCompatActivity {
                     intent.setComponent(comp);
                     intent.setAction("android.intent.action.VIEW");
                     intent.setType("application/pdf");
-                    intent.setData(Uri.fromFile(rpt_pdf));
+                    intent.setData(Uri.fromFile(file_pdf));
                     startActivity(intent);
                 } else {
                     Snackbar.make(toolbar, "未找到PrinterShare软件",
@@ -1412,8 +1469,11 @@ public class DetailsActivity extends AppCompatActivity {
                 //finish();// 结束当前活动
                 startActivity(intent_uploadImg);
                 break;
-            case R.id.action_printf:
+            case R.id.action_printf_SamplingBill:
                 attemptGetSamplingBill(task.getNO());
+                break;
+            case R.id.action_printf_SamplingFeedback:
+                attemptGetSamplingFeedback(task.getNO());
                 break;
             default:
                 break;

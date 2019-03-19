@@ -10,7 +10,8 @@
     <string name="prov_submit">暂存</string>
     <string name="submit">提交</string>
     <string name="upload_img">上传图片</string>
-    <string name="printf">打印抽样单</string>
+    <string name="printf_SamplingBill">打印抽样单</string>
+    <string name="printf_SamplingFeedback">打印反馈单</string>
     <string name="selectImg">选择图片</string>
     <string name="refresh">刷新</string>
     <string name="payment">付款凭证</string>

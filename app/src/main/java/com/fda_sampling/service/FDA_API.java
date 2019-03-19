@@ -84,4 +84,8 @@ public interface FDA_API {
     @POST("api/Apply/getSamplingBill")
     Call<ResponseBody> getSamplingBill(@Header("LIMS_Token") String LIMS_Token, @Query("applyNo")
             String applyNo);
+
+    @POST("api/Apply/getSamplingFeedback")
+    Call<ResponseBody> getSamplingFeedback(@Header("LIMS_Token") String LIMS_Token, @Query
+            ("applyNo") String applyNo);
 }
