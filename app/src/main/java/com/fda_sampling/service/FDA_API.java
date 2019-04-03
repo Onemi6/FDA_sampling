@@ -7,6 +7,7 @@ import com.fda_sampling.model.LoginStatus;
 import com.fda_sampling.model.SubmitStatus;
 import com.fda_sampling.model.Task;
 import com.fda_sampling.model.Unit;
+import com.fda_sampling.model.MeasureUnit;
 import com.fda_sampling.model.UpdateInfo;
 import com.fda_sampling.model.UploadImg;
 import com.fda_sampling.model.sampleEnterprise;
@@ -37,6 +38,9 @@ public interface FDA_API {
 
     @GET("ReportServer")
     Call<ResponseBody> ReportServer(@QueryMap Map<String, String> params);
+
+    @GET("api/Param/getMeasureUnits")
+    Call<List<MeasureUnit>> getMeasureUnits(@Query("type") String type);
 
     @POST("api/Login")
     Call<LoginStatus> Login(@Query("data") String data);

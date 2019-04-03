@@ -733,15 +733,34 @@ public class ImgUploadActivity extends AppCompatActivity {
         // 设置ProgressDialog 是否可以按退回按键取消
         mypDialog.show();
         // 让ProgressDialog显示
-        if (adapter_img_1.getImgList().size() == 1 && adapter_img_2.getImgList().size() == 1
-                && adapter_img_3.getImgList().size() == 1 && adapter_img_4.getImgList()
-                .size() == 1
-                && adapter_img_5.getImgList().size() == 1 && adapter_img_6.getImgList()
-                .size() == 1 && adapter_img_7.getImgList().size() == 1 &&
-                adapter_img_8.getImgList().size() == 1) {
+        if (adapter_img_1.getImgList().size() == 1) {
             mypDialog.dismiss();
-            Snackbar.make(btn_uploadImg, "至少选择一张图片", Snackbar.LENGTH_LONG).setAction("Action",
-                    null).show();
+            Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_1) +
+                    "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        } else if (adapter_img_2.getImgList().size() == 1) {
+            mypDialog.dismiss();
+            Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_2) +
+                    "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        } else if (adapter_img_3.getImgList().size() == 1) {
+            mypDialog.dismiss();
+            Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_3) +
+                    "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        } else if (adapter_img_5.getImgList().size() == 1) {
+            mypDialog.dismiss();
+            Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_5) +
+                    "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        } else if (adapter_img_6.getImgList().size() == 1) {
+            mypDialog.dismiss();
+            Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_6) +
+                    "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        } else if (adapter_img_7.getImgList().size() == 1) {
+            mypDialog.dismiss();
+            Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_7) +
+                    "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        } else if (adapter_img_8.getImgList().size() == 1) {
+            mypDialog.dismiss();
+            Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_8) +
+                    "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         } else {
             picList_1 = adapter_img_1.getImgList();
             picList_2 = adapter_img_2.getImgList();

@@ -1,8 +1,5 @@
 package com.fda_sampling.model;
 
-/**
- * Created by yy on 2019/2/26.
- */
 
 public class sampleEnterprise {
     private int ID;
@@ -16,6 +13,14 @@ public class sampleEnterprise {
     private String PERSON;
 
     private String ADDR;
+
+    private String PROVINCE;
+
+    private String CITY;
+
+    private String DISTRICT;
+
+    private String TOWN;
 
     private String PHONE;
 
@@ -75,6 +80,38 @@ public class sampleEnterprise {
 
     public String getADDR() {
         return this.ADDR;
+    }
+
+    public void setPROVINCE(String PROVINCE) {
+        this.PROVINCE = PROVINCE;
+    }
+
+    public String getPROVINCE() {
+        return PROVINCE;
+    }
+
+    public void setCITY(String CITY) {
+        this.CITY = CITY;
+    }
+
+    public String getCITY() {
+        return CITY;
+    }
+
+    public void setDISTRICT(String DISTRICT) {
+        this.DISTRICT = DISTRICT;
+    }
+
+    public String getDISTRICT() {
+        return DISTRICT;
+    }
+
+    public void setTOWN(String TOWN) {
+        this.TOWN = TOWN;
+    }
+
+    public String getTOWN() {
+        return TOWN;
     }
 
     public void setPHONE(String PHONE) {

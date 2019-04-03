@@ -9,9 +9,9 @@
             android:icon="@drawable/ic_menu_account_box"
             android:title="@string/change_account" />
         <item
-            android:id="@+id/nav_task_plan"
+            android:id="@+id/nav_task_query"
             android:icon="@drawable/ic_menu_star_border"
-            android:title="@string/task_plan" />
+            android:title="@string/task_query" />
         <item
             android:id="@+id/nav_share"
             android:icon="@drawable/ic_menu_share"

@@ -127,7 +127,8 @@
                 <Spinner
                     android:id="@+id/details_SAMPLE_TYPE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -217,7 +218,7 @@
                     android:completionThreshold="1"
                     android:dropDownWidth="fill_parent"
                     android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_SUPPLIER_ADDR"
+                    android:nextFocusForward="@+id/details_PROVINCE"
                     android:singleLine="true" />
             </TableRow>
 
@@ -233,7 +234,8 @@
                 <Spinner
                     android:id="@+id/details_DOMESTIC_AREA"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -245,8 +247,79 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="单位地址:" />
 
-                <EditText
+                <TextView
                     android:id="@+id/details_SUPPLIER_ADDR"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="省(区、市):" />
+
+                <EditText
+                    android:id="@+id/details_PROVINCE"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_CITY"
+                    android:singleLine="true" />
+            </TableRow>
+
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="地区(市、州、盟):" />
+
+                <EditText
+                    android:id="@+id/details_CITY"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_DISTRICT"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="县(市、区):" />
+
+                <EditText
+                    android:id="@+id/details_DISTRICT"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_TOWN"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="乡(镇):" />
+
+                <EditText
+                    android:id="@+id/details_TOWN"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
@@ -338,7 +411,8 @@
                 <Spinner
                     android:id="@+id/details_PERMIT_TYPE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -425,7 +499,8 @@
                 <Spinner
                     android:id="@+id/details_DRAW_ADDR"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -444,24 +519,6 @@
                     android:hint="地点为其他时才有效"
                     android:imeOptions="actionNext"
                     android:nextFocusForward="@+id/details_FOOD_BUSINESS_PERMIT"
-                    android:singleLine="true" />
-            </TableRow>
-
-            <TableRow>
-
-                <TextView
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingEnd="@dimen/activity_vertical_margin4"
-                    android:text="食品经营许可证:" />
-
-                <EditText
-                    android:id="@+id/details_FOOD_BUSINESS_PERMIT"
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_GOODS_NAME"
                     android:singleLine="true" />
             </TableRow>
 
@@ -499,7 +556,8 @@
                 <Spinner
                     android:id="@+id/details_SAMPLE_SOURCE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -514,7 +572,8 @@
                 <Spinner
                     android:id="@+id/details_SAMPLE_PROPERTY"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -529,7 +588,8 @@
                 <Spinner
                     android:id="@+id/details_SAMPLE_STYLE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -570,13 +630,17 @@
 
             <TableRow>
 
-                <Spinner
-                    android:id="@+id/details_DATE_PRODUCT_TYPE"
+                <LinearLayout
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingEnd="@dimen/activity_vertical_margin4"
-                    android:text="生产日期:" />
+                    android:layout_gravity="end">
+
+                    <Spinner
+                        android:id="@+id/details_DATE_PRODUCT_TYPE"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:overlapAnchor="false" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/details_DATE_PRODUCT"
@@ -722,7 +786,8 @@
                 <Spinner
                     android:id="@+id/details_UNIVALENT_UNIT"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
 
             </TableRow>
 
@@ -739,7 +804,8 @@
                 <Spinner
                     android:id="@+id/details_I_AND_O"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -772,7 +838,8 @@
                 <Spinner
                     android:id="@+id/details_DRAW_NUM_UNIT"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
 
             </TableRow>
 
@@ -806,7 +873,8 @@
                 <Spinner
                     android:id="@+id/details_DRAW_AMOUNT_UNIT"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
 
             </TableRow>
 
@@ -824,7 +892,7 @@
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_SAMPLE_CLOSE_DATE"
+                    android:nextFocusForward="@+id/details_SAVE_MODE_OTHER"
                     android:singleLine="true" />
 
             </TableRow>
@@ -840,7 +908,8 @@
                 <Spinner
                     android:id="@+id/details_STORAGESITE_UNIT"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
 
             </TableRow>
 
@@ -856,7 +925,8 @@
                 <Spinner
                     android:id="@+id/details_SAMPLE_STATUS"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -871,7 +941,8 @@
                 <Spinner
                     android:id="@+id/details_PACK_TYPE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -886,7 +957,27 @@
                 <Spinner
                     android:id="@+id/details_SAVE_MODE"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="其他:" />
+
+                <EditText
+                    android:id="@+id/details_SAVE_MODE_OTHER"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:hint="储存条件为其他时才有效"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SAMPLE_CLOSE_DATE"
+                    android:singleLine="true" />
             </TableRow>
 
             <TableRow>
@@ -937,8 +1028,28 @@
                 <Spinner
                     android:id="@+id/details_PACK"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
+
+            <!--<TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="其他:" />
+
+                <EditText
+                    android:id="@+id/details_PACK_OTHER"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:hint="样品包装为其他时才有效"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_MANU_COMPANY"
+                    android:singleLine="true" />
+            </TableRow>-->
 
             <TableRow>
 
@@ -952,7 +1063,8 @@
                 <Spinner
                     android:id="@+id/details_DRAW_METHOD"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -967,7 +1079,8 @@
                 <Spinner
                     android:id="@+id/details_FOOD_KIND1"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -982,7 +1095,8 @@
                 <Spinner
                     android:id="@+id/details_FOOD_KIND2"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -997,7 +1111,8 @@
                 <Spinner
                     android:id="@+id/details_FOOD_KIND3"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -1012,7 +1127,8 @@
                 <Spinner
                     android:id="@+id/details_FOOD_KIND4"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -1027,7 +1143,8 @@
                 <Spinner
                     android:id="@+id/details_CHILD_FOOD_KIND_ID"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -1066,7 +1183,7 @@
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_MANU_COMPANY_ADDR"
+                    android:nextFocusForward="@+id/details_MANU_PROVINCE"
                     android:singleLine="true" />
             </TableRow>
 
@@ -1079,14 +1196,68 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="生产者地址:" />
 
-                <EditText
+                <TextView
                     android:id="@+id/details_MANU_COMPANY_ADDR"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true" />
+            </TableRow>
+
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="省(区、市):" />
+
+                <EditText
+                    android:id="@+id/details_MANU_PROVINCE"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_MANU_CITY"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="地区(市、州、盟):" />
+
+                <EditText
+                    android:id="@+id/details_MANU_CITY"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_MANU_DISTRICT"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="县(市、区):" />
+
+                <EditText
+                    android:id="@+id/details_MANU_DISTRICT"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:nextFocusForward="@+id/details_MANU_COMPANY_PHONE"
                     android:singleLine="true" />
             </TableRow>
+
 
             <TableRow>
 

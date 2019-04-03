@@ -955,8 +955,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 显示出该对话框
                 builder.show();
                 break;
-            case R.id.nav_task_plan:
-                startActivity(new Intent(this, TaskPlanActivity.class));
+            case R.id.nav_task_query:
+                startActivity(new Intent(this, TaskQueryActivity.class));
                 break;
             case R.id.nav_share:
                 ShareAppCode();
