@@ -218,7 +218,7 @@
                     android:completionThreshold="1"
                     android:dropDownWidth="fill_parent"
                     android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_PROVINCE"
+                    android:nextFocusForward="@+id/details_TOWN"
                     android:singleLine="true" />
             </TableRow>
 
@@ -263,13 +263,12 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="省(区、市):" />
 
-                <EditText
+                <Spinner
                     android:id="@+id/details_PROVINCE"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_CITY"
-                    android:singleLine="true" />
+                    android:overlapAnchor="false" />
+
             </TableRow>
 
 
@@ -282,13 +281,11 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="地区(市、州、盟):" />
 
-                <EditText
+                <Spinner
                     android:id="@+id/details_CITY"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_DISTRICT"
-                    android:singleLine="true" />
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -300,13 +297,11 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="县(市、区):" />
 
-                <EditText
+                <Spinner
                     android:id="@+id/details_DISTRICT"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_TOWN"
-                    android:singleLine="true" />
+                    android:overlapAnchor="false" />
             </TableRow>
 
             <TableRow>
@@ -1183,7 +1178,7 @@
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_MANU_PROVINCE"
+                    android:nextFocusForward="@+id/details_MANU_COMPANY_PHONE"
                     android:singleLine="true" />
             </TableRow>
 
@@ -1199,10 +1194,8 @@
                 <TextView
                     android:id="@+id/details_MANU_COMPANY_ADDR"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true" />
+                    android:layout_height="wrap_content" />
             </TableRow>
-
 
             <TableRow>
 
@@ -1213,13 +1206,12 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="省(区、市):" />
 
-                <EditText
+                <Spinner
                     android:id="@+id/details_MANU_PROVINCE"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_MANU_CITY"
-                    android:singleLine="true" />
+                    android:overlapAnchor="false" />
+
             </TableRow>
 
             <TableRow>
@@ -1231,13 +1223,12 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="地区(市、州、盟):" />
 
-                <EditText
+                <Spinner
                     android:id="@+id/details_MANU_CITY"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_MANU_DISTRICT"
-                    android:singleLine="true" />
+                    android:overlapAnchor="false" />
+
             </TableRow>
 
             <TableRow>
@@ -1249,13 +1240,11 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="县(市、区):" />
 
-                <EditText
+                <Spinner
                     android:id="@+id/details_MANU_DISTRICT"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_MANU_COMPANY_PHONE"
-                    android:singleLine="true" />
+                    android:overlapAnchor="false" />
             </TableRow>
 
 

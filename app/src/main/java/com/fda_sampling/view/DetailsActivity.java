@@ -34,8 +34,11 @@ import android.widget.TextView;
 
 import com.fda_sampling.R;
 import com.fda_sampling.model.ChildFoodKind;
+import com.fda_sampling.model.City;
+import com.fda_sampling.model.District;
 import com.fda_sampling.model.FoodKind;
 import com.fda_sampling.model.MeasureUnit;
+import com.fda_sampling.model.Province;
 import com.fda_sampling.model.SubmitStatus;
 import com.fda_sampling.model.Task;
 import com.fda_sampling.model.Tasks;
@@ -72,14 +75,15 @@ public class DetailsActivity extends AppCompatActivity {
     private Task task;
     private Context context;
     private Toolbar toolbar;
-    private Spinner sp_SAMPLE_TYPE, sp_DOMESTIC_AREA, sp_PERMIT_TYPE, sp_DRAW_ADDR,
-            sp_SAMPLE_SOURCE, sp_SAMPLE_PROPERTY, sp_SAMPLE_STYLE, sp_DATE_PRODUCT_TYPE,
-            sp_UNIVALENT_UNIT, sp_I_AND_O, sp_DRAW_NUM_UNIT, sp_DRAW_AMOUNT_UNIT,
-            sp_STORAGESITE_UNIT, sp_SAMPLE_STATUS, sp_PACK_TYPE, sp_SAVE_MODE, sp_PACK,
-            sp_DRAW_METHOD, sp_FOOD_KIND1, sp_FOOD_KIND2, sp_FOOD_KIND3, sp_FOOD_KIND4,
-            sp_CHILD_FOOD_KIND_ID;
+    private Spinner sp_SAMPLE_TYPE, sp_DOMESTIC_AREA, sp_PROVINCE, sp_CITY, sp_DISTRICT,
+            sp_PERMIT_TYPE, sp_DRAW_ADDR, sp_SAMPLE_SOURCE, sp_SAMPLE_PROPERTY, sp_SAMPLE_STYLE,
+            sp_DATE_PRODUCT_TYPE, sp_UNIVALENT_UNIT, sp_I_AND_O, sp_DRAW_NUM_UNIT,
+            sp_DRAW_AMOUNT_UNIT, sp_STORAGESITE_UNIT, sp_SAMPLE_STATUS, sp_PACK_TYPE,
+            sp_SAVE_MODE, sp_PACK, sp_DRAW_METHOD, sp_FOOD_KIND1, sp_FOOD_KIND2, sp_FOOD_KIND3,
+            sp_FOOD_KIND4, sp_CHILD_FOOD_KIND_ID, sp_MANU_PROVINCE, sp_MANU_CITY, sp_MANU_DISTRICT;
     private ArrayAdapter<String> ada_UNIVALENT_UNIT, ada_AMOUNT_UNITS, ada_FOOD_KIND1,
-            ada_FOOD_KIND2, ada_FOOD_KIND3, ada_FOOD_KIND4, ada_CHILD_FOOD_KIND_ID;
+            ada_FOOD_KIND2, ada_FOOD_KIND3, ada_FOOD_KIND4, ada_CHILD_FOOD_KIND_ID, ada_PROVINCE,
+            ada_CITY, ada_DISTRICT, ada_MANU_PROVINCE, ada_MANU_CITY, ada_MANU_DISTRICT;
     private LinearLayout layout_return;
     private TextView tv_SUPPLIER_ADDR, tv_MANU_COMPANY_ADDR, tv_STATE, tv_CHECK_INFO, tv_NO,
             tv_DATE_PRODUCT, tv_DRAW_DATE, tv_CUSTOM_NO, tv_BUSINESS_SOURCE;
@@ -87,22 +91,26 @@ public class DetailsActivity extends AppCompatActivity {
     private List<String> SUPPLIERS = new ArrayList<>();
     private List<sampleEnterprise> sampleEnterprises = new ArrayList<>();
     private sampleEnterprise oneSampleEnterprise;
+    private List<Province> getProvinces = new ArrayList<>();
+    private List<City> getCites = new ArrayList<>(), getCites_MANU = new ArrayList<>();
+    private List<District> getDistricts = new ArrayList<>(), getDistricts_MANU = new ArrayList<>();
     private List<MeasureUnit> getMeasureUnit_AMOUNT_UNIT = new ArrayList<>(),
             getMeasureUnit_UNIVALENT_UNIT = new ArrayList<>();
     private List<FoodKind> getFoodKind1 = new ArrayList<>(), getFoodKind2 = new ArrayList<>(),
             getFoodKind3 = new ArrayList<>(), getFoodKind4 = new ArrayList<>();
-    private String[] FoodKinds1 = new String[]{"无任何分类"}, FoodKinds2 = new String[]{"无任何分类"},
-            FoodKinds3 = new String[]{"无任何分类"}, FoodKinds4 = new String[]{"无任何分类"},
-            childFoodKinds = new String[]{"无任何分类"}, AMOUNT_UNITS = new
-            String[]{"无任何单位"}, UNIVALENT_UNITS = new String[]{"无任何单位"};
+    private String[] FoodKinds1 = new String[]{"分类加载中"}, FoodKinds2 = new String[]{"分类加载中"},
+            FoodKinds3 = new String[]{"分类加载中"}, FoodKinds4 = new String[]{"分类加载中"},
+            childFoodKinds = new String[]{"分类加载中"}, AMOUNT_UNITS = new String[]{"单位加载中"},
+            UNIVALENT_UNITS = new String[]{"单位加载中"}, Provinces = new String[]{"省加载中"}, Cites =
+            new String[]{"区加载中"}, Cites_MANU = new String[]{"区加载中"}, Districts = new
+            String[]{"县加载中"}, Districts_MANU = new String[]{"县加载中"};
     private List<ChildFoodKind> getChildFoodKind = new ArrayList<>();
-    private EditText et_GOODS_NAME, et_SAMPLING_NOTICE_CODE, et_PROVINCE, et_CITY, et_DISTRICT,
-            et_TOWN, et_SUPPLIER_LEGAL, et_ANNUAL_SALES, et_BUSINESS_LICENCE, et_SUPPLIER_PERSON,
-            et_PERMIT_NUM, et_SUPPLIER_PHONE, et_SUPPLIER_FAX, et_SUPPLIER_ZIPCODE,
-            et_DRAW_ADDR_OTHER, et_TRADEMARK, et_SAMPLE_MODEL, et_SAMPLE_NUMBER,
-            et_EXPIRATIONDATE, et_TEST_FILE_NO, et_SAMPLE_CLASS, et_PRODUCTION_CERTIFICATE,
-            et_UNIVALENT, et_DRAW_NUM, et_DRAW_AMOUNT, et_STORAGESITE, et_MANU_COMPANY,
-            et_MANU_PROVINCE, et_MANU_CITY, et_MANU_DISTRICT, et_SAVE_MODE_OTHER,
+    private EditText et_GOODS_NAME, et_SAMPLING_NOTICE_CODE, et_TOWN, et_SUPPLIER_LEGAL,
+            et_ANNUAL_SALES, et_BUSINESS_LICENCE, et_SUPPLIER_PERSON, et_PERMIT_NUM,
+            et_SUPPLIER_PHONE, et_SUPPLIER_FAX, et_SUPPLIER_ZIPCODE, et_DRAW_ADDR_OTHER,
+            et_TRADEMARK, et_SAMPLE_MODEL, et_SAMPLE_NUMBER, et_EXPIRATIONDATE, et_TEST_FILE_NO,
+            et_SAMPLE_CLASS, et_PRODUCTION_CERTIFICATE, et_UNIVALENT, et_DRAW_NUM,
+            et_DRAW_AMOUNT, et_STORAGESITE, et_MANU_COMPANY, et_SAVE_MODE_OTHER,
             et_MANU_COMPANY_PHONE, et_SAMPLE_CLOSE_DATE, et_SAMPLE_ADDR/*, et_PACK_OTHER*/,
             et_DRAW_ORG, et_DRAW_ORG_ADDR, et_DRAW_PERSON, et_DRAW_PHONE, et_DRAW_FAX,
             et_DRAW_ZIPCODE, et_REMARK, et_GOODS_TYPE, et_DRAW_MAN;
@@ -130,169 +138,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         initView();
         initData();
-
-        actv_SUPPLIER.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!TextUtils.isEmpty(s.toString())) {
-                    Log.v("s.length()", "" + s.length());
-                    long time = System.currentTimeMillis();
-                    if (actv_SUPPLIER.getTag() == null || time - (long) actv_SUPPLIER.getTag() >
-                            1000) {
-                        if (s.length() < 10) {
-                            Log.v("attempt", "1");
-                            attemptSampleEnterprises(s.toString());
-                        } else {
-                            Log.v("isSelect", "1");
-                        }
-                    } else {
-                        Log.v("attempt", "0");
-                    }
-                    actv_SUPPLIER.setTag(time);
-                }
-            }
-        });
-
-        actv_SUPPLIER.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int pos = SUPPLIERS.indexOf(actv_SUPPLIER.getText().toString());
-                oneSampleEnterprise = sampleEnterprises.get(pos);
-                try {
-                    FormatData(2);
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                    Log.v("FormatData()", "NoSuchMethodException");
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                    Log.v("FormatData()", "InvocationTargetException");
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                    Log.v("FormatData()", "IllegalAccessException");
-                }
-                et_SUPPLIER_LEGAL.setText(oneSampleEnterprise.getLEGAL());
-                et_SUPPLIER_FAX.setText(oneSampleEnterprise.getFAX());
-                et_SUPPLIER_PERSON.setText(oneSampleEnterprise.getPERSON());
-                tv_SUPPLIER_ADDR.setText(oneSampleEnterprise.getADDR());
-                et_PROVINCE.setText(oneSampleEnterprise.getPROVINCE());
-                et_CITY.setText(oneSampleEnterprise.getCITY());
-                et_DISTRICT.setText(oneSampleEnterprise.getDISTRICT());
-                et_TOWN.setText(oneSampleEnterprise.getTOWN());
-                et_SUPPLIER_PHONE.setText(oneSampleEnterprise.getPHONE());
-                et_ANNUAL_SALES.setText(oneSampleEnterprise.getANNUAL_SALES());
-                et_BUSINESS_LICENCE.setText(oneSampleEnterprise.getBUSINESS_LICENCE());
-                SpinnerAdapter adapter3 = sp_PERMIT_TYPE.getAdapter();
-                for (int i = 0; i < adapter3.getCount(); i++) {
-                    if (oneSampleEnterprise.getPERMIT_TYPE().equals(adapter3.getItem(i).toString()
-                    )) {
-                        sp_PERMIT_TYPE.setSelection(i, true);
-                        break;
-                    }
-                }
-                et_PERMIT_NUM.setText(oneSampleEnterprise.getPERMIT_NUM());
-                et_SUPPLIER_ZIPCODE.setText(oneSampleEnterprise.getZIPCODE());
-            }
-        });
-
-        sp_FOOD_KIND1.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // TODO 自动生成的方法存根
-                et_GOODS_TYPE.setText(FoodKinds1[position]);
-                attemptGetFoodKind("TYPE2", FoodKinds1[position]);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // TODO 自动生成的方法存根
-            }
-        });
-        sp_FOOD_KIND2.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // TODO 自动生成的方法存根
-                attemptGetFoodKind("TYPE3", FoodKinds2[position]);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // TODO 自动生成的方法存根
-            }
-        });
-        sp_FOOD_KIND3.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // TODO 自动生成的方法存根
-                attemptGetFoodKind("TYPE4", FoodKinds3[position]);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // TODO 自动生成的方法存根
-            }
-        });
-        sp_FOOD_KIND4.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // TODO 自动生成的方法存根
-                attemptGetChildFoodKind(getFoodKind4.get(0).getID());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // TODO 自动生成的方法存根
-            }
-        });
-
-        Calendar calendar = Calendar.getInstance();
-        mYear = calendar.get(Calendar.YEAR);
-        mMonth = calendar.get(Calendar.MONTH);
-        mDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-        tv_DRAW_DATE.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO 自动生成的方法存
-                new DatePickerDialog(context, 0, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker DatePicker,
-                                          int Year, int MonthOfYear, int DayOfMonth) {
-                        str_DRAW_DATE = String.format(Locale.CHINA, "%02d-%02d-%02d",
-                                Year, (MonthOfYear + 1), DayOfMonth);
-                        tv_DRAW_DATE.setText(str_DRAW_DATE);
-                    }
-                }, mYear, mMonth, mDay, true).show();
-            }
-        });
-
-        tv_DATE_PRODUCT.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO 自动生成的方法存
-                new DatePickerDialog(context, 0,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker DatePicker,
-                                                  int Year, int MonthOfYear, int DayOfMonth) {
-                                str_DATE_PRODUCT = String.format(Locale.CHINA, "%02d-%02d-%02d",
-                                        Year, (MonthOfYear + 1), DayOfMonth);
-                                tv_DATE_PRODUCT.setText(str_DATE_PRODUCT);
-                            }
-                        }, mYear, mMonth, mDay, true).show();
-            }
-        });
+        viewAction();
     }
 
     public void initView() {
@@ -310,9 +156,11 @@ public class DetailsActivity extends AppCompatActivity {
         actv_SUPPLIER = findViewById(R.id.details_SUPPLIER);
         sp_DOMESTIC_AREA = findViewById(R.id.details_DOMESTIC_AREA);
         tv_SUPPLIER_ADDR = findViewById(R.id.details_SUPPLIER_ADDR);
-        et_PROVINCE = findViewById(R.id.details_PROVINCE);
-        et_CITY = findViewById(R.id.details_CITY);
-        et_DISTRICT = findViewById(R.id.details_DISTRICT);
+
+        sp_PROVINCE = findViewById(R.id.details_PROVINCE);
+        sp_CITY = findViewById(R.id.details_CITY);
+        sp_DISTRICT = findViewById(R.id.details_DISTRICT);
+
         et_TOWN = findViewById(R.id.details_TOWN);
         et_SUPPLIER_LEGAL = findViewById(R.id.details_SUPPLIER_LEGAL);
         et_ANNUAL_SALES = findViewById(R.id.details_ANNUAL_SALES);
@@ -351,9 +199,9 @@ public class DetailsActivity extends AppCompatActivity {
         et_MANU_COMPANY = findViewById(R.id.details_MANU_COMPANY);
         et_MANU_COMPANY_PHONE = findViewById(R.id.details_MANU_COMPANY_PHONE);
         tv_MANU_COMPANY_ADDR = findViewById(R.id.details_MANU_COMPANY_ADDR);
-        et_MANU_PROVINCE = findViewById(R.id.details_MANU_PROVINCE);
-        et_MANU_CITY = findViewById(R.id.details_MANU_CITY);
-        et_MANU_DISTRICT = findViewById(R.id.details_MANU_DISTRICT);
+        sp_MANU_PROVINCE = findViewById(R.id.details_MANU_PROVINCE);
+        sp_MANU_CITY = findViewById(R.id.details_MANU_CITY);
+        sp_MANU_DISTRICT = findViewById(R.id.details_MANU_DISTRICT);
         sp_SAVE_MODE = findViewById(R.id.details_SAVE_MODE);
         et_SAVE_MODE_OTHER = findViewById(R.id.details_SAVE_MODE_OTHER);
         et_SAMPLE_CLOSE_DATE = findViewById(R.id.details_SAMPLE_CLOSE_DATE);
@@ -420,6 +268,51 @@ public class DetailsActivity extends AppCompatActivity {
                 .DRAW_METHOD, android.R.layout.simple_spinner_dropdown_item);
         sp_DRAW_METHOD.setAdapter(ada_DRAW_METHOD);
 
+        ada_PROVINCE = new ArrayAdapter<>(context, android.R.layout
+                .simple_spinner_dropdown_item, Provinces);
+        sp_PROVINCE.setAdapter(ada_PROVINCE);
+        ada_CITY = new ArrayAdapter<>(context, android.R.layout
+                .simple_spinner_dropdown_item, Cites);
+        sp_CITY.setAdapter(ada_CITY);
+        ada_DISTRICT = new ArrayAdapter<>(context, android.R.layout
+                .simple_spinner_dropdown_item, Districts);
+        sp_DISTRICT.setAdapter(ada_DISTRICT);
+
+        ada_AMOUNT_UNITS = new ArrayAdapter<>(context, android.R.layout
+                .simple_spinner_dropdown_item, AMOUNT_UNITS);
+        sp_DRAW_NUM_UNIT.setAdapter(ada_AMOUNT_UNITS);
+        sp_DRAW_AMOUNT_UNIT.setAdapter(ada_AMOUNT_UNITS);
+        sp_STORAGESITE_UNIT.setAdapter(ada_AMOUNT_UNITS);
+        ada_UNIVALENT_UNIT = new ArrayAdapter<>(context,
+                android.R.layout.simple_spinner_dropdown_item, UNIVALENT_UNITS);
+        sp_UNIVALENT_UNIT.setAdapter(ada_UNIVALENT_UNIT);
+
+        ada_FOOD_KIND1 = new ArrayAdapter<>(context,
+                android.R.layout.simple_list_item_1, FoodKinds1);
+        sp_FOOD_KIND1.setAdapter(ada_FOOD_KIND1);
+        ada_FOOD_KIND2 = new ArrayAdapter<>(context,
+                android.R.layout.simple_list_item_1, FoodKinds2);
+        sp_FOOD_KIND2.setAdapter(ada_FOOD_KIND2);
+        ada_FOOD_KIND3 = new ArrayAdapter<>(context,
+                android.R.layout.simple_list_item_1, FoodKinds3);
+        sp_FOOD_KIND3.setAdapter(ada_FOOD_KIND3);
+        ada_FOOD_KIND4 = new ArrayAdapter<>(context,
+                android.R.layout.simple_list_item_1, FoodKinds4);
+        sp_FOOD_KIND4.setAdapter(ada_FOOD_KIND4);
+        ada_CHILD_FOOD_KIND_ID = new ArrayAdapter<>
+                (context, android.R.layout.simple_list_item_1, childFoodKinds);
+        sp_CHILD_FOOD_KIND_ID.setAdapter(ada_CHILD_FOOD_KIND_ID);
+
+        ada_MANU_PROVINCE = new ArrayAdapter<>(context, android.R.layout
+                .simple_spinner_dropdown_item, Provinces);
+        sp_MANU_PROVINCE.setAdapter(ada_MANU_PROVINCE);
+        ada_MANU_CITY = new ArrayAdapter<>(context, android.R.layout
+                .simple_spinner_dropdown_item, Cites_MANU);
+        sp_MANU_CITY.setAdapter(ada_MANU_CITY);
+        ada_MANU_DISTRICT = new ArrayAdapter<>(context, android.R.layout
+                .simple_spinner_dropdown_item, Districts_MANU);
+        sp_MANU_DISTRICT.setAdapter(ada_MANU_DISTRICT);
+
         toolbar = findViewById(R.id.toolbar_details);
         toolbar.setTitle("详细信息");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
@@ -430,9 +323,9 @@ public class DetailsActivity extends AppCompatActivity {
         //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
         //toolbar.setOnMenuItemClickListener(onMenuItemClick);
 
+        attemptGetProvinces();
         attemptGetMeasureUnits("AMOUNT_UNIT");
         attemptGetMeasureUnits("UNIVALENT_UNIT");
-
         attemptGetFoodKind("TYPE1", "1");
     }
 
@@ -467,9 +360,6 @@ public class DetailsActivity extends AppCompatActivity {
             tv_BUSINESS_SOURCE.setText(task.getBUSINESS_SOURCE());
             actv_SUPPLIER.setText(task.getSUPPLIER());
             tv_SUPPLIER_ADDR.setText(task.getSUPPLIER_ADDR());
-            et_PROVINCE.setText(task.getPROVINCE());
-            et_CITY.setText(task.getCITY());
-            et_DISTRICT.setText(task.getDISTRICT());
             et_TOWN.setText(task.getTOWN());
             et_SUPPLIER_LEGAL.setText(task.getSUPPLIER_LEGAL());
             et_ANNUAL_SALES.setText(task.getANNUAL_SALES());
@@ -495,9 +385,6 @@ public class DetailsActivity extends AppCompatActivity {
             et_MANU_COMPANY.setText(task.getMANU_COMPANY());
             et_MANU_COMPANY_PHONE.setText(task.getMANU_COMPANY_PHONE());
             tv_MANU_COMPANY_ADDR.setText(task.getMANU_COMPANY_ADDR());
-            et_MANU_PROVINCE.setText(task.getMANU_PROVINCE());
-            et_MANU_CITY.setText(task.getMANU_CITY());
-            et_MANU_DISTRICT.setText(task.getMANU_DISTRICT());
             et_SAVE_MODE_OTHER.setText(task.getSAVE_MODE_OTHER());
             et_SAMPLE_CLOSE_DATE.setText(task.getSAMPLE_CLOSE_DATE());
             et_SAMPLE_ADDR.setText(task.getSAMPLE_ADDR());
@@ -676,8 +563,479 @@ public class DetailsActivity extends AppCompatActivity {
                     sp_CHILD_FOOD_KIND_ID.setSelection(i, true);
                     break;
                 }
-            }*/
+            }
+
+            SpinnerAdapter adapter20 = sp_PROVINCE.getAdapter();
+            for (int i = 0; i < adapter20.getCount(); i++) {
+                if (task.getPROVINCE().equals(adapter20.getItem(i).toString())) {
+                    sp_PROVINCE.setSelection(i, true);
+                    break;
+                }
+            }
+
+            SpinnerAdapter adapter21 = sp_CITY.getAdapter();
+            for (int i = 0; i < adapter21.getCount(); i++) {
+                if (task.getCITY().equals(adapter21.getItem(i).toString())) {
+                    sp_CITY.setSelection(i, true);
+                    break;
+                }
+            }
+
+            SpinnerAdapter adapter22 = sp_DISTRICT.getAdapter();
+            for (int i = 0; i < adapter22.getCount(); i++) {
+                if (task.getDISTRICT().equals(adapter22.getItem(i).toString())) {
+                    sp_DISTRICT.setSelection(i, true);
+                    break;
+                }
+            }
+
+            SpinnerAdapter adapter23 = sp_MANU_PROVINCE.getAdapter();
+            for (int i = 0; i < adapter23.getCount(); i++) {
+                if (task.getMANU_PROVINCE().equals(adapter23.getItem(i).toString())) {
+                    sp_MANU_PROVINCE.setSelection(i, true);
+                    break;
+                }
+            }
+
+            SpinnerAdapter adapter24 = sp_MANU_CITY.getAdapter();
+            for (int i = 0; i < adapter24.getCount(); i++) {
+                if (task.getMANU_CITY().equals(adapter24.getItem(i).toString())) {
+                    sp_MANU_CITY.setSelection(i, true);
+                    break;
+                }
+            }
+
+            SpinnerAdapter adapter25 = sp_MANU_DISTRICT.getAdapter();
+            for (int i = 0; i < adapter25.getCount(); i++) {
+                if (task.getMANU_DISTRICT().equals(adapter25.getItem(i).toString())) {
+                    sp_MANU_DISTRICT.setSelection(i, true);
+                    break;
+                }
+            }
+            */
         }
+    }
+
+    public void viewAction() {
+        actv_SUPPLIER.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!TextUtils.isEmpty(s.toString())) {
+                    Log.v("s.length()", "" + s.length());
+                    long time = System.currentTimeMillis();
+                    if (actv_SUPPLIER.getTag() == null || time - (long) actv_SUPPLIER.getTag() >
+                            1000) {
+                        if (s.length() < 10) {
+                            Log.v("attempt", "1");
+                            attemptSampleEnterprises(s.toString());
+                        } else {
+                            Log.v("isSelect", "1");
+                        }
+                    } else {
+                        Log.v("attempt", "0");
+                    }
+                    actv_SUPPLIER.setTag(time);
+                }
+            }
+        });
+
+        actv_SUPPLIER.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int pos = SUPPLIERS.indexOf(actv_SUPPLIER.getText().toString());
+                oneSampleEnterprise = sampleEnterprises.get(pos);
+                try {
+                    FormatData(2);
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                    Log.v("FormatData()", "NoSuchMethodException");
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                    Log.v("FormatData()", "InvocationTargetException");
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    Log.v("FormatData()", "IllegalAccessException");
+                }
+                et_SUPPLIER_LEGAL.setText(oneSampleEnterprise.getLEGAL());
+                et_SUPPLIER_FAX.setText(oneSampleEnterprise.getFAX());
+                et_SUPPLIER_PERSON.setText(oneSampleEnterprise.getPERSON());
+                tv_SUPPLIER_ADDR.setText(oneSampleEnterprise.getADDR());
+                SpinnerAdapter adapter1 = sp_PROVINCE.getAdapter();
+                for (int i = 0; i < adapter1.getCount(); i++) {
+                    if (oneSampleEnterprise.getPROVINCE().equals(adapter1.getItem(i).toString()
+                    )) {
+                        sp_PROVINCE.setSelection(i, true);
+                        break;
+                    }
+                }
+                SpinnerAdapter adapter2 = sp_CITY.getAdapter();
+                for (int i = 0; i < adapter2.getCount(); i++) {
+                    if (oneSampleEnterprise.getCITY().equals(adapter2.getItem(i).toString()
+                    )) {
+                        sp_CITY.setSelection(i, true);
+                        break;
+                    }
+                }
+                SpinnerAdapter adapter3 = sp_DISTRICT.getAdapter();
+                for (int i = 0; i < adapter3.getCount(); i++) {
+                    if (oneSampleEnterprise.getDISTRICT().equals(adapter3.getItem(i).toString()
+                    )) {
+                        sp_DISTRICT.setSelection(i, true);
+                        break;
+                    }
+                }
+                et_TOWN.setText(oneSampleEnterprise.getTOWN());
+                et_SUPPLIER_PHONE.setText(oneSampleEnterprise.getPHONE());
+                et_ANNUAL_SALES.setText(oneSampleEnterprise.getANNUAL_SALES());
+                et_BUSINESS_LICENCE.setText(oneSampleEnterprise.getBUSINESS_LICENCE());
+                SpinnerAdapter adapter4 = sp_PERMIT_TYPE.getAdapter();
+                for (int i = 0; i < adapter4.getCount(); i++) {
+                    if (oneSampleEnterprise.getPERMIT_TYPE().equals(adapter4.getItem(i).toString()
+                    )) {
+                        sp_PERMIT_TYPE.setSelection(i, true);
+                        break;
+                    }
+                }
+                et_PERMIT_NUM.setText(oneSampleEnterprise.getPERMIT_NUM());
+                et_SUPPLIER_ZIPCODE.setText(oneSampleEnterprise.getZIPCODE());
+            }
+        });
+
+        sp_FOOD_KIND1.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                et_GOODS_TYPE.setText(FoodKinds1[position]);
+                attemptGetFoodKind("TYPE2", FoodKinds1[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+        sp_FOOD_KIND2.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                attemptGetFoodKind("TYPE3", FoodKinds2[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+        sp_FOOD_KIND3.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                attemptGetFoodKind("TYPE4", FoodKinds3[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+        sp_FOOD_KIND4.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                if (getFoodKind4.size() > 0) {
+                    attemptGetChildFoodKind(getFoodKind4.get(0).getID());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+
+        Calendar calendar = Calendar.getInstance();
+        mYear = calendar.get(Calendar.YEAR);
+        mMonth = calendar.get(Calendar.MONTH);
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+        tv_DRAW_DATE.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO 自动生成的方法存
+                new DatePickerDialog(context, 0, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker DatePicker,
+                                          int Year, int MonthOfYear, int DayOfMonth) {
+                        str_DRAW_DATE = String.format(Locale.CHINA, "%02d-%02d-%02d",
+                                Year, (MonthOfYear + 1), DayOfMonth);
+                        tv_DRAW_DATE.setText(str_DRAW_DATE);
+                    }
+                }, mYear, mMonth, mDay, true).show();
+            }
+        });
+
+        tv_DATE_PRODUCT.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO 自动生成的方法存
+                new DatePickerDialog(context, 0,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker DatePicker,
+                                                  int Year, int MonthOfYear, int DayOfMonth) {
+                                str_DATE_PRODUCT = String.format(Locale.CHINA, "%02d-%02d-%02d",
+                                        Year, (MonthOfYear + 1), DayOfMonth);
+                                tv_DATE_PRODUCT.setText(str_DATE_PRODUCT);
+                            }
+                        }, mYear, mMonth, mDay, true).show();
+            }
+        });
+
+        sp_PROVINCE.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                if (getProvinces.size() > 0) {
+                    attemptGetCitesByID(getProvinces.get(position).getID(), 1);
+                }
+                if (sp_PROVINCE.getSelectedItem() != null && sp_CITY.getSelectedItem() != null &&
+                        sp_DISTRICT.getSelectedItem() != null) {
+                    tv_SUPPLIER_ADDR.setText(String.format(getResources().getString(R.string
+                            .supplier_addr), sp_PROVINCE.getSelectedItem().toString(), sp_CITY
+                            .getSelectedItem().toString(), sp_DISTRICT.getSelectedItem()
+                            .toString(), et_TOWN.getText().toString()));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+
+        sp_CITY.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                if (getCites.size() > 0) {
+                    attemptGetDistrictsByID(getCites.get(position).getID(), 1);
+                }
+                if (sp_PROVINCE.getSelectedItem() != null && sp_CITY.getSelectedItem() != null &&
+                        sp_DISTRICT.getSelectedItem() != null) {
+                    tv_SUPPLIER_ADDR.setText(String.format(getResources().getString(R.string
+                            .supplier_addr), sp_PROVINCE.getSelectedItem().toString(), sp_CITY
+                            .getSelectedItem().toString(), sp_DISTRICT.getSelectedItem()
+                            .toString(), et_TOWN.getText().toString()));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+
+        sp_DISTRICT.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                if (sp_PROVINCE.getSelectedItem() != null && sp_CITY.getSelectedItem() != null &&
+                        sp_DISTRICT.getSelectedItem() != null) {
+                    tv_SUPPLIER_ADDR.setText(String.format(getResources().getString(R.string
+                            .supplier_addr), sp_PROVINCE.getSelectedItem().toString(), sp_CITY
+                            .getSelectedItem().toString(), sp_DISTRICT.getSelectedItem()
+                            .toString(), et_TOWN.getText().toString()));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+
+        et_TOWN.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                tv_SUPPLIER_ADDR.setText(String.format(getResources().getString(R.string
+                                .supplier_addr), sp_PROVINCE.getSelectedItem().toString(), sp_CITY
+                                .getSelectedItem().toString(), sp_DISTRICT.getSelectedItem()
+                                .toString(),
+                        s.toString()));
+            }
+        });
+
+        sp_MANU_PROVINCE.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                if (getProvinces.size() > 0) {
+                    attemptGetCitesByID(getProvinces.get(position).getID(), 2);
+                }
+                if (sp_MANU_PROVINCE.getSelectedItem() != null && sp_MANU_CITY.getSelectedItem()
+                        != null && sp_MANU_DISTRICT.getSelectedItem() != null) {
+                    tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
+                            .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
+                            .toString(), sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
+                            .getSelectedItem().toString()));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+
+        sp_MANU_CITY.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                if (getCites_MANU.size() > 0) {
+                    attemptGetDistrictsByID(getCites_MANU.get(position).getID(), 2);
+                }
+                if (sp_MANU_PROVINCE.getSelectedItem() != null && sp_MANU_CITY.getSelectedItem()
+                        != null && sp_MANU_DISTRICT.getSelectedItem() != null) {
+                    tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
+                            .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
+                            .toString(), sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
+                            .getSelectedItem().toString()));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+
+        sp_MANU_DISTRICT.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                if (sp_MANU_PROVINCE.getSelectedItem() != null && sp_MANU_CITY.getSelectedItem()
+                        != null && sp_MANU_DISTRICT.getSelectedItem() != null) {
+                    tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
+                            .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
+                            .toString(), sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
+                            .getSelectedItem().toString()));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+
+        sp_DRAW_NUM_UNIT.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                sp_DRAW_AMOUNT_UNIT.setSelection(position, true);
+                sp_STORAGESITE_UNIT.setSelection(position, true);
+
+                /*SpinnerAdapter adapter1 = sp_DRAW_AMOUNT_UNIT.getAdapter();
+                for (int i = 0; i < adapter1.getCount(); i++) {
+                    if (AMOUNT_UNITS[position].equals(adapter1.getItem(i).toString())) {
+                        sp_DRAW_AMOUNT_UNIT.setSelection(i, true);
+                        break;
+                    }
+                }
+                SpinnerAdapter adapter2 = sp_STORAGESITE_UNIT.getAdapter();
+                for (int i = 0; i < adapter2.getCount(); i++) {
+                    if (task.getSAMPLE_TYPE().equals(adapter2.getItem(i).toString())) {
+                        sp_STORAGESITE_UNIT.setSelection(i, true);
+                        break;
+                    }
+                }*/
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+
+        sp_DRAW_AMOUNT_UNIT.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                sp_DRAW_NUM_UNIT.setSelection(position, true);
+                sp_STORAGESITE_UNIT.setSelection(position, true);
+
+                /*SpinnerAdapter adapter1 = sp_DRAW_AMOUNT_UNIT.getAdapter();
+                for (int i = 0; i < adapter1.getCount(); i++) {
+                    if (AMOUNT_UNITS[position].equals(adapter1.getItem(i).toString())) {
+                        sp_DRAW_AMOUNT_UNIT.setSelection(i, true);
+                        break;
+                    }
+                }
+                SpinnerAdapter adapter2 = sp_STORAGESITE_UNIT.getAdapter();
+                for (int i = 0; i < adapter2.getCount(); i++) {
+                    if (task.getSAMPLE_TYPE().equals(adapter2.getItem(i).toString())) {
+                        sp_STORAGESITE_UNIT.setSelection(i, true);
+                        break;
+                    }
+                }*/
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+
+        sp_STORAGESITE_UNIT.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                sp_DRAW_NUM_UNIT.setSelection(position, true);
+                sp_DRAW_AMOUNT_UNIT.setSelection(position, true);
+
+                /*SpinnerAdapter adapter1 = sp_DRAW_AMOUNT_UNIT.getAdapter();
+                for (int i = 0; i < adapter1.getCount(); i++) {
+                    if (AMOUNT_UNITS[position].equals(adapter1.getItem(i).toString())) {
+                        sp_DRAW_AMOUNT_UNIT.setSelection(i, true);
+                        break;
+                    }
+                }
+                SpinnerAdapter adapter2 = sp_STORAGESITE_UNIT.getAdapter();
+                for (int i = 0; i < adapter2.getCount(); i++) {
+                    if (task.getSAMPLE_TYPE().equals(adapter2.getItem(i).toString())) {
+                        sp_STORAGESITE_UNIT.setSelection(i, true);
+                        break;
+                    }
+                }*/
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
     }
 
     public void attemptSampleEnterprises(String key) {
@@ -730,6 +1088,152 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
+    public void attemptGetProvinces() {
+        FDA_API request = HttpUtils.JsonApi();
+        Call<List<Province>> call = request.getProvinces();
+        call.enqueue(new Callback<List<Province>>() {
+            @Override
+            public void onResponse(Call<List<Province>> call, Response<List<Province>> response) {
+                if (response.code() == 200) {
+                    if (response.body() != null) {
+                        Log.v("getProvinces请求成功!", "response.body is not null");
+                        getProvinces = response.body();
+                        if (getProvinces.size() > 0) {
+                            Log.v("Provinces.size", "" + getProvinces.size());
+                            Provinces = new String[getProvinces.size()];
+                            for (int i = 0; i < getProvinces.size(); i++) {
+                                Provinces[i] = getProvinces.get(i).getNAME();
+                            }
+                        } else {
+                            Provinces = new String[]{"省加载失败"};
+                        }
+                        ada_PROVINCE = new ArrayAdapter<>(context, android.R.layout
+                                .simple_spinner_dropdown_item, Provinces);
+                        ada_MANU_PROVINCE = new ArrayAdapter<>(context, android.R.layout
+                                .simple_spinner_dropdown_item, Provinces);
+                        sp_PROVINCE.setAdapter(ada_PROVINCE);
+                        sp_MANU_PROVINCE.setAdapter(ada_MANU_PROVINCE);
+                    } else {
+                        Log.v("getProvinces请求成功!", "response.body is null");
+                    }
+                } else {
+                    Log.v("getProvinces请求失败!", "请求失败!(" + response.code() + ")请稍后再试");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Province>> call, Throwable t) {
+                Log.v("getProvinces请求失败!", t.getMessage());
+            }
+        });
+    }
+
+    public void attemptGetCitesByID(int ID, final int type) {
+        FDA_API request = HttpUtils.JsonApi();
+        Call<List<City>> call = request.getCitesByID(ID);
+        call.enqueue(new Callback<List<City>>() {
+            @Override
+            public void onResponse(Call<List<City>> call, Response<List<City>> response) {
+                if (response.code() == 200) {
+                    if (response.body() != null) {
+                        Log.v("getCites请求成功!", "response.body is not null");
+                        if (type == 1) {
+                            getCites = response.body();
+                            if (getCites.size() > 0) {
+                                Log.v("Cites.size", "" + getCites.size());
+                                Cites = new String[getCites.size()];
+                                for (int i = 0; i < getCites.size(); i++) {
+                                    Cites[i] = getCites.get(i).getNAME();
+                                }
+                            } else {
+                                Cites = new String[]{"区加载失败"};
+                            }
+                            ada_CITY = new ArrayAdapter<>(context, android.R.layout
+                                    .simple_spinner_dropdown_item, Cites);
+                            sp_CITY.setAdapter(ada_CITY);
+                        } else if (type == 2) {
+                            getCites_MANU = response.body();
+                            if (getCites_MANU.size() > 0) {
+                                Log.v("Cites_MANU.size", "" + getCites_MANU.size());
+                                Cites_MANU = new String[getCites_MANU.size()];
+                                for (int i = 0; i < getCites_MANU.size(); i++) {
+                                    Cites_MANU[i] = getCites_MANU.get(i).getNAME();
+                                }
+                            } else {
+                                Cites_MANU = new String[]{"区加载失败"};
+                            }
+                            ada_MANU_CITY = new ArrayAdapter<>(context, android.R.layout
+                                    .simple_spinner_dropdown_item, Cites_MANU);
+                            sp_MANU_CITY.setAdapter(ada_MANU_CITY);
+                        }
+                    } else {
+                        Log.v("getCites请求成功!", "response.body is null");
+                    }
+                } else {
+                    Log.v("getCites请求失败!", "请求失败!(" + response.code() + ")请稍后再试");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<City>> call, Throwable t) {
+                Log.v("getCites请求失败!", t.getMessage());
+            }
+        });
+    }
+
+    public void attemptGetDistrictsByID(int ID, final int type) {
+        FDA_API request = HttpUtils.JsonApi();
+        Call<List<District>> call = request.getDistrictsByID(ID);
+        call.enqueue(new Callback<List<District>>() {
+            @Override
+            public void onResponse(Call<List<District>> call, Response<List<District>> response) {
+                if (response.code() == 200) {
+                    if (response.body() != null) {
+                        Log.v("getDistricts请求成功!", "response.body is not null");
+                        if (type == 1) {
+                            getDistricts = response.body();
+                            if (getDistricts.size() > 0) {
+                                Log.v("Districts.size", "" + getDistricts.size());
+                                Districts = new String[getDistricts.size()];
+                                for (int i = 0; i < getDistricts.size(); i++) {
+                                    Districts[i] = getDistricts.get(i).getNAME();
+                                }
+                            } else {
+                                Districts = new String[]{"区加载失败"};
+                            }
+                            ada_DISTRICT = new ArrayAdapter<>(context, android.R.layout
+                                    .simple_spinner_dropdown_item, Districts);
+                            sp_DISTRICT.setAdapter(ada_DISTRICT);
+                        } else if (type == 2) {
+                            getDistricts_MANU = response.body();
+                            if (getDistricts_MANU.size() > 0) {
+                                Log.v("Districts_MANU.size", "" + getDistricts_MANU.size());
+                                Districts_MANU = new String[getDistricts_MANU.size()];
+                                for (int i = 0; i < getDistricts_MANU.size(); i++) {
+                                    Districts_MANU[i] = getDistricts_MANU.get(i).getNAME();
+                                }
+                            } else {
+                                Districts_MANU = new String[]{"区加载失败"};
+                            }
+                            ada_MANU_DISTRICT = new ArrayAdapter<>(context, android.R.layout
+                                    .simple_spinner_dropdown_item, Districts_MANU);
+                            sp_MANU_DISTRICT.setAdapter(ada_MANU_DISTRICT);
+                        }
+                    } else {
+                        Log.v("getDistricts请求成功!", "response.body is null");
+                    }
+                } else {
+                    Log.v("getDistricts请求失败!", "请求失败!(" + response.code() + ")请稍后再试");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<District>> call, Throwable t) {
+                Log.v("getDistricts请求失败!", t.getMessage());
+            }
+        });
+    }
+
     public void attemptGetMeasureUnits(final String type) {
         FDA_API request = HttpUtils.JsonApi();
         Call<List<MeasureUnit>> call = request.getMeasureUnits(type);
@@ -737,14 +1241,7 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<MeasureUnit>> call, Response<List<MeasureUnit>>
                     response) {
-                if (response.code() == 401) {
-                    Log.v("getMeasureUnits请求", "token过期");
-                    Intent intent_login = new Intent();
-                    intent_login.setClass(DetailsActivity.this,
-                            LoginActivity.class);
-                    intent_login.putExtra("login_type", 1);
-                    startActivity(intent_login);
-                } else if (response.code() == 200) {
+                if (response.code() == 200) {
                     if (response.body() != null) {
                         Log.v("getMeasureUnits请求成功!", "response.body is not null");
                         if (type.equals("AMOUNT_UNIT")) {
@@ -837,7 +1334,6 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_FOOD_KIND1 = new ArrayAdapter<>(context,
                                     android.R.layout.simple_list_item_1, FoodKinds1);
                             sp_FOOD_KIND1.setAdapter(ada_FOOD_KIND1);
-                            //attemptgetFoodKind("TYPE2", FoodKinds1[0]);
                         } else if (Food_Kind_Type.equals("TYPE2")) {
                             Log.v("getFoodKind2请求成功!", "response.body is not null");
                             getFoodKind2 = response.body();
@@ -849,7 +1345,6 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_FOOD_KIND2 = new ArrayAdapter<>(context,
                                     android.R.layout.simple_list_item_1, FoodKinds2);
                             sp_FOOD_KIND2.setAdapter(ada_FOOD_KIND2);
-                            //attemptgetFoodKind("TYPE3", FoodKinds2[0]);
                         } else if (Food_Kind_Type.equals("TYPE3")) {
                             Log.v("getFoodKind3请求成功!", "response.body is not null");
                             getFoodKind3 = response.body();
@@ -861,7 +1356,6 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_FOOD_KIND3 = new ArrayAdapter<>(context,
                                     android.R.layout.simple_list_item_1, FoodKinds3);
                             sp_FOOD_KIND3.setAdapter(ada_FOOD_KIND3);
-                            //attemptgetFoodKind("TYPE4", FoodKinds3[0]);
                         } else if (Food_Kind_Type.equals("TYPE4")) {
                             Log.v("getFoodKind4请求成功!", "response.body is not null");
                             getFoodKind4 = response.body();
@@ -873,7 +1367,6 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_FOOD_KIND4 = new ArrayAdapter<>(context,
                                     android.R.layout.simple_list_item_1, FoodKinds4);
                             sp_FOOD_KIND4.setAdapter(ada_FOOD_KIND4);
-                            //attemptgetChildFoodKind(getFoodKind4.get(0).getID());
                         }
                     } else {
                         Log.v("getFoodKind请求成功!", "response.body is null");
@@ -891,11 +1384,6 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     public void attemptGetChildFoodKind(int PFK_ID) {
-        /*if (((MyApplication) getApplication()).getTOKEN() == null) {
-            token = sharedPreferences.getString("TOKEN", null);
-        } else {
-            token = ((MyApplication) getApplication()).getTOKEN();
-        }*/
         FDA_API request = HttpUtils.JsonApi();
         Call<List<ChildFoodKind>> call = request.getChildFoodKind(token, PFK_ID);
         call.enqueue(new Callback<List<ChildFoodKind>>() {
@@ -951,9 +1439,9 @@ public class DetailsActivity extends AppCompatActivity {
             task.setSUPPLIER(actv_SUPPLIER.getText().toString());
             task.setDOMESTIC_AREA(sp_DOMESTIC_AREA.getSelectedItem().toString());
             task.setSUPPLIER_ADDR(tv_SUPPLIER_ADDR.getText().toString());
-            task.setPROVINCE(et_PROVINCE.getText().toString());
-            task.setCITY(et_CITY.getText().toString());
-            task.setDISTRICT(et_DISTRICT.getText().toString());
+            task.setPROVINCE(sp_PROVINCE.getSelectedItem().toString());
+            task.setCITY(sp_CITY.getSelectedItem().toString());
+            task.setDISTRICT(sp_DISTRICT.getSelectedItem().toString());
             task.setTOWN(et_TOWN.getText().toString());
             task.setSUPPLIER_LEGAL(et_SUPPLIER_LEGAL.getText().toString());
             task.setANNUAL_SALES(et_ANNUAL_SALES.getText().toString());
@@ -1003,9 +1491,10 @@ public class DetailsActivity extends AppCompatActivity {
             task.setMANU_COMPANY(et_MANU_COMPANY.getText().toString());
             task.setMANU_COMPANY_PHONE(et_MANU_COMPANY_PHONE.getText().toString());
             task.setMANU_COMPANY_ADDR(tv_MANU_COMPANY_ADDR.getText().toString());
-            task.setMANU_PROVINCE(et_MANU_PROVINCE.getText().toString());
-            task.setMANU_CITY(et_MANU_CITY.getText().toString());
-            task.setMANU_DISTRICT(et_MANU_DISTRICT.getText().toString());
+
+            task.setMANU_PROVINCE(sp_MANU_PROVINCE.getSelectedItem().toString());
+            task.setMANU_CITY(sp_MANU_CITY.getSelectedItem().toString());
+            task.setMANU_DISTRICT(sp_MANU_DISTRICT.getSelectedItem().toString());
 
             task.setSAVE_MODE(sp_SAVE_MODE.getSelectedItem().toString());
             task.setSAVE_MODE_OTHER(et_SAVE_MODE_OTHER.getText().toString());
@@ -1021,8 +1510,7 @@ public class DetailsActivity extends AppCompatActivity {
             task.setFOOD_KIND4(sp_FOOD_KIND4.getSelectedItem().toString());
             for (int i = 0; i < getChildFoodKind.size(); i++) {
                 if (getChildFoodKind.get(i).getCHILD_TYPE().equals(sp_CHILD_FOOD_KIND_ID
-                        .getSelectedItem
-                                ().toString())) {
+                        .getSelectedItem().toString())) {
                     task.setCHILD_FOOD_KIND_ID("" + getChildFoodKind.get(i).getID());
                 } else {
                     task.setCHILD_FOOD_KIND_ID("");

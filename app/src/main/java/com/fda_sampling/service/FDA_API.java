@@ -1,9 +1,12 @@
 package com.fda_sampling.service;
 
 import com.fda_sampling.model.ChildFoodKind;
+import com.fda_sampling.model.City;
+import com.fda_sampling.model.District;
 import com.fda_sampling.model.FoodKind;
 import com.fda_sampling.model.ImageInfo;
 import com.fda_sampling.model.LoginStatus;
+import com.fda_sampling.model.Province;
 import com.fda_sampling.model.SubmitStatus;
 import com.fda_sampling.model.Task;
 import com.fda_sampling.model.Unit;
@@ -92,4 +95,13 @@ public interface FDA_API {
     @POST("api/Apply/getSamplingFeedback")
     Call<ResponseBody> getSamplingFeedback(@Header("LIMS_Token") String LIMS_Token, @Query
             ("applyNo") String applyNo);
+
+    @GET("api/Param/getProvinces")
+    Call<List<Province>> getProvinces();
+
+    @GET("api/Param/getCitesByID")
+    Call<List<City>> getCitesByID(@Query("ID") int ID);
+
+    @GET("api/Param/getDistrictsByID")
+    Call<List<District>> getDistrictsByID(@Query("ID") int ID);
 }

@@ -147,8 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
                 //toolbar.setOnMenuItemClickListener(onMenuItemClick);
 
-                tv_user_name.setText(String.format(getResources().getString(R.string.user_name),
-                        name));
+                tv_user_name.setText(String.format(getResources().getString(R.string.user_name), name));
                 tv_app_versionName.setText(String.format(getResources().getString(R.string
                         .app_versionName), versionName));
                 ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
