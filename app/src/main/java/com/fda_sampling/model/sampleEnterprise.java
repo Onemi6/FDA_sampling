@@ -22,6 +22,8 @@ public class sampleEnterprise {
 
     private String TOWN;
 
+    private String SUPPLIER_ADDR_TXT;
+
     private String PHONE;
 
     private String ANNUAL_SALES;
@@ -112,6 +114,14 @@ public class sampleEnterprise {
 
     public String getTOWN() {
         return TOWN;
+    }
+
+    public void setSUPPLIER_ADDR_TXT(String SUPPLIER_ADDR_TXT) {
+        this.SUPPLIER_ADDR_TXT = SUPPLIER_ADDR_TXT;
+    }
+
+    public String getSUPPLIER_ADDR_TXT() {
+        return SUPPLIER_ADDR_TXT;
     }
 
     public void setPHONE(String PHONE) {

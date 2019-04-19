@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.TaskQueryActivity">
+
+    <item
+        android:id="@+id/action_task_query"
+        android:orderInCategory="100"
+        android:title="@string/task_query"
+        app:showAsAction="never" />
+
+</menu>

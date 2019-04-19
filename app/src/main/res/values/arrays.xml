@@ -27,7 +27,7 @@
         <item>流通环节:批发市场</item>
         <item>流通环节:商场</item>
         <item>流通环节:超市</item>
-        <item>流通环节:小杂食店</item>
+        <item>流通环节:小食杂店</item>
         <item>流通环节:网购</item>
         <item>流通环节:其他</item>
         <item>餐饮环节:餐馆(特大型餐馆)</item>
@@ -124,6 +124,7 @@
     </string-array>
 
     <string-array name="TASk_MON">
+        <item>全年</item>
         <item>一月</item>
         <item>二月</item>
         <item>三月</item>
@@ -136,6 +137,5 @@
         <item>十月</item>
         <item>十一月</item>
         <item>十二月</item>
-        <item>全年</item>
     </string-array>
 </resources>

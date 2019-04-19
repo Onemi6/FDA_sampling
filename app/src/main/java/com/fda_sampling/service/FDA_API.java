@@ -58,8 +58,7 @@ public interface FDA_API {
     @Multipart
     @POST("api/Apply/ImageUpload")
     Call<UploadImg> ImageUpload(@Header("LIMS_Token") String LIMS_Token, @Part("id") RequestBody
-            id, @Part("type") RequestBody type, @Part
-                                        MultipartBody.Part file);
+            id, @Part("type") RequestBody type, @Part MultipartBody.Part file);
 
     @POST("api/Apply/ImageInfo")
     Call<List<ImageInfo>> ImageInfo(@Header("LIMS_Token") String LIMS_Token, @Query("Apply_No")
@@ -94,6 +93,10 @@ public interface FDA_API {
 
     @POST("api/Apply/getSamplingFeedback")
     Call<ResponseBody> getSamplingFeedback(@Header("LIMS_Token") String LIMS_Token, @Query
+            ("applyNo") String applyNo);
+
+    @POST("api/Apply/getSamplingToldbook")
+    Call<ResponseBody> getSamplingToldbook(@Header("LIMS_Token") String LIMS_Token, @Query
             ("applyNo") String applyNo);
 
     @GET("api/Param/getProvinces")

@@ -10,8 +10,9 @@
     <string name="prov_submit">暂存</string>
     <string name="submit">提交</string>
     <string name="upload_img">上传图片</string>
-    <string name="printf_SamplingBill">打印抽样单</string>
-    <string name="printf_SamplingFeedback">打印反馈单</string>
+    <string name="SamplingBill">抽样单</string>
+    <string name="SamplingFeedback">反馈单</string>
+    <string name="Notification">告知书</string>
     <string name="selectImg">选择图片</string>
     <string name="refresh">刷新</string>
     <string name="payment">付款凭证</string>
@@ -54,8 +55,8 @@
     <string name="feedback">反馈</string>
     <string name="more">更多</string>
     <string name="select_date">请选择日期</string>
-    <string name="supplier_addr">%1$s  省（区、市）%2$s  地区（市、州、盟）%3$s  县（市、区）%4$s  乡（镇）</string>
-    <string name="manu_company_addr">%1$s  省（区、市）%2$s  地区（市、州、盟）%3$s  县（市、区）</string>
+    <string name="supplier_addr">%1$s省(区、市)%2$s地区(市、州、盟)%3$s县(市、区)%4$s乡(镇)%5$s</string>
+    <string name="manu_company_addr">%1$s省(区、市)%2$s地区(市、州、盟)%3$s县(市、区)%4$s乡(镇)%5$s</string>
     <string name="img_desc">Image Description</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

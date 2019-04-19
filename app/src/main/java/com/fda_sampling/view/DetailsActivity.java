@@ -32,6 +32,8 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.dou361.dialogui.DialogUIUtils;
+import com.dou361.dialogui.bean.BuildBean;
 import com.fda_sampling.R;
 import com.fda_sampling.model.ChildFoodKind;
 import com.fda_sampling.model.City;
@@ -86,7 +88,7 @@ public class DetailsActivity extends AppCompatActivity {
             ada_CITY, ada_DISTRICT, ada_MANU_PROVINCE, ada_MANU_CITY, ada_MANU_DISTRICT;
     private LinearLayout layout_return;
     private TextView tv_SUPPLIER_ADDR, tv_MANU_COMPANY_ADDR, tv_STATE, tv_CHECK_INFO, tv_NO,
-            tv_DATE_PRODUCT, tv_DRAW_DATE, tv_CUSTOM_NO, tv_BUSINESS_SOURCE;
+            tv_DATE_PRODUCT, tv_DRAW_DATE, tv_CUSTOM_NO, tv_BUSINESS_SOURCE, tv_SAMPLE_ADDR;
     private AutoCompleteTextView actv_SUPPLIER;
     private List<String> SUPPLIERS = new ArrayList<>();
     private List<sampleEnterprise> sampleEnterprises = new ArrayList<>();
@@ -105,18 +107,20 @@ public class DetailsActivity extends AppCompatActivity {
             new String[]{"区加载中"}, Cites_MANU = new String[]{"区加载中"}, Districts = new
             String[]{"县加载中"}, Districts_MANU = new String[]{"县加载中"};
     private List<ChildFoodKind> getChildFoodKind = new ArrayList<>();
-    private EditText et_GOODS_NAME, et_SAMPLING_NOTICE_CODE, et_TOWN, et_SUPPLIER_LEGAL,
-            et_ANNUAL_SALES, et_BUSINESS_LICENCE, et_SUPPLIER_PERSON, et_PERMIT_NUM,
-            et_SUPPLIER_PHONE, et_SUPPLIER_FAX, et_SUPPLIER_ZIPCODE, et_DRAW_ADDR_OTHER,
-            et_TRADEMARK, et_SAMPLE_MODEL, et_SAMPLE_NUMBER, et_EXPIRATIONDATE, et_TEST_FILE_NO,
-            et_SAMPLE_CLASS, et_PRODUCTION_CERTIFICATE, et_UNIVALENT, et_DRAW_NUM,
-            et_DRAW_AMOUNT, et_STORAGESITE, et_MANU_COMPANY, et_SAVE_MODE_OTHER,
-            et_MANU_COMPANY_PHONE, et_SAMPLE_CLOSE_DATE, et_SAMPLE_ADDR/*, et_PACK_OTHER*/,
-            et_DRAW_ORG, et_DRAW_ORG_ADDR, et_DRAW_PERSON, et_DRAW_PHONE, et_DRAW_FAX,
-            et_DRAW_ZIPCODE, et_REMARK, et_GOODS_TYPE, et_DRAW_MAN;
+    private EditText et_GOODS_NAME, et_SAMPLING_NOTICE_CODE, et_TOWN, et_SUPPLIER_ADDR_TXT,
+            et_SUPPLIER_LEGAL, et_ANNUAL_SALES, et_BUSINESS_LICENCE, et_SUPPLIER_PERSON,
+            et_PERMIT_NUM, et_SUPPLIER_PHONE, et_SUPPLIER_FAX, et_SUPPLIER_ZIPCODE,
+            et_DRAW_ADDR_OTHER, et_TRADEMARK, et_SAMPLE_MODEL, et_SAMPLE_NUMBER,
+            et_EXPIRATIONDATE, et_TEST_FILE_NO, et_SAMPLE_CLASS, et_PRODUCTION_CERTIFICATE,
+            et_UNIVALENT, et_DRAW_NUM, et_DRAW_AMOUNT, et_STORAGESITE, et_MANU_COMPANY,
+            et_MANU_TOWN, et_MANU_COMPANY_ADDR_TXT, et_SAVE_MODE_OTHER, et_MANU_COMPANY_PHONE,
+            et_SAMPLE_CLOSE_DATE/*, et_PACK_OTHER*/, et_DRAW_ORG, et_DRAW_ORG_ADDR,
+            et_DRAW_PERSON, et_DRAW_PHONE, et_DRAW_FAX, et_DRAW_ZIPCODE, et_REMARK,
+            et_GOODS_TYPE, et_DRAW_MAN;
     private String token, DRAW_MAN_NO, str_DATE_PRODUCT, str_DRAW_DATE;
     private ProgressDialog mypDialog;
-    private int mYear, mMonth, mDay;
+    private int mYear, mMonth, mDay, num_select = 0;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,12 +128,12 @@ public class DetailsActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_details);
         context = this;
-        SharedPreferences sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
-        if (((MyApplication) getApplication()).getTOKEN() == null) {
+        sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
+        /*if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
-        }
+        }*/
         if (((MyApplication) getApplication()).getNO() == null) {
             DRAW_MAN_NO = sharedPreferences.getString("NO", null);
         } else {
@@ -162,6 +166,7 @@ public class DetailsActivity extends AppCompatActivity {
         sp_DISTRICT = findViewById(R.id.details_DISTRICT);
 
         et_TOWN = findViewById(R.id.details_TOWN);
+        et_SUPPLIER_ADDR_TXT = findViewById(R.id.details_SUPPLIER_ADDR_TXT);
         et_SUPPLIER_LEGAL = findViewById(R.id.details_SUPPLIER_LEGAL);
         et_ANNUAL_SALES = findViewById(R.id.details_ANNUAL_SALES);
         et_BUSINESS_LICENCE = findViewById(R.id.details_BUSINESS_LICENCE);
@@ -197,6 +202,9 @@ public class DetailsActivity extends AppCompatActivity {
         sp_SAMPLE_STATUS = findViewById(R.id.details_SAMPLE_STATUS);
         sp_PACK_TYPE = findViewById(R.id.details_PACK_TYPE);
         et_MANU_COMPANY = findViewById(R.id.details_MANU_COMPANY);
+        et_MANU_TOWN = findViewById(R.id.details_MANU_TOWN);
+        et_MANU_COMPANY_ADDR_TXT = findViewById(R.id.details_MANU_COMPANY_ADDR_TXT);
+
         et_MANU_COMPANY_PHONE = findViewById(R.id.details_MANU_COMPANY_PHONE);
         tv_MANU_COMPANY_ADDR = findViewById(R.id.details_MANU_COMPANY_ADDR);
         sp_MANU_PROVINCE = findViewById(R.id.details_MANU_PROVINCE);
@@ -205,7 +213,7 @@ public class DetailsActivity extends AppCompatActivity {
         sp_SAVE_MODE = findViewById(R.id.details_SAVE_MODE);
         et_SAVE_MODE_OTHER = findViewById(R.id.details_SAVE_MODE_OTHER);
         et_SAMPLE_CLOSE_DATE = findViewById(R.id.details_SAMPLE_CLOSE_DATE);
-        et_SAMPLE_ADDR = findViewById(R.id.details_SAMPLE_ADDR);
+        tv_SAMPLE_ADDR = findViewById(R.id.details_SAMPLE_ADDR);
         sp_PACK = findViewById(R.id.details_PACK);
         /*et_PACK_OTHER = findViewById(R.id.details_PACK_OTHER);*/
         sp_DRAW_METHOD = findViewById(R.id.details_DRAW_METHOD);
@@ -361,6 +369,8 @@ public class DetailsActivity extends AppCompatActivity {
             actv_SUPPLIER.setText(task.getSUPPLIER());
             tv_SUPPLIER_ADDR.setText(task.getSUPPLIER_ADDR());
             et_TOWN.setText(task.getTOWN());
+            et_SUPPLIER_ADDR_TXT.setText(task.getSUPPLIER_ADDR_TXT());
+
             et_SUPPLIER_LEGAL.setText(task.getSUPPLIER_LEGAL());
             et_ANNUAL_SALES.setText(task.getANNUAL_SALES());
             et_BUSINESS_LICENCE.setText(task.getBUSINESS_LICENCE());
@@ -383,11 +393,15 @@ public class DetailsActivity extends AppCompatActivity {
             et_DRAW_AMOUNT.setText(task.getDRAW_AMOUNT());
             et_STORAGESITE.setText(task.getSTORAGESITE());
             et_MANU_COMPANY.setText(task.getMANU_COMPANY());
+
+            et_MANU_TOWN.setText(task.getMANU_TOWN());
+            et_MANU_COMPANY_ADDR_TXT.setText(task.getMANU_COMPANY_ADDR_TXT());
+
             et_MANU_COMPANY_PHONE.setText(task.getMANU_COMPANY_PHONE());
             tv_MANU_COMPANY_ADDR.setText(task.getMANU_COMPANY_ADDR());
             et_SAVE_MODE_OTHER.setText(task.getSAVE_MODE_OTHER());
             et_SAMPLE_CLOSE_DATE.setText(task.getSAMPLE_CLOSE_DATE());
-            et_SAMPLE_ADDR.setText(task.getSAMPLE_ADDR());
+            tv_SAMPLE_ADDR.setText(task.getSAMPLE_ADDR());
             et_DRAW_ORG.setText(task.getDRAW_ORG());
             et_DRAW_ORG_ADDR.setText(task.getDRAW_ORG_ADDR());
             et_DRAW_PERSON.setText(task.getDRAW_PERSON());
@@ -695,6 +709,7 @@ public class DetailsActivity extends AppCompatActivity {
                     }
                 }
                 et_TOWN.setText(oneSampleEnterprise.getTOWN());
+                et_SUPPLIER_ADDR_TXT.setText(oneSampleEnterprise.getSUPPLIER_ADDR_TXT());
                 et_SUPPLIER_PHONE.setText(oneSampleEnterprise.getPHONE());
                 et_ANNUAL_SALES.setText(oneSampleEnterprise.getANNUAL_SALES());
                 et_BUSINESS_LICENCE.setText(oneSampleEnterprise.getBUSINESS_LICENCE());
@@ -715,6 +730,13 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // TODO 自动生成的方法存根
+                //Log.v("num_select", num_select + sp_FOOD_KIND1.getSelectedItem().toString() +
+                // "1");
+                if (num_select > 10) {
+                    setFocus(et_SAMPLE_CLOSE_DATE);
+                } else {
+                    num_select++;
+                }
                 et_GOODS_TYPE.setText(FoodKinds1[position]);
                 attemptGetFoodKind("TYPE2", FoodKinds1[position]);
             }
@@ -728,6 +750,12 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // TODO 自动生成的方法存根
+                //.v("num_select", num_select + sp_FOOD_KIND2.getSelectedItem().toString() + "2");
+                if (num_select > 10) {
+                    setFocus(et_SAMPLE_CLOSE_DATE);
+                } else {
+                    num_select++;
+                }
                 attemptGetFoodKind("TYPE3", FoodKinds2[position]);
             }
 
@@ -740,6 +768,13 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // TODO 自动生成的方法存根
+                //Log.v("num_select", num_select + sp_FOOD_KIND3.getSelectedItem().toString() +
+                // "3");
+                if (num_select > 10) {
+                    setFocus(et_SAMPLE_CLOSE_DATE);
+                } else {
+                    num_select++;
+                }
                 attemptGetFoodKind("TYPE4", FoodKinds3[position]);
             }
 
@@ -752,6 +787,13 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // TODO 自动生成的方法存根
+                //Log.v("num_select", num_select + sp_FOOD_KIND4.getSelectedItem().toString() +
+                // "4");
+                if (num_select > 10) {
+                    setFocus(et_SAMPLE_CLOSE_DATE);
+                } else {
+                    num_select++;
+                }
                 if (getFoodKind4.size() > 0) {
                     attemptGetChildFoodKind(getFoodKind4.get(0).getID());
                 }
@@ -815,7 +857,8 @@ public class DetailsActivity extends AppCompatActivity {
                     tv_SUPPLIER_ADDR.setText(String.format(getResources().getString(R.string
                             .supplier_addr), sp_PROVINCE.getSelectedItem().toString(), sp_CITY
                             .getSelectedItem().toString(), sp_DISTRICT.getSelectedItem()
-                            .toString(), et_TOWN.getText().toString()));
+                            .toString(), et_TOWN.getText().toString(), et_SUPPLIER_ADDR_TXT
+                            .getText().toString()));
                 }
             }
 
@@ -837,7 +880,8 @@ public class DetailsActivity extends AppCompatActivity {
                     tv_SUPPLIER_ADDR.setText(String.format(getResources().getString(R.string
                             .supplier_addr), sp_PROVINCE.getSelectedItem().toString(), sp_CITY
                             .getSelectedItem().toString(), sp_DISTRICT.getSelectedItem()
-                            .toString(), et_TOWN.getText().toString()));
+                            .toString(), et_TOWN.getText().toString(), et_SUPPLIER_ADDR_TXT
+                            .getText().toString()));
                 }
             }
 
@@ -855,8 +899,9 @@ public class DetailsActivity extends AppCompatActivity {
                         sp_DISTRICT.getSelectedItem() != null) {
                     tv_SUPPLIER_ADDR.setText(String.format(getResources().getString(R.string
                             .supplier_addr), sp_PROVINCE.getSelectedItem().toString(), sp_CITY
-                            .getSelectedItem().toString(), sp_DISTRICT.getSelectedItem()
-                            .toString(), et_TOWN.getText().toString()));
+                            .getSelectedItem().toString(), sp_DISTRICT.getSelectedItem().toString
+                            (), et_TOWN.getText().toString(), et_SUPPLIER_ADDR_TXT.getText()
+                            .toString()));
                 }
             }
 
@@ -880,10 +925,29 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 tv_SUPPLIER_ADDR.setText(String.format(getResources().getString(R.string
-                                .supplier_addr), sp_PROVINCE.getSelectedItem().toString(), sp_CITY
-                                .getSelectedItem().toString(), sp_DISTRICT.getSelectedItem()
-                                .toString(),
-                        s.toString()));
+                        .supplier_addr), sp_PROVINCE.getSelectedItem().toString(), sp_CITY
+                        .getSelectedItem().toString(), sp_DISTRICT.getSelectedItem()
+                        .toString(), s.toString(), et_SUPPLIER_ADDR_TXT.getText().toString()));
+            }
+        });
+
+        et_SUPPLIER_ADDR_TXT.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                tv_SUPPLIER_ADDR.setText(String.format(getResources().getString(R.string
+                        .supplier_addr), sp_PROVINCE.getSelectedItem().toString(), sp_CITY
+                        .getSelectedItem().toString(), sp_DISTRICT.getSelectedItem()
+                        .toString(), et_TOWN.getText().toString(), s.toString()));
             }
         });
 
@@ -897,9 +961,12 @@ public class DetailsActivity extends AppCompatActivity {
                 if (sp_MANU_PROVINCE.getSelectedItem() != null && sp_MANU_CITY.getSelectedItem()
                         != null && sp_MANU_DISTRICT.getSelectedItem() != null) {
                     tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
-                            .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
-                            .toString(), sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
-                            .getSelectedItem().toString()));
+                                    .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
+                                    .toString(), sp_MANU_CITY.getSelectedItem().toString(),
+                            sp_MANU_DISTRICT
+                                    .getSelectedItem().toString(), et_MANU_TOWN.getText()
+                                    .toString(),
+                            et_MANU_COMPANY_ADDR_TXT.getText().toString()));
                 }
             }
 
@@ -919,9 +986,12 @@ public class DetailsActivity extends AppCompatActivity {
                 if (sp_MANU_PROVINCE.getSelectedItem() != null && sp_MANU_CITY.getSelectedItem()
                         != null && sp_MANU_DISTRICT.getSelectedItem() != null) {
                     tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
-                            .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
-                            .toString(), sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
-                            .getSelectedItem().toString()));
+                                    .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
+                                    .toString(), sp_MANU_CITY.getSelectedItem().toString(),
+                            sp_MANU_DISTRICT
+                                    .getSelectedItem().toString(), et_MANU_TOWN.getText()
+                                    .toString(),
+                            et_MANU_COMPANY_ADDR_TXT.getText().toString()));
                 }
             }
 
@@ -938,9 +1008,12 @@ public class DetailsActivity extends AppCompatActivity {
                 if (sp_MANU_PROVINCE.getSelectedItem() != null && sp_MANU_CITY.getSelectedItem()
                         != null && sp_MANU_DISTRICT.getSelectedItem() != null) {
                     tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
-                            .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
-                            .toString(), sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
-                            .getSelectedItem().toString()));
+                                    .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
+                                    .toString(), sp_MANU_CITY.getSelectedItem().toString(),
+                            sp_MANU_DISTRICT
+                                    .getSelectedItem().toString(), et_MANU_TOWN.getText()
+                                    .toString(),
+                            et_MANU_COMPANY_ADDR_TXT.getText().toString()));
                 }
             }
 
@@ -950,27 +1023,56 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
+
+        et_MANU_TOWN.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
+                                .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
+                                .toString(), sp_MANU_CITY.getSelectedItem().toString(),
+                        sp_MANU_DISTRICT
+                                .getSelectedItem().toString(), s.toString(),
+                        et_MANU_COMPANY_ADDR_TXT.getText().toString()));
+            }
+        });
+
+        et_MANU_COMPANY_ADDR_TXT.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
+                                .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem().toString(),
+                        sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
+                                .getSelectedItem().toString(), et_MANU_TOWN.getText().toString(),
+                        s.toString()));
+            }
+        });
+
         sp_DRAW_NUM_UNIT.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // TODO 自动生成的方法存根
                 sp_DRAW_AMOUNT_UNIT.setSelection(position, true);
                 sp_STORAGESITE_UNIT.setSelection(position, true);
-
-                /*SpinnerAdapter adapter1 = sp_DRAW_AMOUNT_UNIT.getAdapter();
-                for (int i = 0; i < adapter1.getCount(); i++) {
-                    if (AMOUNT_UNITS[position].equals(adapter1.getItem(i).toString())) {
-                        sp_DRAW_AMOUNT_UNIT.setSelection(i, true);
-                        break;
-                    }
-                }
-                SpinnerAdapter adapter2 = sp_STORAGESITE_UNIT.getAdapter();
-                for (int i = 0; i < adapter2.getCount(); i++) {
-                    if (task.getSAMPLE_TYPE().equals(adapter2.getItem(i).toString())) {
-                        sp_STORAGESITE_UNIT.setSelection(i, true);
-                        break;
-                    }
-                }*/
             }
 
             @Override
@@ -985,21 +1087,6 @@ public class DetailsActivity extends AppCompatActivity {
                 // TODO 自动生成的方法存根
                 sp_DRAW_NUM_UNIT.setSelection(position, true);
                 sp_STORAGESITE_UNIT.setSelection(position, true);
-
-                /*SpinnerAdapter adapter1 = sp_DRAW_AMOUNT_UNIT.getAdapter();
-                for (int i = 0; i < adapter1.getCount(); i++) {
-                    if (AMOUNT_UNITS[position].equals(adapter1.getItem(i).toString())) {
-                        sp_DRAW_AMOUNT_UNIT.setSelection(i, true);
-                        break;
-                    }
-                }
-                SpinnerAdapter adapter2 = sp_STORAGESITE_UNIT.getAdapter();
-                for (int i = 0; i < adapter2.getCount(); i++) {
-                    if (task.getSAMPLE_TYPE().equals(adapter2.getItem(i).toString())) {
-                        sp_STORAGESITE_UNIT.setSelection(i, true);
-                        break;
-                    }
-                }*/
             }
 
             @Override
@@ -1014,21 +1101,6 @@ public class DetailsActivity extends AppCompatActivity {
                 // TODO 自动生成的方法存根
                 sp_DRAW_NUM_UNIT.setSelection(position, true);
                 sp_DRAW_AMOUNT_UNIT.setSelection(position, true);
-
-                /*SpinnerAdapter adapter1 = sp_DRAW_AMOUNT_UNIT.getAdapter();
-                for (int i = 0; i < adapter1.getCount(); i++) {
-                    if (AMOUNT_UNITS[position].equals(adapter1.getItem(i).toString())) {
-                        sp_DRAW_AMOUNT_UNIT.setSelection(i, true);
-                        break;
-                    }
-                }
-                SpinnerAdapter adapter2 = sp_STORAGESITE_UNIT.getAdapter();
-                for (int i = 0; i < adapter2.getCount(); i++) {
-                    if (task.getSAMPLE_TYPE().equals(adapter2.getItem(i).toString())) {
-                        sp_STORAGESITE_UNIT.setSelection(i, true);
-                        break;
-                    }
-                }*/
             }
 
             @Override
@@ -1039,11 +1111,11 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     public void attemptSampleEnterprises(String key) {
-        /*if (((MyApplication) getApplication()).getTOKEN() == null) {
+        if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
-        }*/
+        }
         FDA_API request = HttpUtils.JsonApi();
         Call<List<sampleEnterprise>> call = request.sampleEnterprises(token, key);
         call.enqueue(new Callback<List<sampleEnterprise>>() {
@@ -1302,11 +1374,11 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     public void attemptGetFoodKind(final String Food_Kind_Type, String Parent_Food_Kind_Name) {
-        /*if (((MyApplication) getApplication()).getTOKEN() == null) {
+        if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
-        }*/
+        }
         FDA_API request = HttpUtils.JsonApi();
         Call<List<FoodKind>> call = request.getFoodKind(token, Food_Kind_Type,
                 Parent_Food_Kind_Name);
@@ -1443,6 +1515,7 @@ public class DetailsActivity extends AppCompatActivity {
             task.setCITY(sp_CITY.getSelectedItem().toString());
             task.setDISTRICT(sp_DISTRICT.getSelectedItem().toString());
             task.setTOWN(et_TOWN.getText().toString());
+            task.setSUPPLIER_ADDR_TXT(et_SUPPLIER_ADDR_TXT.getText().toString());
             task.setSUPPLIER_LEGAL(et_SUPPLIER_LEGAL.getText().toString());
             task.setANNUAL_SALES(et_ANNUAL_SALES.getText().toString());
             task.setBUSINESS_LICENCE(et_BUSINESS_LICENCE.getText().toString());
@@ -1453,15 +1526,8 @@ public class DetailsActivity extends AppCompatActivity {
             task.setSUPPLIER_PHONE(et_SUPPLIER_PHONE.getText().toString());
             task.setSUPPLIER_FAX(et_SUPPLIER_FAX.getText().toString());
             task.setSUPPLIER_ZIPCODE(et_SUPPLIER_ZIPCODE.getText().toString());
-            /*if (sp_DRAW_ADDR.getSelectedItem().toString().contains("其他")) {
-                task.setDRAW_ADDR(sp_DRAW_ADDR.getSelectedItem().toString() + "(" +
-                        et_DRAW_ADDR_OTHER.getText().toString() + ")");
-            } else {
-                task.setDRAW_ADDR(sp_DRAW_ADDR.getSelectedItem().toString());
-            }*/
             task.setDRAW_ADDR(sp_DRAW_ADDR.getSelectedItem().toString());
             task.setDRAW_ADDR_OTHER(et_DRAW_ADDR_OTHER.getText().toString());
-
             task.setSAMPLE_SOURCE(sp_SAMPLE_SOURCE.getSelectedItem().toString());
             task.setSAMPLE_PROPERTY(sp_SAMPLE_PROPERTY.getSelectedItem().toString());
             task.setSAMPLE_STYLE(sp_SAMPLE_STYLE.getSelectedItem().toString());
@@ -1474,35 +1540,28 @@ public class DetailsActivity extends AppCompatActivity {
             task.setTEST_FILE_NO(et_TEST_FILE_NO.getText().toString());
             task.setSAMPLE_CLASS(et_SAMPLE_CLASS.getText().toString());
             task.setPRODUCTION_CERTIFICATE(et_PRODUCTION_CERTIFICATE.getText().toString());
-            task.setUNIVALENT(et_UNIVALENT.getText().toString() + sp_UNIVALENT_UNIT
-                    .getSelectedItem()
-                    .toString());
+            task.setUNIVALENT(et_UNIVALENT.getText().toString());
+            task.setUNIVALENT_UNIT(sp_UNIVALENT_UNIT.getSelectedItem().toString());
             task.setI_AND_O(sp_I_AND_O.getSelectedItem().toString());
-            task.setDRAW_NUM(et_DRAW_NUM.getText().toString() + sp_DRAW_NUM_UNIT.getSelectedItem()
-                    .toString());
-            task.setDRAW_AMOUNT(et_DRAW_AMOUNT.getText().toString() + sp_DRAW_AMOUNT_UNIT
-                    .getSelectedItem().toString());
-            task.setSTORAGESITE(et_STORAGESITE.getText().toString() + sp_STORAGESITE_UNIT
-                    .getSelectedItem().toString());
+            task.setDRAW_NUM(et_DRAW_NUM.getText().toString());
+            task.setDRAW_AMOUNT(et_DRAW_AMOUNT.getText().toString());
+            task.setSTORAGESITE(et_STORAGESITE.getText().toString());
+            task.setDRAW_AMOUNT_UNIT(sp_DRAW_AMOUNT_UNIT.getSelectedItem().toString());
             task.setSAMPLE_STATUS(sp_SAMPLE_STATUS.getSelectedItem().toString());
             task.setPACK_TYPE(sp_PACK_TYPE.getSelectedItem().toString());
-
-
             task.setMANU_COMPANY(et_MANU_COMPANY.getText().toString());
             task.setMANU_COMPANY_PHONE(et_MANU_COMPANY_PHONE.getText().toString());
             task.setMANU_COMPANY_ADDR(tv_MANU_COMPANY_ADDR.getText().toString());
-
             task.setMANU_PROVINCE(sp_MANU_PROVINCE.getSelectedItem().toString());
             task.setMANU_CITY(sp_MANU_CITY.getSelectedItem().toString());
             task.setMANU_DISTRICT(sp_MANU_DISTRICT.getSelectedItem().toString());
-
+            task.setMANU_TOWN(et_MANU_TOWN.getText().toString());
+            task.setMANU_COMPANY_ADDR_TXT(et_MANU_COMPANY_ADDR_TXT.getText().toString());
             task.setSAVE_MODE(sp_SAVE_MODE.getSelectedItem().toString());
             task.setSAVE_MODE_OTHER(et_SAVE_MODE_OTHER.getText().toString());
-
             task.setSAMPLE_CLOSE_DATE(et_SAMPLE_CLOSE_DATE.getText().toString());
-            task.setSAMPLE_ADDR(et_SAMPLE_ADDR.getText().toString());
+            task.setSAMPLE_ADDR(tv_SAMPLE_ADDR.getText().toString());
             task.setPACK(sp_PACK.getSelectedItem().toString());
-
             task.setDRAW_METHOD(sp_DRAW_METHOD.getSelectedItem().toString());
             task.setFOOD_KIND1(sp_FOOD_KIND1.getSelectedItem().toString());
             task.setFOOD_KIND2(sp_FOOD_KIND2.getSelectedItem().toString());
@@ -1548,15 +1607,15 @@ public class DetailsActivity extends AppCompatActivity {
         // 设置ProgressDialog 是否可以按退回按键取消
         mypDialog.show();
         // 让ProgressDialog显示
-        /*if (((MyApplication) getApplication()).getTOKEN() == null) {
+        if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
-        }*/
+        }
         final Task task_submit = Tasks.list_task.get(Tasks.position);
         Gson gson = new Gson();
         String data = gson.toJson(task_submit);
-        Log.v("data:", data);
+        //Log.v("data", data);
         FDA_API request = HttpUtils.JsonApi();
         Call<SubmitStatus> call = request.provSubmit(token, data);
         call.enqueue(new Callback<SubmitStatus>() {
@@ -1601,7 +1660,7 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SubmitStatus> call, Throwable t) {
                 Log.v("provSubmit请求失败!", t.getMessage());
-                Snackbar.make(toolbar, "提交失败!(provSubmit请求失败)请稍后再试",
+                Snackbar.make(toolbar, "请求失败!请稍后再试",
                         Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 mypDialog.dismiss();
             }
@@ -1621,15 +1680,15 @@ public class DetailsActivity extends AppCompatActivity {
         // 设置ProgressDialog 是否可以按退回按键取消
         mypDialog.show();
         // 让ProgressDialog显示
-        /*if (((MyApplication) getApplication()).getTOKEN() == null) {
+        if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
-        }*/
+        }
         final Task task_submit = Tasks.list_task.get(Tasks.position);
         Gson gson = new Gson();
         String data = gson.toJson(task_submit);
-        Log.v("data:", data);
+        //Log.v("data", data);
         FDA_API request = HttpUtils.JsonApi();
         Call<SubmitStatus> call = request.Submit(token, data);
         call.enqueue(new Callback<SubmitStatus>() {
@@ -1674,7 +1733,7 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SubmitStatus> call, Throwable t) {
                 Log.v("Submit请求失败!", t.getMessage());
-                Snackbar.make(toolbar, "提交失败!(Submit请求失败)请稍后再试",
+                Snackbar.make(toolbar, "请求失败!请稍后再试",
                         Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 mypDialog.dismiss();
             }
@@ -1682,6 +1741,10 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     public void attemptGetSamplingBill(String applyNo) {
+        final BuildBean dialog_loading = DialogUIUtils.showLoading(context, "正在生产抽样单...", false,
+                true, false,
+                false);
+        dialog_loading.show();
         String bill_path = Environment.getExternalStorageDirectory() + "/FDA/Bill/" + applyNo +
                 ".pdf";
         final File bill_pdf = new File(bill_path);
@@ -1695,8 +1758,7 @@ public class DetailsActivity extends AppCompatActivity {
             Call<ResponseBody> call = request.getSamplingBill(token, applyNo);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody>
-                        response) {
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response.code() == 401) {
                         Log.v("getSamplingBill请求", "token过期");
                         Intent intent_login = new Intent();
@@ -1723,77 +1785,28 @@ public class DetailsActivity extends AppCompatActivity {
                             }
                         } else {
                             Log.v("getSamplingBill请求成功!", "response.body is null");
+                            Snackbar.make(toolbar, "获取失败!(请求成功)",
+                                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
                         }
                     }
+                    DialogUIUtils.dismiss(dialog_loading);
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.v("getSamplingBill请求失败!", t.getMessage());
+                    DialogUIUtils.dismiss(dialog_loading);
+                    Snackbar.make(toolbar, "获取失败!(请求失败)",
+                            Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
             });
         } else {
+            DialogUIUtils.dismiss(dialog_loading);
             Snackbar.make(toolbar, "当前无网络",
                     Snackbar.LENGTH_LONG).setAction("Action", null).show();
         }
     }
 
-    public void attemptGetSamplingFeedback(String applyNo) {
-        String feedback_path = Environment.getExternalStorageDirectory() + "/FDA/Feedback/" +
-                applyNo + ".pdf";
-        final File feedback_pdf = new File(feedback_path);
-        if (feedback_pdf.exists()) {
-            Log.v("pdf", "已经存在");
-            feedback_pdf.delete();
-            //doPrintPdf(feedback_pdf);
-        }
-        if (NetworkUtil.isNetworkAvailable(context)) {
-            FDA_API request = HttpUtils.JsonApi();
-            Call<ResponseBody> call = request.getSamplingFeedback(token, applyNo);
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody>
-                        response) {
-                    if (response.code() == 401) {
-                        Log.v("SamplingFeedback请求", "token过期");
-                        Intent intent_login = new Intent();
-                        intent_login.setClass(DetailsActivity.this, LoginActivity.class);
-                        intent_login.putExtra("login_type", 1);
-                        startActivity(intent_login);
-                    } else if (response.code() == 200) {
-                        if (response.body() != null) {
-                            try {
-                                // 获取文件的输出流对象
-                                FileOutputStream outStream = new FileOutputStream(feedback_pdf);
-                                // 获取字符串对象的byte数组并写入文件流
-                                outStream.write(response.body().bytes());
-                                // 最后关闭文件输出流
-                                outStream.close();
-                                Log.v("pdf", "下载成功");
-                                doPrintPdf(feedback_pdf);
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                                Log.v("ResponseBody", "FileNotFoundException");
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Log.v("ResponseBody", "IOException");
-                            }
-                        } else {
-                            Log.v("SamplingFeedback请求成功!", "response.body is null");
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Log.v("SamplingFeedback请求失败!", t.getMessage());
-                }
-            });
-        } else {
-            Snackbar.make(toolbar, "当前无网络",
-                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        }
-    }
 
     private void doPrintPdf(final File file_pdf) {
         new Handler().postDelayed(new Runnable() {
@@ -1852,6 +1865,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
         return null;
     }
+
 
     // 获取sdcard中的缓存目录
     public static File getCacheDir(Context context) {
@@ -1927,7 +1941,7 @@ public class DetailsActivity extends AppCompatActivity {
                     doSaveData();
                     attemptProvSubmit();
                 } else {
-                    Snackbar.make(toolbar, "提交太快了，请稍后再试",
+                    Snackbar.make(toolbar, "点击太快了，请稍后再试",
                             Snackbar.LENGTH_LONG).setAction("Action", null)
                             .show();
                 }
@@ -1950,11 +1964,8 @@ public class DetailsActivity extends AppCompatActivity {
                 //finish();// 结束当前活动
                 startActivity(intent_uploadImg);
                 break;
-            case R.id.action_printf_SamplingBill:
+            case R.id.action_SamplingBill:
                 attemptGetSamplingBill(task.getNO());
-                break;
-            case R.id.action_printf_SamplingFeedback:
-                attemptGetSamplingFeedback(task.getNO());
                 break;
             default:
                 break;
@@ -1972,5 +1983,11 @@ public class DetailsActivity extends AppCompatActivity {
     public void onDestroy() {
         doSaveData();
         super.onDestroy();
+    }
+
+    public void setFocus(View v) {
+        v.setFocusable(true);
+        v.setFocusableInTouchMode(true);
+        v.requestFocus();//获取焦点 光标出现
     }
 }

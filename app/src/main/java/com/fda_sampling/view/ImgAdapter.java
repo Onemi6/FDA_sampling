@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.fda_sampling.R;
 
 import java.util.List;
@@ -47,21 +48,23 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
         if (holder instanceof ImgAdapter.ViewHolder) {
             String picPath = imgList.get(position);
             if (position == 0 && picPath.equals("加号")) {
-                ((ViewHolder) holder).img_add.setImageResource(R.mipmap.ic_add);
-                //((ViewHolder) holder).itemView.setTag(position);
-                /*holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });*/
+                //((ViewHolder) holder).img_add.setImageResource(R.mipmap.ic_add);
+                Glide.with(mActivity).load(R.mipmap.ic_add)
+                        .placeholder(R.mipmap.logo)
+                        .error(R.mipmap.error)
+                        .into(((ViewHolder) holder).img_add);
             } else if (position == 0 && picPath.equals("空白")) {
                 //((ViewHolder) holder).img_add.setImageResource(R.mipmap.logo);
             } else {
-                Bitmap bm = getBM(picPath);
+                //File picFile = new File(picPath);
+                Glide.with(mActivity).load(picPath)
+                        .placeholder(R.mipmap.logo)
+                        .error(R.mipmap.error)
+                        .into(((ViewHolder) holder).img_add);
+                /*Bitmap bm = getBM(picPath);
                 if (bm != null) {
                     ((ViewHolder) holder).img_add.setImageBitmap(bm);
-                }
+                }*/
             }
             ((ViewHolder) holder).itemView.setTag(position);
         }

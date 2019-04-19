@@ -143,7 +143,8 @@
                 <TextView
                     android:id="@+id/details_NO"
                     android:layout_width="1dip"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:gravity="center" />
             </TableRow>
 
             <TableRow>
@@ -315,6 +316,24 @@
 
                 <EditText
                     android:id="@+id/details_TOWN"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_SUPPLIER_ADDR_TXT"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="详细地址:" />
+
+                <EditText
+                    android:id="@+id/details_SUPPLIER_ADDR_TXT"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
@@ -989,7 +1008,7 @@
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_SAMPLE_ADDR"
+                    android:nextFocusForward="@+id/details_MANU_COMPANY"
                     android:singleLine="true" />
             </TableRow>
 
@@ -1002,13 +1021,12 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="寄、送样品地址:" />
 
-                <EditText
+                <TextView
                     android:id="@+id/details_SAMPLE_ADDR"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_MANU_COMPANY"
-                    android:singleLine="true" />
+                    android:text="乌鲁木齐市南湖北路116号" />
+
             </TableRow>
 
             <TableRow>
@@ -1178,7 +1196,7 @@
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_MANU_COMPANY_PHONE"
+                    android:nextFocusForward="@+id/details_MANU_TOWN"
                     android:singleLine="true" />
             </TableRow>
 
@@ -1245,6 +1263,43 @@
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:overlapAnchor="false" />
+            </TableRow>
+
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="乡(镇):" />
+
+                <EditText
+                    android:id="@+id/details_MANU_TOWN"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_MANU_COMPANY_ADDR_TXT"
+                    android:singleLine="true" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="详细地址:" />
+
+                <EditText
+                    android:id="@+id/details_MANU_COMPANY_ADDR_TXT"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:nextFocusForward="@+id/details_MANU_COMPANY_PHONE"
+                    android:singleLine="true" />
             </TableRow>
 
 

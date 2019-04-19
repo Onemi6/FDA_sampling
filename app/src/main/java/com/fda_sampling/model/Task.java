@@ -21,6 +21,7 @@ public class Task {
     private String CITY;
     private String DISTRICT;
     private String TOWN;
+    private String SUPPLIER_ADDR_TXT;
     private String SUPPLIER_LEGAL;
     private String ANNUAL_SALES;
     private String BUSINESS_LICENCE;
@@ -43,9 +44,11 @@ public class Task {
     private String SAMPLE_CLASS;
     private String PRODUCTION_CERTIFICATE;
     private String UNIVALENT;
+    private String UNIVALENT_UNIT;
     private String I_AND_O;
     private String DRAW_NUM;
     private String DRAW_AMOUNT;
+    private String DRAW_AMOUNT_UNIT;
     private String STORAGESITE;
     private String SAMPLE_STATUS;
     private String PACK_TYPE;
@@ -55,6 +58,8 @@ public class Task {
     private String MANU_PROVINCE;
     private String MANU_CITY;
     private String MANU_DISTRICT;
+    private String MANU_TOWN;
+    private String MANU_COMPANY_ADDR_TXT;
     private String SAVE_MODE;
     private String SAVE_MODE_OTHER;
     private String SAMPLE_CLOSE_DATE;
@@ -233,6 +238,16 @@ public class Task {
         return TOWN;
     }
 
+
+    public void setSUPPLIER_ADDR_TXT(String SUPPLIER_ADDR_TXT) {
+        this.SUPPLIER_ADDR_TXT = SUPPLIER_ADDR_TXT;
+    }
+
+    public String getSUPPLIER_ADDR_TXT() {
+        return SUPPLIER_ADDR_TXT;
+    }
+
+
     public void setSUPPLIER_LEGAL(String SUPPLIER_LEGAL) {
         this.SUPPLIER_LEGAL = SUPPLIER_LEGAL;
     }
@@ -409,6 +424,14 @@ public class Task {
         return UNIVALENT;
     }
 
+    public void setUNIVALENT_UNIT(String UNIVALENT_UNIT) {
+        this.UNIVALENT_UNIT = UNIVALENT_UNIT;
+    }
+
+    public String getUNIVALENT_UNIT() {
+        return UNIVALENT_UNIT;
+    }
+
     public void setI_AND_O(String I_AND_O) {
         this.I_AND_O = I_AND_O;
     }
@@ -431,6 +454,14 @@ public class Task {
 
     public String getDRAW_AMOUNT() {
         return DRAW_AMOUNT;
+    }
+
+    public void setDRAW_AMOUNT_UNIT(String DRAW_AMOUNT_UNIT) {
+        this.DRAW_AMOUNT_UNIT = DRAW_AMOUNT_UNIT;
+    }
+
+    public String getDRAW_AMOUNT_UNIT() {
+        return DRAW_AMOUNT_UNIT;
     }
 
     public void setSTORAGESITE(String STORAGESITE) {
@@ -503,6 +534,23 @@ public class Task {
 
     public String getMANU_DISTRICT() {
         return MANU_DISTRICT;
+    }
+
+
+    public void setMANU_TOWN(String MANU_TOWN) {
+        this.MANU_TOWN = MANU_TOWN;
+    }
+
+    public String getMANU_TOWN() {
+        return MANU_TOWN;
+    }
+
+    public void setMANU_COMPANY_ADDR_TXT(String MANU_COMPANY_ADDR_TXT) {
+        this.MANU_COMPANY_ADDR_TXT = MANU_COMPANY_ADDR_TXT;
+    }
+
+    public String getMANU_COMPANY_ADDR_TXT() {
+        return MANU_COMPANY_ADDR_TXT;
     }
 
     public void setSAVE_MODE(String SAVE_MODE) {

@@ -6,10 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.Snackbar;
@@ -18,15 +14,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.fda_sampling.R;
 import com.fda_sampling.model.ImageInfo;
 import com.fda_sampling.model.UploadImg;
@@ -120,73 +115,50 @@ public class ImgUploadActivity extends AppCompatActivity {
         adapter_img_1 = new ImgAdapter(this, picList_1);
         rv_add_img_1.setAdapter(adapter_img_1);
 
-        //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
         GridLayoutManager layoutManager_2 = new GridLayoutManager(this, 2);
         layoutManager_2.setOrientation(GridLayoutManager.VERTICAL);
-        //设置RecyclerView 布局
         rv_add_img_2.setLayoutManager(layoutManager_2);
-        //设置Adapter
         adapter_img_2 = new ImgAdapter(this, picList_2);
         rv_add_img_2.setAdapter(adapter_img_2);
 
-        //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
         GridLayoutManager layoutManager_3 = new GridLayoutManager(this, 2);
         layoutManager_3.setOrientation(GridLayoutManager.VERTICAL);
-        //设置RecyclerView 布局
         rv_add_img_3.setLayoutManager(layoutManager_3);
-        //设置Adapter
         adapter_img_3 = new ImgAdapter(this, picList_3);
         rv_add_img_3.setAdapter(adapter_img_3);
 
-        //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
         GridLayoutManager layoutManager_4 = new GridLayoutManager(this, 2);
         layoutManager_4.setOrientation(GridLayoutManager.VERTICAL);
-        //设置RecyclerView 布局
         rv_add_img_4.setLayoutManager(layoutManager_4);
-        //设置Adapter
         adapter_img_4 = new ImgAdapter(this, picList_4);
         rv_add_img_4.setAdapter(adapter_img_4);
 
-        //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
         GridLayoutManager layoutManager_5 = new GridLayoutManager(this, 2);
         layoutManager_5.setOrientation(GridLayoutManager.VERTICAL);
-        //设置RecyclerView 布局
         rv_add_img_5.setLayoutManager(layoutManager_5);
-        //设置Adapter
         adapter_img_5 = new ImgAdapter(this, picList_5);
         rv_add_img_5.setAdapter(adapter_img_5);
 
-        //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
         GridLayoutManager layoutManager_6 = new GridLayoutManager(this, 2);
         layoutManager_6.setOrientation(GridLayoutManager.VERTICAL);
-        //设置RecyclerView 布局
         rv_add_img_6.setLayoutManager(layoutManager_6);
-        //设置Adapter
         adapter_img_6 = new ImgAdapter(this, picList_6);
         rv_add_img_6.setAdapter(adapter_img_6);
 
-        //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
         GridLayoutManager layoutManager_7 = new GridLayoutManager(this, 2);
         layoutManager_7.setOrientation(GridLayoutManager.VERTICAL);
-        //设置RecyclerView 布局
         rv_add_img_7.setLayoutManager(layoutManager_7);
-        //设置Adapter
         adapter_img_7 = new ImgAdapter(this, picList_7);
         rv_add_img_7.setAdapter(adapter_img_7);
 
-        //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
         GridLayoutManager layoutManager_8 = new GridLayoutManager(this, 2);
         layoutManager_8.setOrientation(GridLayoutManager.VERTICAL);
-        //设置RecyclerView 布局
         rv_add_img_8.setLayoutManager(layoutManager_8);
-        //设置Adapter
         adapter_img_8 = new ImgAdapter(this, picList_8);
         rv_add_img_8.setAdapter(adapter_img_8);
 
-        //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
-        GridLayoutManager layoutManager_upload = new GridLayoutManager(this, 3);
+        GridLayoutManager layoutManager_upload = new GridLayoutManager(this, 4);
         layoutManager_upload.setOrientation(GridLayoutManager.VERTICAL);
-        //设置RecyclerView 布局
         rv_upload_img.setLayoutManager(layoutManager_upload);
         adapter_uploadImg = new ImgAdapter(this, uploadImage);
         rv_upload_img.setAdapter(adapter_uploadImg);
@@ -449,10 +421,9 @@ public class ImgUploadActivity extends AppCompatActivity {
                                 picList_3.size() + picList_4.size() + picList_5.size() +
                                 picList_6.size())) {
                             mypDialog.dismiss();
-                            Toast.makeText(
-                                    ImgUploadActivity.this,
-                                    "共上传" + status.size() + "张图片,其中失败"
-                                            + fail_num + "张", Toast.LENGTH_SHORT).show();
+                            Snackbar.make(btn_uploadImg, "共上传" + status.size() + "张图片,其中失败" +
+                                    fail_num + "张", Snackbar.LENGTH_LONG).setAction("Action",
+                                    null).show();
                         }
                     }
                 }
@@ -465,7 +436,7 @@ public class ImgUploadActivity extends AppCompatActivity {
             });
         } else {
             mypDialog.dismiss();
-            Toast.makeText(ImgUploadActivity.this, "当前无网络", Toast.LENGTH_SHORT)
+            Snackbar.make(btn_uploadImg, "当前无网络", Snackbar.LENGTH_LONG).setAction("Action", null)
                     .show();
         }
     }
@@ -495,14 +466,16 @@ public class ImgUploadActivity extends AppCompatActivity {
                             imageInfoList = response.body();
                             Log.v("imageInfoList.size()", "" + imageInfoList.size());
                             if (imageInfoList.size() > 0) {
-                                for (ImageInfo imageInfo : imageInfoList) {
-                                    Log.v("imageInfo", "" + imageInfo.getID());
-                                    try {
-                                        Thread.sleep(500);
-                                        attemptImage(imageInfo.getID());
+                                for (int i = 0; i < imageInfoList.size(); i++) {
+                                    int id = imageInfoList.get(i).getID();
+                                    Log.v("imageInfo.id", "" + id);
+                                    attemptImage(id);
+                                    /*try {
+                                        Thread.sleep(300);
+                                        attemptImage(id);
                                     } catch (Exception e) {
                                         e.printStackTrace();
-                                    }
+                                    }*/
                                 }
                             }
                         } else {
@@ -520,7 +493,7 @@ public class ImgUploadActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Toast.makeText(ImgUploadActivity.this, "当前无网络", Toast.LENGTH_SHORT)
+            Snackbar.make(btn_uploadImg, "当前无网络", Snackbar.LENGTH_LONG).setAction("Action", null)
                     .show();
         }
     }
@@ -532,7 +505,8 @@ public class ImgUploadActivity extends AppCompatActivity {
         if (image.exists()) {
             Log.v("图片", "已经存在");
             uploadImage.add(image_path);
-            adapter_uploadImg.changList_add(uploadImage);
+            adaChang();
+            //adapter_uploadImg.changList_add(uploadImage);
         } else {
             if (NetworkUtil.isNetworkAvailable(_context)) {
                 FDA_API request = HttpUtils.JsonApi();
@@ -564,7 +538,8 @@ public class ImgUploadActivity extends AppCompatActivity {
                                     outStream.close();
                                     Log.v("图片", "下载成功");
                                     uploadImage.add(image_path);
-                                    adapter_uploadImg.changList_add(uploadImage);
+                                    adaChang();
+                                    //adapter_uploadImg.changList_add(uploadImage);
                                 } catch (FileNotFoundException e) {
                                     e.printStackTrace();
                                     Log.v("ResponseBody", "FileNotFoundException");
@@ -584,38 +559,10 @@ public class ImgUploadActivity extends AppCompatActivity {
                     }
                 });
             } else {
-                Toast.makeText(ImgUploadActivity.this, "当前无网络", Toast.LENGTH_SHORT)
-                        .show();
+                Snackbar.make(btn_uploadImg, "当前无网络", Snackbar.LENGTH_LONG).setAction("Action",
+                        null).show();
             }
         }
-    }
-
-    public Bitmap getBM(String path) {
-        if (path != null) {
-            Options opt = new Options();
-            opt.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(path, opt);
-            int imageHeight = opt.outHeight;
-            int imageWidth = opt.outWidth;
-            Display display = getWindowManager().getDefaultDisplay();
-            Point point = new Point();
-            display.getRealSize(point);
-            int screenHeight = point.y;
-            int screenWidth = point.x;
-            int scale = 1;
-            int scaleWidth = imageWidth / screenWidth;
-            int scaleHeight = imageHeight / screenHeight;
-            if (scaleWidth >= scaleHeight && scaleWidth > 1) {
-                scale = scaleWidth;
-            } else if (scaleWidth < scaleHeight && scaleHeight > 1) {
-                scale = scaleHeight;
-            }
-            opt.inSampleSize = scale;
-            opt.inJustDecodeBounds = false;
-            Bitmap bm = BitmapFactory.decodeFile(path, opt);
-            return bm;
-        }
-        return null;
     }
 
     public void ImgOnClick(int pos, int TYPE_IMAGE) {
@@ -644,27 +591,14 @@ public class ImgUploadActivity extends AppCompatActivity {
             } else if (TYPE_IMAGE == TYPE_IMAGE_8) {
                 path = picList_8.get(pos);
             }
-            Bitmap bm = getBM(path);
-            if (bm != null) {
-                LayoutInflater inflater = getLayoutInflater();
-                View layout = inflater.inflate(R.layout.item_img,
-                        (ViewGroup) findViewById(R.id.dialog_layout));
-                ImageView imageview = layout
-                        .findViewById(R.id.imageView);
-                imageview.setImageBitmap(bm);
-                AlertDialog.Builder dialog_img = new AlertDialog.Builder(
-                        ImgUploadActivity.this).setView(layout)
-                        .setPositiveButton("确定", null);
-                dialog_img.show();
-            }
+            showImage(path);
         }
     }
 
     public void ImgOnLongClick(final int pos, final int TYPE_IMAGE) {
         if (pos != 0) {
             // 通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
-            AlertDialog.Builder builder = new AlertDialog.Builder(
-                    _context);
+            AlertDialog.Builder builder = new AlertDialog.Builder(_context);
             // 设置Title的图标
             builder.setIcon(R.mipmap.ic_launcher);
             // 设置Title的内容
@@ -696,13 +630,13 @@ public class ImgUploadActivity extends AppCompatActivity {
                                 } else if (TYPE_IMAGE == TYPE_IMAGE_8) {
                                     adapter_img_8.removeItem(pos);
                                 }
-                                Toast.makeText(_context, "删除图片成功",
-                                        Toast.LENGTH_LONG).show();
+                                Snackbar.make(btn_uploadImg, "删除图片成功", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
                             } catch (Exception e) {
                                 // TODO 自动生成的 catch 块
                                 e.printStackTrace();
-                                Toast.makeText(_context, "删除图片失败",
-                                        Toast.LENGTH_LONG).show();
+                                Snackbar.make(btn_uploadImg, "删除图片失败", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
                             }
                         }
                     });
@@ -734,31 +668,24 @@ public class ImgUploadActivity extends AppCompatActivity {
         mypDialog.show();
         // 让ProgressDialog显示
         if (adapter_img_1.getImgList().size() == 1) {
-            mypDialog.dismiss();
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_1) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         } else if (adapter_img_2.getImgList().size() == 1) {
-            mypDialog.dismiss();
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_2) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         } else if (adapter_img_3.getImgList().size() == 1) {
-            mypDialog.dismiss();
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_3) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         } else if (adapter_img_5.getImgList().size() == 1) {
-            mypDialog.dismiss();
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_5) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         } else if (adapter_img_6.getImgList().size() == 1) {
-            mypDialog.dismiss();
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_6) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         } else if (adapter_img_7.getImgList().size() == 1) {
-            mypDialog.dismiss();
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_7) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         } else if (adapter_img_8.getImgList().size() == 1) {
-            mypDialog.dismiss();
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_8) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         } else {
@@ -810,12 +737,29 @@ public class ImgUploadActivity extends AppCompatActivity {
                     attemptImgUpload("微信截图", pic);
                 }
             }
-                    /*new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            finish();
-                        }
-                    }, 1500); // 延时1s执行*/
+        }
+        mypDialog.dismiss();
+    }
+
+    public void showImage(String path) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.item_img,
+                (ViewGroup) findViewById(R.id.dialog_layout));
+        ImageView imageview = layout
+                .findViewById(R.id.imageView);
+        AlertDialog.Builder dialog_img = new AlertDialog.Builder(
+                ImgUploadActivity.this).setView(layout)
+                .setPositiveButton("确定", null);
+        dialog_img.show();
+        Glide.with(_context).load(path)
+                .placeholder(R.mipmap.logo)
+                .error(R.mipmap.error)
+                .into(imageview);
+    }
+
+    public void adaChang() {
+        if (uploadImage.size() >= imageInfoList.size()) {
+            adapter_uploadImg.changList_add(uploadImage);
         }
     }
 }

@@ -34,17 +34,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/btn_task_plan"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/task_query" />
-
     </LinearLayout>
 
     <WebView
-        android:id="@+id/wv_task_plan"
+        android:id="@+id/wv_task_query"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/activity_vertical_margin" />
