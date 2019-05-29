@@ -117,7 +117,8 @@ public class LoginActivity extends Activity {
     }
 
     private void attemptLogin() {
-        final BuildBean dialog_login = DialogUIUtils.showLoading(_context, "加载中...", false, true, false,
+        final BuildBean dialog_login = DialogUIUtils.showLoading(_context, "登录中...", false, true,
+                false,
                 false);
         dialog_login.show();
         try {
@@ -177,7 +178,7 @@ public class LoginActivity extends Activity {
                                                 MainActivity.class));
                                         finish();
                                     }
-                                }, 1500);  //延时1s执行
+                                }, 3000);  //延时3s执行
                             }
                         } else {
                             et_mAccount.requestFocus();
@@ -193,7 +194,7 @@ public class LoginActivity extends Activity {
 
                 @Override
                 public void onFailure(Call<LoginStatus> call, Throwable t) {
-                    Log.v("Login请求成功!", t.getMessage());
+                    Log.v("Login请求失败!", t.getMessage());
                     DialogUIUtils.dismiss(dialog_login);
                     Snackbar.make(btn_login, "登录失败(请求失败)", Snackbar.LENGTH_LONG).setAction
                             ("Action", null).show();

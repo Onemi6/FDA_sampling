@@ -631,6 +631,22 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="地区/合同:" />
+
+                <Spinner
+                    android:id="@+id/details_CHILD_FOOD_KIND_ID"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="商标:" />
 
                 <EditText
@@ -1008,7 +1024,7 @@
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_MANU_COMPANY"
+                    android:nextFocusForward="@+id/details_PACK_OTHER"
                     android:singleLine="true" />
             </TableRow>
 
@@ -1045,7 +1061,7 @@
                     android:overlapAnchor="false" />
             </TableRow>
 
-            <!--<TableRow>
+            <TableRow>
 
                 <TextView
                     android:layout_width="1dip"
@@ -1062,7 +1078,7 @@
                     android:imeOptions="actionNext"
                     android:nextFocusForward="@+id/details_MANU_COMPANY"
                     android:singleLine="true" />
-            </TableRow>-->
+            </TableRow>
 
             <TableRow>
 
@@ -1139,22 +1155,6 @@
 
                 <Spinner
                     android:id="@+id/details_FOOD_KIND4"
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:overlapAnchor="false" />
-            </TableRow>
-
-            <TableRow>
-
-                <TextView
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingEnd="@dimen/activity_vertical_margin4"
-                    android:text="地区/合同:" />
-
-                <Spinner
-                    android:id="@+id/details_CHILD_FOOD_KIND_ID"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:overlapAnchor="false" />
@@ -1358,7 +1358,7 @@
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_DRAW_ORG_ADDR"
+                    android:nextFocusForward="@+id/details_DRAW_PERSON"
                     android:singleLine="true" />
             </TableRow>
 
@@ -1371,13 +1371,12 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="单位地址:" />
 
-                <EditText
+                <TextView
                     android:id="@+id/details_DRAW_ORG_ADDR"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:nextFocusForward="@+id/details_DRAW_PERSON"
-                    android:singleLine="true" />
+                    android:text="乌鲁木齐市南湖北路116号" />
+
             </TableRow>
 
             <TableRow>

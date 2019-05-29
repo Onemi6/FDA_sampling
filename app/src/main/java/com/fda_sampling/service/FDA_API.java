@@ -78,10 +78,13 @@ public interface FDA_API {
     Call<List<Unit>> getUnit(@Header("LIMS_Token") String LIMS_Token, @Query("Unit_Type") String
             Unit_Type);
 
+    @POST("api/Apply/getSamplingContract")
+    Call<List<FoodKind>> getSamplingContract(@Header("LIMS_Token") String LIMS_Token);
+
     @POST("api/Apply/getFoodKind")
     Call<List<FoodKind>> getFoodKind(@Header("LIMS_Token") String LIMS_Token, @Query
-            ("Food_Kind_Type") String Food_Kind_Type, @Query("Parent_Food_Kind_Name") String
-                                             Parent_Food_Kind_Name);
+            ("Contract_ID") int Contract_ID, @Query("Food_Kind_Type") String Food_Kind_Type,
+                                     @Query("Parent_Food_Kind_Name") String Parent_Food_Kind_Name);
 
     @POST("api/Apply/getChildFoodKind")
     Call<List<ChildFoodKind>> getChildFoodKind(@Header("LIMS_Token") String LIMS_Token, @Query

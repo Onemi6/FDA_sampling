@@ -168,7 +168,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
     public void viewAction() {
         adapter.setOnClickListener(new MainInfoAdapter.OnClickListener() {
             @Override
@@ -543,7 +542,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.v("Feedback请求失败!", t.getMessage());
                     DialogUIUtils.dismiss(dialog);
-                    Snackbar.make(toolbar, "获取失败!(请求失败)",
+                    /*Snackbar.make(toolbar, "获取失败!(请求失败)",
+                            Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
+                    Snackbar.make(toolbar, "获取失败!(只能选择一条数据)",
                             Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
             });
@@ -611,7 +612,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     Log.v("Toldbook请求失败!", t.getMessage());
                     DialogUIUtils.dismiss(dialog);
-                    Snackbar.make(toolbar, "获取失败!(请求失败)",
+                    /*Snackbar.make(toolbar, "获取失败!(请求失败)",
+                            Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
+                    Snackbar.make(toolbar, "获取失败!(只能选择一条数据)",
                             Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
             });
@@ -668,7 +671,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     MainActivity.this.startActivity(intent);
                 }
             }
-        }, 1000); /* 延时2s执行*/
+        }, 1000); /* 延时1s执行*/
     }
 
     // 判断apk是否安装

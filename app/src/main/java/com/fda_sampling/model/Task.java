@@ -34,6 +34,7 @@ public class Task {
     private String SAMPLE_SOURCE;
     private String SAMPLE_PROPERTY;
     private String SAMPLE_STYLE;
+    private String SAMPLE_STYLE_OTHER;
     private String TRADEMARK;
     private String DATE_PRODUCT_TYPE;
     private String DATE_PRODUCT;
@@ -65,6 +66,7 @@ public class Task {
     private String SAMPLE_CLOSE_DATE;
     private String SAMPLE_ADDR;
     private String PACK;
+    private String PACK_OTHER;
     private String DRAW_METHOD;
     private String DRAW_ORG;
     private String DRAW_ORG_ADDR;
@@ -344,6 +346,14 @@ public class Task {
         return SAMPLE_STYLE;
     }
 
+    public void setSAMPLE_STYLE_OTHER(String SAMPLE_STYLE_OTHER) {
+        this.SAMPLE_STYLE_OTHER = SAMPLE_STYLE_OTHER;
+    }
+
+    public String getSAMPLE_STYLE_OTHER() {
+        return SAMPLE_STYLE_OTHER;
+    }
+
     public void setTRADEMARK(String TRADEMARK) {
         this.TRADEMARK = TRADEMARK;
     }
@@ -591,6 +601,14 @@ public class Task {
 
     public String getPACK() {
         return PACK;
+    }
+
+    public void setPACK_OTHER(String PACK_OTHER) {
+        this.PACK_OTHER = PACK_OTHER;
+    }
+
+    public String getPACK_OTHER() {
+        return PACK_OTHER;
     }
 
     public void setDRAW_METHOD(String DRAW_METHOD) {
