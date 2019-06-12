@@ -52,6 +52,7 @@ dependencies {
     implementation 'com.tencent.bugly:nativecrashreport:3.6.0.1'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.dou361.dialogui:jjdxm-dialogui:1.0.3'
+    implementation 'top.zibin:Luban:1.1.8'
 
     implementation files('libs/poi-3.8-beta4.jar')
     implementation files('libs/poi-scratchpad-3.8-beta4.jar')

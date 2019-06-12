@@ -105,9 +105,8 @@ public class DetailsActivity extends AppCompatActivity {
             FoodKinds2 = new String[]{"分类加载中"}, FoodKinds3 = new String[]{"分类加载中"}, FoodKinds4 = new
             String[]{"分类加载中"}, AMOUNT_UNITS = new String[]{"单位加载中"}, UNIVALENT_UNITS = new
             String[]{"单位加载中"}, Provinces = new String[]{"省加载中"}, Cites = new String[]{"区加载中"},
-            Cites_MANU
-                    = new String[]{"区加载中"}, Districts = new String[]{"县加载中"}, Districts_MANU = new
-            String[]{"县加载中"};
+            Cites_MANU = new String[]{"区加载中"}, Districts = new String[]{"县加载中"}, Districts_MANU =
+            new String[]{"县加载中"};
     private EditText et_GOODS_NAME, et_SAMPLING_NOTICE_CODE, et_TOWN, et_SUPPLIER_ADDR_TXT,
             et_SUPPLIER_LEGAL, et_ANNUAL_SALES, et_BUSINESS_LICENCE, et_SUPPLIER_PERSON,
             et_PERMIT_NUM, et_SUPPLIER_PHONE, et_SUPPLIER_FAX, et_SUPPLIER_ZIPCODE,
@@ -120,7 +119,9 @@ public class DetailsActivity extends AppCompatActivity {
             et_GOODS_TYPE, et_DRAW_MAN;
     private String token, DRAW_MAN_NO, str_DATE_PRODUCT, str_DRAW_DATE;
     private ProgressDialog mypDialog;
-    private int mYear, mMonth, mDay, num_select = 0, Contract_ID;
+    private int mYear, mMonth, mDay, num_select = 0, Contract_ID, num_Cites, num_Cites_MANU,
+            num_Districts, num_Districts_MANU, num_FoodKinds1, num_FoodKinds2, num_FoodKinds3,
+            num_FoodKinds4, num_AMOUNT_UNITS, num_UNIVALENT_UNITS;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -140,7 +141,9 @@ public class DetailsActivity extends AppCompatActivity {
         } else {
             DRAW_MAN_NO = ((MyApplication) getApplication()).getNO();
         }
-
+        num_Cites = num_Cites_MANU = num_Districts = num_Districts_MANU = num_FoodKinds1 =
+                num_FoodKinds2 = num_FoodKinds3 = num_FoodKinds4 = num_AMOUNT_UNITS =
+                        num_UNIVALENT_UNITS = 0;
         initView();
         initData();
         viewAction();
@@ -1208,6 +1211,18 @@ public class DetailsActivity extends AppCompatActivity {
                                 .simple_spinner_dropdown_item, Provinces);
                         sp_PROVINCE.setAdapter(ada_PROVINCE);
                         sp_MANU_PROVINCE.setAdapter(ada_MANU_PROVINCE);
+                        for (int i = 0; i < ada_PROVINCE.getCount(); i++) {
+                            if (task.getPROVINCE().equals(ada_PROVINCE.getItem(i))) {
+                                sp_PROVINCE.setSelection(i, true);
+                                break;
+                            }
+                        }
+                        for (int j = 0; j < ada_MANU_PROVINCE.getCount(); j++) {
+                            if (task.getMANU_PROVINCE().equals(ada_MANU_PROVINCE.getItem(j))) {
+                                sp_MANU_PROVINCE.setSelection(j, true);
+                                break;
+                            }
+                        }
                     } else {
                         Log.v("getProvinces请求成功!", "response.body is null");
                     }
@@ -1246,6 +1261,16 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_CITY = new ArrayAdapter<>(context, android.R.layout
                                     .simple_spinner_dropdown_item, Cites);
                             sp_CITY.setAdapter(ada_CITY);
+
+                            if (num_Cites == 0) {
+                                for (int i = 0; i < ada_CITY.getCount(); i++) {
+                                    if (task.getCITY().equals(ada_CITY.getItem(i))) {
+                                        sp_CITY.setSelection(i, true);
+                                        break;
+                                    }
+                                }
+                                num_Cites++;
+                            }
                         } else if (type == 2) {
                             getCites_MANU = response.body();
                             if (getCites_MANU.size() > 0) {
@@ -1260,6 +1285,16 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_MANU_CITY = new ArrayAdapter<>(context, android.R.layout
                                     .simple_spinner_dropdown_item, Cites_MANU);
                             sp_MANU_CITY.setAdapter(ada_MANU_CITY);
+
+                            if (num_Cites_MANU == 0) {
+                                for (int i = 0; i < ada_MANU_CITY.getCount(); i++) {
+                                    if (task.getMANU_CITY().equals(ada_MANU_CITY.getItem(i))) {
+                                        sp_MANU_CITY.setSelection(i, true);
+                                        break;
+                                    }
+                                }
+                                num_Cites_MANU++;
+                            }
                         }
                     } else {
                         Log.v("getCites请求成功!", "response.body is null");
@@ -1299,6 +1334,16 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_DISTRICT = new ArrayAdapter<>(context, android.R.layout
                                     .simple_spinner_dropdown_item, Districts);
                             sp_DISTRICT.setAdapter(ada_DISTRICT);
+
+                            if (num_Districts == 0) {
+                                for (int i = 0; i < ada_DISTRICT.getCount(); i++) {
+                                    if (task.getDISTRICT().equals(ada_DISTRICT.getItem(i))) {
+                                        sp_DISTRICT.setSelection(i, true);
+                                        break;
+                                    }
+                                }
+                                num_Districts++;
+                            }
                         } else if (type == 2) {
                             getDistricts_MANU = response.body();
                             if (getDistricts_MANU.size() > 0) {
@@ -1313,6 +1358,16 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_MANU_DISTRICT = new ArrayAdapter<>(context, android.R.layout
                                     .simple_spinner_dropdown_item, Districts_MANU);
                             sp_MANU_DISTRICT.setAdapter(ada_MANU_DISTRICT);
+                            if (num_Districts_MANU == 0) {
+                                for (int i = 0; i < ada_MANU_DISTRICT.getCount(); i++) {
+                                    if (task.getMANU_DISTRICT().equals(ada_MANU_DISTRICT.getItem
+                                            (i))) {
+                                        sp_MANU_DISTRICT.setSelection(i, true);
+                                        break;
+                                    }
+                                }
+                                num_Districts_MANU++;
+                            }
                         }
                     } else {
                         Log.v("getDistricts请求成功!", "response.body is null");
@@ -1360,6 +1415,20 @@ public class DetailsActivity extends AppCompatActivity {
                             sp_DRAW_NUM_UNIT.setAdapter(ada_AMOUNT_UNITS);
                             sp_DRAW_AMOUNT_UNIT.setAdapter(ada_AMOUNT_UNITS);
                             sp_STORAGESITE_UNIT.setAdapter(ada_AMOUNT_UNITS);
+
+                            if (num_AMOUNT_UNITS == 0) {
+                                for (int i = 0; i < ada_AMOUNT_UNITS.getCount(); i++) {
+                                    if (task.getDRAW_AMOUNT_UNIT().equals(ada_AMOUNT_UNITS
+                                            .getItem(i))) {
+                                        sp_DRAW_NUM_UNIT.setSelection(i, true);
+                                        sp_DRAW_AMOUNT_UNIT.setSelection(i, true);
+                                        sp_STORAGESITE_UNIT.setSelection(i, true);
+                                        break;
+                                    }
+                                }
+                                num_AMOUNT_UNITS++;
+                            }
+
                         } else if (type.equals("UNIVALENT_UNIT")) {
                             getMeasureUnit_UNIVALENT_UNIT = response.body();
                             if (getMeasureUnit_UNIVALENT_UNIT.size() > 0) {
@@ -1380,6 +1449,17 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_UNIVALENT_UNIT = new ArrayAdapter<>(context,
                                     android.R.layout.simple_spinner_dropdown_item, UNIVALENT_UNITS);
                             sp_UNIVALENT_UNIT.setAdapter(ada_UNIVALENT_UNIT);
+
+                            if (num_UNIVALENT_UNITS == 0) {
+                                for (int i = 0; i < ada_UNIVALENT_UNIT.getCount(); i++) {
+                                    if (task.getUNIVALENT_UNIT().equals(ada_UNIVALENT_UNIT
+                                            .getItem(i))) {
+                                        sp_UNIVALENT_UNIT.setSelection(i, true);
+                                        break;
+                                    }
+                                }
+                                num_UNIVALENT_UNITS++;
+                            }
                         }
                     } else {
                         Log.v("getMeasureUnits请求成功!", "response.body is null");
@@ -1418,7 +1498,7 @@ public class DetailsActivity extends AppCompatActivity {
                     if (response.body() != null) {
                         Log.v("SamplingContract请求成功!", "response.body is not null");
                         getSamplingContract = response.body();
-                        Log.v("ChildFoodKindsize", "" + getSamplingContract.size());
+                        Log.v("SamplingContractsize", "" + getSamplingContract.size());
                         if (getSamplingContract.size() > 0) {
                             SamplingContracts = new String[getSamplingContract.size()];
                             for (int i = 0; i < getSamplingContract.size(); i++) {
@@ -1430,6 +1510,13 @@ public class DetailsActivity extends AppCompatActivity {
                         ada_CHILD_FOOD_KIND_ID = new ArrayAdapter<>
                                 (context, android.R.layout.simple_list_item_1, SamplingContracts);
                         sp_CHILD_FOOD_KIND_ID.setAdapter(ada_CHILD_FOOD_KIND_ID);
+                        for (int i = 0; i < ada_CHILD_FOOD_KIND_ID.getCount(); i++) {
+                            if (task.getCHILD_FOOD_KIND_ID().equals("" + getSamplingContract.get(i)
+                                    .getID())) {
+                                sp_CHILD_FOOD_KIND_ID.setSelection(i, true);
+                                break;
+                            }
+                        }
                     } else {
                         Log.v("SamplingContract请求成功!", "response.body is null");
                     }
@@ -1479,6 +1566,16 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_FOOD_KIND1 = new ArrayAdapter<>(context,
                                     android.R.layout.simple_list_item_1, FoodKinds1);
                             sp_FOOD_KIND1.setAdapter(ada_FOOD_KIND1);
+                            if (num_FoodKinds1 == 0) {
+                                for (int i = 0; i < ada_FOOD_KIND1.getCount(); i++) {
+                                    if (task.getFOOD_KIND1().equals(ada_FOOD_KIND1.getItem(i))) {
+                                        sp_FOOD_KIND1.setSelection(i, true);
+                                        break;
+                                    }
+                                }
+                                num_FoodKinds1++;
+                            }
+                            Log.v("FOOD_KIND1", task.getFOOD_KIND1());
                         } else if (Food_Kind_Type.equals("TYPE2")) {
                             Log.v("getFoodKind2请求成功!", "response.body is not null");
                             getFoodKind2 = response.body();
@@ -1490,6 +1587,16 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_FOOD_KIND2 = new ArrayAdapter<>(context,
                                     android.R.layout.simple_list_item_1, FoodKinds2);
                             sp_FOOD_KIND2.setAdapter(ada_FOOD_KIND2);
+                            if (num_FoodKinds2 <= 1) {
+                                for (int i = 0; i < ada_FOOD_KIND2.getCount(); i++) {
+                                    if (task.getFOOD_KIND2().equals(ada_FOOD_KIND2.getItem(i))) {
+                                        sp_FOOD_KIND2.setSelection(i, true);
+                                        break;
+                                    }
+                                }
+                                num_FoodKinds2++;
+                            }
+                            Log.v("FOOD_KIND2", task.getFOOD_KIND2());
                         } else if (Food_Kind_Type.equals("TYPE3")) {
                             Log.v("getFoodKind3请求成功!", "response.body is not null");
                             getFoodKind3 = response.body();
@@ -1501,6 +1608,16 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_FOOD_KIND3 = new ArrayAdapter<>(context,
                                     android.R.layout.simple_list_item_1, FoodKinds3);
                             sp_FOOD_KIND3.setAdapter(ada_FOOD_KIND3);
+                            if (num_FoodKinds3 <= 1) {
+                                for (int i = 0; i < ada_FOOD_KIND3.getCount(); i++) {
+                                    if (task.getFOOD_KIND3().equals(ada_FOOD_KIND3.getItem(i))) {
+                                        sp_FOOD_KIND3.setSelection(i, true);
+                                        break;
+                                    }
+                                }
+                                num_FoodKinds3++;
+                            }
+                            Log.v("FOOD_KIND3", task.getFOOD_KIND3());
                         } else if (Food_Kind_Type.equals("TYPE4")) {
                             Log.v("getFoodKind4请求成功!", "response.body is not null");
                             getFoodKind4 = response.body();
@@ -1512,6 +1629,16 @@ public class DetailsActivity extends AppCompatActivity {
                             ada_FOOD_KIND4 = new ArrayAdapter<>(context,
                                     android.R.layout.simple_list_item_1, FoodKinds4);
                             sp_FOOD_KIND4.setAdapter(ada_FOOD_KIND4);
+                            if (num_FoodKinds4 <= 1) {
+                                for (int i = 0; i < ada_FOOD_KIND4.getCount(); i++) {
+                                    if (task.getFOOD_KIND4().equals(ada_FOOD_KIND4.getItem(i))) {
+                                        sp_FOOD_KIND4.setSelection(i, true);
+                                        break;
+                                    }
+                                }
+                                num_FoodKinds4++;
+                            }
+                            Log.v("FOOD_KIND4", task.getFOOD_KIND4());
                         }
                     } else {
                         Log.v("getFoodKind请求成功!", "response.body is null");
@@ -1708,6 +1835,7 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
+
     public void attemptSubmit() {
         mypDialog = new ProgressDialog(DetailsActivity.this);
         // 实例化
@@ -1780,6 +1908,7 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
     }
+
 
     public void attemptGetSamplingBill(String applyNo) {
         final BuildBean dialog_loading = DialogUIUtils.showLoading(context, "正在生成抽样单...", false,

@@ -1,7 +1,6 @@
 package com.fda_sampling.view;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,11 +21,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.dou361.dialogui.DialogUIUtils;
+import com.dou361.dialogui.bean.BuildBean;
 import com.fda_sampling.R;
 import com.fda_sampling.model.ImageInfo;
 import com.fda_sampling.model.UploadImg;
 import com.fda_sampling.service.FDA_API;
 import com.fda_sampling.service.HttpUtils;
+import com.fda_sampling.util.ClickUtil;
 import com.fda_sampling.util.MyApplication;
 import com.fda_sampling.util.NetworkUtil;
 
@@ -58,8 +60,8 @@ public class ImgUploadActivity extends AppCompatActivity {
     private List<ImageInfo> imageInfoList = new ArrayList<>();
     private ImgAdapter adapter_img_1, adapter_img_2, adapter_img_3, adapter_img_4, adapter_img_5,
             adapter_img_6, adapter_img_7, adapter_img_8, adapter_uploadImg;
-    private int fail_num = 0;
-    private ProgressDialog mypDialog;
+    private int fail_num = 0, finish;
+    private BuildBean dialog_ImgUpload;
     private SharedPreferences sharedPreferences;
 
     private static final int TYPE_IMAGE_0 = 0;
@@ -288,7 +290,13 @@ public class ImgUploadActivity extends AppCompatActivity {
         btn_uploadImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImgUpload();
+                if (ClickUtil.isFastClick()) {
+                    ImgUpload();
+                } else {
+                    Snackbar.make(btn_uploadImg, "点击太快了，请稍后再试",
+                            Snackbar.LENGTH_LONG).setAction("Action", null)
+                            .show();
+                }
             }
         });
     }
@@ -402,7 +410,7 @@ public class ImgUploadActivity extends AppCompatActivity {
                         intent_login.setClass(ImgUploadActivity.this,
                                 LoginActivity.class);
                         intent_login.putExtra("login_type", 1);
-                        mypDialog.dismiss();
+                        DialogUIUtils.dismiss(dialog_ImgUpload);
                         startActivity(intent_login);
                     } else if (response.code() == 200) {
                         if (response.body() != null) {
@@ -417,10 +425,21 @@ public class ImgUploadActivity extends AppCompatActivity {
                         } else {
                             Log.v("ImgUpload请求成功!", "response.body is null");
                         }
-                        if ((status.size() + 6) >= (picList_1.size() + picList_2.size() +
+                        if ((status.size() + 8) >= (picList_1.size() + picList_2.size() +
                                 picList_3.size() + picList_4.size() + picList_5.size() +
-                                picList_6.size())) {
-                            mypDialog.dismiss();
+                                picList_6.size() + picList_7.size() + picList_8.size())) {
+                            /*picList_1.clear();
+                            picList_2.clear();
+                            picList_3.clear();
+                            picList_4.clear();
+                            picList_5.clear();
+                            picList_6.clear();
+                            picList_7.clear();
+                            picList_8.clear();*/
+                            finish = 1;
+                        }
+                        if (finish == 1) {
+                            DialogUIUtils.dismiss(dialog_ImgUpload);
                             Snackbar.make(btn_uploadImg, "共上传" + status.size() + "张图片,其中失败" +
                                     fail_num + "张", Snackbar.LENGTH_LONG).setAction("Action",
                                     null).show();
@@ -430,12 +449,10 @@ public class ImgUploadActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<UploadImg> call, Throwable t) {
-                    mypDialog.dismiss();
                     Log.v("ImgUpload请求失败!", t.getMessage());
                 }
             });
         } else {
-            mypDialog.dismiss();
             Snackbar.make(btn_uploadImg, "当前无网络", Snackbar.LENGTH_LONG).setAction("Action", null)
                     .show();
         }
@@ -655,18 +672,11 @@ public class ImgUploadActivity extends AppCompatActivity {
     }
 
     public void ImgUpload() {
-        mypDialog = new ProgressDialog(ImgUploadActivity.this);
-        // 实例化
-        mypDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        // 设置进度条风格，风格为圆形，旋转的
-        mypDialog.setTitle("上传图片中...");
-        // 设置ProgressDialog 标题
-        mypDialog.setIndeterminate(false);
-        // 设置ProgressDialog 的进度条是否不明确
-        mypDialog.setCancelable(false);
-        // 设置ProgressDialog 是否可以按退回按键取消
-        mypDialog.show();
-        // 让ProgressDialog显示
+        dialog_ImgUpload = DialogUIUtils.showLoading(_context, "上传中...", false, true,
+                false,
+                false);
+        dialog_ImgUpload.show();
+        finish = 0;
         if (adapter_img_1.getImgList().size() == 1) {
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_1) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
@@ -738,7 +748,6 @@ public class ImgUploadActivity extends AppCompatActivity {
                 }
             }
         }
-        mypDialog.dismiss();
     }
 
     public void showImage(String path) {

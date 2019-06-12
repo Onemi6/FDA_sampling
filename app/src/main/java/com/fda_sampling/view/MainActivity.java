@@ -404,10 +404,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (tv_select_title.getText().equals("样品标签")) {
             attemptReportServer(2, applyNo, dialog_loading);
         } else if (tv_select_title.getText().equals("反馈单")) {
+            attemptReportServer(3, applyNo, dialog_loading);
+        } else if (tv_select_title.getText().equals("告知书")) {
+            attemptReportServer(4, applyNo, dialog_loading);
+        }
+        /*else if (tv_select_title.getText().equals("反馈单")) {
             attemptGetSamplingFeedback(applyNo, dialog_loading);
         } else if (tv_select_title.getText().equals("告知书")) {
             attemptGetSamplingToldbook(applyNo, dialog_loading);
-        }
+        }*/
     }
 
     private void setBtnEnabled(int select_num) {
@@ -432,7 +437,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             pdf_path = Environment.getExternalStorageDirectory() + "/FDA/sampletag/" + applyNo +
                     ".pdf";
             reportlet = "样品标签.cpt";
+        } else if (type == 3) {
+            pdf_path = Environment.getExternalStorageDirectory() + "/FDA/Feedback/" + applyNo +
+                    ".pdf";
+            reportlet = "反馈单.cpt";
+        } else if (type == 4) {
+            pdf_path = Environment.getExternalStorageDirectory() + "/FDA/Toldbook/" + applyNo +
+                    ".pdf";
+            reportlet = "告知书.cpt";
         }
+
         final File file_pdf = new File(pdf_path);
         if (file_pdf.exists()) {
             Log.v("pdf", "已经存在");
