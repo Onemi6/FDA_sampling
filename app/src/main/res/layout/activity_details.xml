@@ -154,6 +154,86 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="地区/合同:" />
+
+                <Spinner
+                    android:id="@+id/details_CHILD_FOOD_KIND_ID"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="食品分类1:" />
+
+                <Spinner
+                    android:id="@+id/details_FOOD_KIND1"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="食品分类2:" />
+
+                <Spinner
+                    android:id="@+id/details_FOOD_KIND2"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="食品分类3:" />
+
+                <Spinner
+                    android:id="@+id/details_FOOD_KIND3"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
+                    android:text="食品分类4:" />
+
+                <Spinner
+                    android:id="@+id/details_FOOD_KIND4"
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:overlapAnchor="false" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="商品类别:" />
 
                 <EditText
@@ -631,22 +711,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:paddingEnd="@dimen/activity_vertical_margin4"
-                    android:text="地区/合同:" />
-
-                <Spinner
-                    android:id="@+id/details_CHILD_FOOD_KIND_ID"
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:overlapAnchor="false" />
-            </TableRow>
-
-            <TableRow>
-
-                <TextView
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="商标:" />
 
                 <EditText
@@ -765,7 +829,8 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:nextFocusForward="@+id/details_PRODUCTION_CERTIFICATE"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:text="/" />
             </TableRow>
 
             <TableRow>
@@ -801,6 +866,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:nextFocusForward="@+id/details_DRAW_NUM"
+                    android:inputType="number|numberDecimal"
                     android:singleLine="true" />
 
             </TableRow>
@@ -853,6 +919,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:nextFocusForward="@+id/details_DRAW_AMOUNT"
+                    android:inputType="number|numberDecimal"
                     android:singleLine="true" />
 
             </TableRow>
@@ -888,6 +955,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:nextFocusForward="@+id/details_STORAGESITE"
+                    android:inputType="number|numberDecimal"
                     android:singleLine="true" />
 
             </TableRow>
@@ -923,6 +991,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:nextFocusForward="@+id/details_SAVE_MODE_OTHER"
+                    android:inputType="number|numberDecimal"
                     android:singleLine="true" />
 
             </TableRow>
@@ -1091,70 +1160,6 @@
 
                 <Spinner
                     android:id="@+id/details_DRAW_METHOD"
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:overlapAnchor="false" />
-            </TableRow>
-
-            <TableRow>
-
-                <TextView
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingEnd="@dimen/activity_vertical_margin4"
-                    android:text="食品分类1:" />
-
-                <Spinner
-                    android:id="@+id/details_FOOD_KIND1"
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:overlapAnchor="false" />
-            </TableRow>
-
-            <TableRow>
-
-                <TextView
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingEnd="@dimen/activity_vertical_margin4"
-                    android:text="食品分类2:" />
-
-                <Spinner
-                    android:id="@+id/details_FOOD_KIND2"
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:overlapAnchor="false" />
-            </TableRow>
-
-            <TableRow>
-
-                <TextView
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingEnd="@dimen/activity_vertical_margin4"
-                    android:text="食品分类3:" />
-
-                <Spinner
-                    android:id="@+id/details_FOOD_KIND3"
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:overlapAnchor="false" />
-            </TableRow>
-
-            <TableRow>
-
-                <TextView
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingEnd="@dimen/activity_vertical_margin4"
-                    android:text="食品分类4:" />
-
-                <Spinner
-                    android:id="@+id/details_FOOD_KIND4"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:overlapAnchor="false" />

@@ -254,6 +254,7 @@ public class LoginActivity extends Activity {
             BILL_PATH = Environment.getExternalStorageDirectory() + "/FDA/Bill/";
             FEEDBACK_PATH = Environment.getExternalStorageDirectory() + "/FDA/Feedback/";
             TOLDBOOK_PATH = Environment.getExternalStorageDirectory() + "/FDA/Toldbook/";
+            //COMPRESS_PATH = Environment.getExternalStorageDirectory() + "/FDA/Compress/";
         } else {
             IMAGE_PATH = PAYMENT_PATH = SAMPLETAG_PATH = CRASH_PATH = BILL_PATH = FEEDBACK_PATH =
                     TOLDBOOK_PATH = this.getCacheDir().toString() + "/";

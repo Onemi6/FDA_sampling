@@ -5,6 +5,13 @@
     tools:context=".view.DetailsActivity">
 
     <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="100"
+        android:title="@string/refresh"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_prov_submit"
         android:orderInCategory="100"
         android:title="@string/prov_submit"
@@ -26,6 +33,18 @@
         android:id="@+id/action_SamplingBill"
         android:orderInCategory="100"
         android:title="@string/SamplingBill"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_copy"
+        android:orderInCategory="100"
+        android:title="@string/copy"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_paste"
+        android:orderInCategory="100"
+        android:title="@string/paste"
         app:showAsAction="never" />
 
 </menu>

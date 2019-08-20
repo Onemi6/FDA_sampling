@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        adapter.setOnLongClickListener(new MainInfoAdapter.OnLongClickListener() {
+        /*adapter.setOnLongClickListener(new MainInfoAdapter.OnLongClickListener() {
             @Override
             public void onLongClick(View view, int position) {
                 pos = position;
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 显示出该对话框
                 builder.show();
             }
-        });
+        });*/
     }
 
     public void attemptGetTasks() {
@@ -473,7 +473,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 // 最后关闭文件输出流
                                 outStream.close();
                                 Log.v("pdf", "下载成功");
-                                doPrintPdf(file_pdf);
+                                doOpenWord(file_pdf);
+                                //doPrintPdf(file_pdf);
                             } catch (FileNotFoundException e) {
                                 e.printStackTrace();
                                 Log.v("ResponseBody", "FileNotFoundException");

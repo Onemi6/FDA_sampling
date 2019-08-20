@@ -7,6 +7,7 @@ import com.fda_sampling.model.FoodKind;
 import com.fda_sampling.model.ImageInfo;
 import com.fda_sampling.model.LoginStatus;
 import com.fda_sampling.model.Province;
+import com.fda_sampling.model.Result;
 import com.fda_sampling.model.SubmitStatus;
 import com.fda_sampling.model.Task;
 import com.fda_sampling.model.Unit;
@@ -110,4 +111,7 @@ public interface FDA_API {
 
     @GET("api/Param/getDistrictsByID")
     Call<List<District>> getDistrictsByID(@Query("ID") int ID);
+
+    @GET("problem")
+    Call<Result> sendProblem(@Query("name") String name, @Query("content") String content);
 }

@@ -84,6 +84,13 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             ("#FF8000"));
                     ((ViewHolder) holder).GOODS_NAME.setTextColor(Color.parseColor("#FF8000"));
                 }
+                else if(task.getSTATE().equals("基础信息审核退回")){
+                    ((ViewHolder) holder).CUSTOM_NO.setTextColor(Color.parseColor("#055EDD"));
+                    ((ViewHolder) holder).NO.setTextColor(Color.parseColor("#055EDD"));
+                    ((ViewHolder) holder).BUSINESS_SOURCE.setTextColor(Color.parseColor
+                            ("#055EDD"));
+                    ((ViewHolder) holder).GOODS_NAME.setTextColor(Color.parseColor("#055EDD"));
+                }
             } else {
                 ((ViewHolder) holder).CUSTOM_NO.setTextColor(Color.parseColor("#727272"));
                 ((ViewHolder) holder).NO.setTextColor(Color.parseColor("#727272"));

@@ -31,6 +31,8 @@ import com.fda_sampling.service.HttpUtils;
 import com.fda_sampling.util.ClickUtil;
 import com.fda_sampling.util.MyApplication;
 import com.fda_sampling.util.NetworkUtil;
+import com.zxy.tiny.Tiny;
+import com.zxy.tiny.callback.FileCallback;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,11 +58,12 @@ public class ImgUploadActivity extends AppCompatActivity {
     private List<String> picList_1 = new ArrayList<>(), picList_2 = new ArrayList<>(), picList_3
             = new ArrayList<>(), picList_4 = new ArrayList<>(), picList_5 = new ArrayList<>(),
             picList_6 = new ArrayList<>(), picList_7 = new ArrayList<>(), picList_8 = new
-            ArrayList<>(), uploadImage = new ArrayList<>(), status = new ArrayList<>();
+            ArrayList<>(), uploadImage = new ArrayList<>(), status = new ArrayList<>(),
+            type_exists = new ArrayList<>();
     private List<ImageInfo> imageInfoList = new ArrayList<>();
     private ImgAdapter adapter_img_1, adapter_img_2, adapter_img_3, adapter_img_4, adapter_img_5,
             adapter_img_6, adapter_img_7, adapter_img_8, adapter_uploadImg;
-    private int fail_num = 0, finish;
+    private int fail_num, finish, picNum;
     private BuildBean dialog_ImgUpload;
     private SharedPreferences sharedPreferences;
 
@@ -83,6 +86,7 @@ public class ImgUploadActivity extends AppCompatActivity {
         Intent intent = getIntent();
         number = intent.getStringExtra("NO");
         sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
+        Tiny.getInstance().init(getApplication());
 
         RecyclerView rv_add_img_1 = findViewById(R.id.rv_img_add_1);
         RecyclerView rv_add_img_2 = findViewById(R.id.rv_img_add_2);
@@ -422,20 +426,16 @@ public class ImgUploadActivity extends AppCompatActivity {
                                 fail_num++;
                                 Log.v("图片上传失败", response.body().getMessage());
                             }
+                            DialogUIUtils.dismiss(dialog_ImgUpload);
+                            dialog_ImgUpload = DialogUIUtils.showLoading(_context, "已上传 " +
+                                    status.size() + "/" + picNum, false, true, false, false);
+                            dialog_ImgUpload.show();
                         } else {
                             Log.v("ImgUpload请求成功!", "response.body is null");
                         }
                         if ((status.size() + 8) >= (picList_1.size() + picList_2.size() +
                                 picList_3.size() + picList_4.size() + picList_5.size() +
                                 picList_6.size() + picList_7.size() + picList_8.size())) {
-                            /*picList_1.clear();
-                            picList_2.clear();
-                            picList_3.clear();
-                            picList_4.clear();
-                            picList_5.clear();
-                            picList_6.clear();
-                            picList_7.clear();
-                            picList_8.clear();*/
                             finish = 1;
                         }
                         if (finish == 1) {
@@ -450,9 +450,13 @@ public class ImgUploadActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<UploadImg> call, Throwable t) {
                     Log.v("ImgUpload请求失败!", t.getMessage());
+                    DialogUIUtils.dismiss(dialog_ImgUpload);
+                    Snackbar.make(btn_uploadImg, "上传请求失败!", Snackbar.LENGTH_LONG).setAction
+                            ("Action", null).show();
                 }
             });
         } else {
+            DialogUIUtils.dismiss(dialog_ImgUpload);
             Snackbar.make(btn_uploadImg, "当前无网络", Snackbar.LENGTH_LONG).setAction("Action", null)
                     .show();
         }
@@ -460,6 +464,7 @@ public class ImgUploadActivity extends AppCompatActivity {
 
     public void attemptImageInfo() {
         if (NetworkUtil.isNetworkAvailable(_context)) {
+            type_exists.add("经营许可证");
             FDA_API request = HttpUtils.JsonApi();
             if (((MyApplication) getApplication()).getTOKEN() == null) {
                 token = sharedPreferences.getString("TOKEN", null);
@@ -485,14 +490,15 @@ public class ImgUploadActivity extends AppCompatActivity {
                             if (imageInfoList.size() > 0) {
                                 for (int i = 0; i < imageInfoList.size(); i++) {
                                     int id = imageInfoList.get(i).getID();
-                                    Log.v("imageInfo.id", "" + id);
+                                    /*Log.v("imageInfo.id", "" + id);
+                                    Log.v("imageInfo.APPLY_NO", imageInfoList.get(i).getAPPLY_NO());
+                                    Log.v("imageInfo.IMG_TYPE", imageInfoList.get(i).getIMG_TYPE());
+                                    Log.v("IMG_CONTENT_LEN", "" + imageInfoList.get(i)
+                                            .getIMG_CONTENT_LEN());*/
+                                    if (!type_exists.contains(imageInfoList.get(i).getIMG_TYPE())) {
+                                        type_exists.add(imageInfoList.get(i).getIMG_TYPE());
+                                    }
                                     attemptImage(id);
-                                    /*try {
-                                        Thread.sleep(300);
-                                        attemptImage(id);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }*/
                                 }
                             }
                         } else {
@@ -672,79 +678,107 @@ public class ImgUploadActivity extends AppCompatActivity {
     }
 
     public void ImgUpload() {
-        dialog_ImgUpload = DialogUIUtils.showLoading(_context, "上传中...", false, true,
-                false,
-                false);
-        dialog_ImgUpload.show();
+        fail_num = 0;
         finish = 0;
-        if (adapter_img_1.getImgList().size() == 1) {
+        picNum = 0;
+        status.clear();
+
+        picList_1 = adapter_img_1.getImgList();
+        picList_2 = adapter_img_2.getImgList();
+        picList_3 = adapter_img_3.getImgList();
+        picList_4 = adapter_img_4.getImgList();
+        picList_5 = adapter_img_5.getImgList();
+        picList_6 = adapter_img_6.getImgList();
+        picList_7 = adapter_img_7.getImgList();
+        picList_8 = adapter_img_8.getImgList();
+
+        if (picList_1.size() == 1 && !type_exists.contains(getResources()
+                .getString(R.string.img_type_1))) {
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_1) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        } else if (adapter_img_2.getImgList().size() == 1) {
+        } else if (picList_2.size() == 1 && !type_exists.contains(getResources()
+                .getString(R.string.img_type_2))) {
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_2) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        } else if (adapter_img_3.getImgList().size() == 1) {
+        } else if (picList_3.size() == 1 && !type_exists.contains(getResources()
+                .getString(R.string.img_type_3))) {
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_3) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        } else if (adapter_img_5.getImgList().size() == 1) {
+        } else if (picList_5.size() == 1 && !type_exists.contains(getResources()
+                .getString(R.string.img_type_5))) {
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_5) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        } else if (adapter_img_6.getImgList().size() == 1) {
+        } else if (picList_6.size() == 1 && !type_exists.contains(getResources()
+                .getString(R.string.img_type_6))) {
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_6) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        } else if (adapter_img_7.getImgList().size() == 1) {
+        } else if (picList_7.size() == 1 && !type_exists.contains(getResources()
+                .getString(R.string.img_type_7))) {
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_7) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        } else if (adapter_img_8.getImgList().size() == 1) {
+        } else if (picList_8.size() == 1 && !type_exists.contains(getResources()
+                .getString(R.string.img_type_8))) {
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_8) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         } else {
-            picList_1 = adapter_img_1.getImgList();
-            picList_2 = adapter_img_2.getImgList();
-            picList_3 = adapter_img_3.getImgList();
-            picList_4 = adapter_img_4.getImgList();
-            picList_5 = adapter_img_5.getImgList();
-            picList_6 = adapter_img_6.getImgList();
-            picList_7 = adapter_img_7.getImgList();
-            picList_8 = adapter_img_8.getImgList();
+            Log.v("图片", "八种类别都已经上传过");
+            picNum = picList_1.size() + picList_2.size() + picList_3.size() + picList_4.size() +
+                    picList_5.size() + picList_6.size() + picList_7.size() + picList_8.size() - 8;
+
             for (String pic : picList_1) {
                 if (!pic.equals("加号")) {
-                    attemptImgUpload("样品照片", pic);
+                    pic_compress(getResources().getString(R.string.img_type_1), pic);
+                    //pic_compress("样品照片", pic);
+                    //attemptImgUpload("样品照片", pic);
                 }
             }
             for (String pic : picList_2) {
                 if (!pic.equals("加号")) {
-                    attemptImgUpload("现场照片", pic);
+                    pic_compress(getResources().getString(R.string.img_type_2), pic);
+                    //pic_compress("样品照片", pic);
+                    //attemptImgUpload("样品照片", pic);
                 }
             }
             for (String pic : picList_3) {
                 if (!pic.equals("加号")) {
-                    attemptImgUpload("营业执照", pic);
+                    pic_compress(getResources().getString(R.string.img_type_3), pic);
+                    //pic_compress("样品照片", pic);
+                    //attemptImgUpload("样品照片", pic);
                 }
             }
             for (String pic : picList_4) {
                 if (!pic.equals("加号")) {
-                    attemptImgUpload("经营许可证", pic);
+                    pic_compress(getResources().getString(R.string.img_type_4), pic);
+                    //pic_compress("经营许可证", pic);
+                    //attemptImgUpload("经营许可证", pic);
                 }
             }
             for (String pic : picList_5) {
                 if (!pic.equals("加号")) {
-                    attemptImgUpload("告知书", pic);
+                    pic_compress(getResources().getString(R.string.img_type_5), pic);
+                    //pic_compress("告知书", pic);
+                    //attemptImgUpload("告知书", pic);
                 }
             }
             for (String pic : picList_6) {
                 if (!pic.equals("加号")) {
-                    attemptImgUpload("反馈单", pic);
+                    pic_compress(getResources().getString(R.string.img_type_6), pic);
+                    //pic_compress("反馈单", pic);
+                    //attemptImgUpload("反馈单", pic);
                 }
             }
             for (String pic : picList_7) {
                 if (!pic.equals("加号")) {
-                    attemptImgUpload("抽样单", pic);
+                    pic_compress(getResources().getString(R.string.img_type_7), pic);
+                    //pic_compress("抽样单", pic);
+                    //attemptImgUpload("抽样单", pic);
                 }
             }
             for (String pic : picList_8) {
                 if (!pic.equals("加号")) {
-                    attemptImgUpload("微信截图", pic);
+                    pic_compress(getResources().getString(R.string.img_type_8), pic);
+                    //pic_compress("微信截图", pic);
+                    //attemptImgUpload("微信截图", pic);
                 }
             }
         }
@@ -770,5 +804,23 @@ public class ImgUploadActivity extends AppCompatActivity {
         if (uploadImage.size() >= imageInfoList.size()) {
             adapter_uploadImg.changList_add(uploadImage);
         }
+    }
+
+    public void pic_compress(final String type, String filePath) {
+        /*1、quality-压缩质量，默认为76
+        2、isKeepSampling-是否保持原数据源图片的宽高
+        3、fileSize-压缩后文件大小
+        4、outfile-压缩后文件存储路径
+        如果不配置，Tiny内部会根据默认压缩质量进行压缩，压缩后文件默认存储在：
+        ExternalStorage/Android/data/${packageName}/tiny/目录下*/
+        Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
+        Tiny.getInstance().source(filePath).asFile().withOptions(options).compress(new FileCallback() {
+            @Override
+            public void callback(boolean isSuccess, String outfile) {
+                //return the compressed file path
+                //Log.v("压缩图片", outfile);
+                attemptImgUpload(type, outfile);
+            }
+        });
     }
 }

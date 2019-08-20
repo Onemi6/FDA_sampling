@@ -47,7 +47,7 @@
     </string-array>
 
     <string-array name="SAMPLE_SOURCE">
-        <item>加工自制</item>
+        <item>加工/自制</item>
         <item>委托生产</item>
         <item>外购</item>
         <item>其他</item>
