@@ -2,16 +2,17 @@ package com.fda_sampling.service;
 
 import com.fda_sampling.model.ChildFoodKind;
 import com.fda_sampling.model.City;
+import com.fda_sampling.model.DelImgStatus;
 import com.fda_sampling.model.District;
 import com.fda_sampling.model.FoodKind;
 import com.fda_sampling.model.ImageInfo;
 import com.fda_sampling.model.LoginStatus;
+import com.fda_sampling.model.MeasureUnit;
 import com.fda_sampling.model.Province;
 import com.fda_sampling.model.Result;
 import com.fda_sampling.model.SubmitStatus;
 import com.fda_sampling.model.Task;
 import com.fda_sampling.model.Unit;
-import com.fda_sampling.model.MeasureUnit;
 import com.fda_sampling.model.UpdateInfo;
 import com.fda_sampling.model.UploadImg;
 import com.fda_sampling.model.sampleEnterprise;
@@ -68,6 +69,9 @@ public interface FDA_API {
     @POST("api/Apply/Image")
     Call<ResponseBody> Image(@Header("LIMS_Token") String LIMS_Token, @Query("id") int id);
 
+    @POST("api/Apply/delSamplingImg")
+    Call<DelImgStatus> delSamplingImg(@Header("LIMS_Token") String LIMS_Token, @Query("id") int id);
+
     @POST("api/Apply/sampleEnterprises")
     Call<List<sampleEnterprise>> sampleEnterprises(@Header("LIMS_Token") String LIMS_Token,
                                                    @Query("Key") String Key);
@@ -93,6 +97,10 @@ public interface FDA_API {
 
     @POST("api/Apply/getSamplingBill")
     Call<ResponseBody> getSamplingBill(@Header("LIMS_Token") String LIMS_Token, @Query("applyNo")
+            String applyNo);
+
+    @POST("api/Apply/getSamplingBill2")
+    Call<ResponseBody> getSamplingBill2(@Header("LIMS_Token") String LIMS_Token, @Query("applyNo")
             String applyNo);
 
     @POST("api/Apply/getSamplingFeedback")

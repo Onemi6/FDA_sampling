@@ -999,12 +999,11 @@ public class DetailsActivity extends AppCompatActivity {
                     if (sp_MANU_PROVINCE.getSelectedItem() != null && sp_MANU_CITY.getSelectedItem()
                             != null && sp_MANU_DISTRICT.getSelectedItem() != null) {
                         tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
-                                        .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
-                                        .toString(), sp_MANU_CITY.getSelectedItem().toString(),
-                                sp_MANU_DISTRICT
-                                        .getSelectedItem().toString(), et_MANU_TOWN.getText()
-                                        .toString(),
-                                et_MANU_COMPANY_ADDR_TXT.getText().toString()));
+                                .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem().toString
+                                (), sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
+                                .getSelectedItem().toString(), et_MANU_TOWN.getText().toString()
+                                .replace("/", ""), et_MANU_COMPANY_ADDR_TXT.getText().toString()
+                                .replace("/", "")));
                     }
                 }
             }
@@ -1028,12 +1027,11 @@ public class DetailsActivity extends AppCompatActivity {
                     if (sp_MANU_PROVINCE.getSelectedItem() != null && sp_MANU_CITY.getSelectedItem()
                             != null && sp_MANU_DISTRICT.getSelectedItem() != null) {
                         tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
-                                        .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
-                                        .toString(), sp_MANU_CITY.getSelectedItem().toString(),
-                                sp_MANU_DISTRICT
-                                        .getSelectedItem().toString(), et_MANU_TOWN.getText()
-                                        .toString(),
-                                et_MANU_COMPANY_ADDR_TXT.getText().toString()));
+                                .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem().toString
+                                (), sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
+                                .getSelectedItem().toString(), et_MANU_TOWN.getText().toString()
+                                .replace("/", ""), et_MANU_COMPANY_ADDR_TXT.getText().toString()
+                                .replace("/", "")));
                     }
                 }
             }
@@ -1054,12 +1052,11 @@ public class DetailsActivity extends AppCompatActivity {
                     if (sp_MANU_PROVINCE.getSelectedItem() != null && sp_MANU_CITY.getSelectedItem()
                             != null && sp_MANU_DISTRICT.getSelectedItem() != null) {
                         tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
-                                        .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
-                                        .toString(), sp_MANU_CITY.getSelectedItem().toString(),
-                                sp_MANU_DISTRICT
-                                        .getSelectedItem().toString(), et_MANU_TOWN.getText()
-                                        .toString(),
-                                et_MANU_COMPANY_ADDR_TXT.getText().toString()));
+                                .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem().toString
+                                (), sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
+                                .getSelectedItem().toString(), et_MANU_TOWN.getText().toString()
+                                .replace("/", ""), et_MANU_COMPANY_ADDR_TXT.getText().toString()
+                                .replace("/", "")));
                     }
                 }
             }
@@ -1089,9 +1086,10 @@ public class DetailsActivity extends AppCompatActivity {
                 } else {
                     tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
                                     .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
-                                    .toString(), sp_MANU_CITY.getSelectedItem().toString(),
-                            sp_MANU_DISTRICT.getSelectedItem().toString(), s.toString(),
-                            et_MANU_COMPANY_ADDR_TXT.getText().toString()));
+                                    .toString(),
+                            sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
+                                    .getSelectedItem().toString(), s.toString().replace("/", ""),
+                            et_MANU_COMPANY_ADDR_TXT.getText().toString().replace("/", "")));
                 }
             }
         });
@@ -1113,11 +1111,10 @@ public class DetailsActivity extends AppCompatActivity {
                     tv_MANU_COMPANY_ADDR.setText("/");
                 } else {
                     tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
-                                    .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
-                                    .toString(),
-                            sp_MANU_CITY.getSelectedItem().toString(),
-                            sp_MANU_DISTRICT.getSelectedItem().toString(),
-                            et_MANU_TOWN.getText().toString(), s.toString()));
+                            .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem().toString(),
+                            sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
+                                    .getSelectedItem().toString(), et_MANU_TOWN.getText().toString()
+                                    .replace("/", ""), s.toString().replace("/", "")));
                 }
             }
         });
@@ -1377,10 +1374,11 @@ public class DetailsActivity extends AppCompatActivity {
                             getDistricts_MANU = response.body();
                             if (getDistricts_MANU.size() > 0) {
                                 Log.v("Districts_MANU.size", "" + getDistricts_MANU.size());
-                                Districts_MANU = new String[getDistricts_MANU.size()];
+                                Districts_MANU = new String[getDistricts_MANU.size() + 1];
                                 for (int i = 0; i < getDistricts_MANU.size(); i++) {
                                     Districts_MANU[i] = getDistricts_MANU.get(i).getNAME();
                                 }
+                                Districts_MANU[getDistricts_MANU.size()] = "";
                             } else {
                                 Districts_MANU = new String[]{"区加载失败"};
                             }
@@ -2095,6 +2093,74 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
+    public void attemptGetSamplingBill2(String applyNo) {
+        final BuildBean dialog_loading = DialogUIUtils.showLoading(context, "正在生成抽样单(无市场)...",
+                false,
+                true, false,
+                false);
+        dialog_loading.show();
+        String bill_path = Environment.getExternalStorageDirectory() + "/FDA/Bill2/" + applyNo +
+                ".pdf";
+        final File bill2_pdf = new File(bill_path);
+        if (bill2_pdf.exists()) {
+            Log.v("pdf", "已经存在");
+            bill2_pdf.delete();
+            //doPrintPdf(bill2_pdf);
+        }
+        if (NetworkUtil.isNetworkAvailable(context)) {
+            FDA_API request = HttpUtils.JsonApi();
+            Call<ResponseBody> call = request.getSamplingBill2(token, applyNo);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.code() == 401) {
+                        Log.v("getSamplingBill2请求", "token过期");
+                        Intent intent_login = new Intent();
+                        intent_login.setClass(DetailsActivity.this, LoginActivity.class);
+                        intent_login.putExtra("login_type", 1);
+                        startActivity(intent_login);
+                    } else if (response.code() == 200) {
+                        if (response.body() != null) {
+                            try {
+                                // 获取文件的输出流对象
+                                FileOutputStream outStream = new FileOutputStream(bill2_pdf);
+                                // 获取字符串对象的byte数组并写入文件流
+                                outStream.write(response.body().bytes());
+                                // 最后关闭文件输出流
+                                outStream.close();
+                                Log.v("pdf", "下载成功");
+                                doPrintPdf(bill2_pdf);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                                Log.v("ResponseBody", "FileNotFoundException");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Log.v("ResponseBody", "IOException");
+                            }
+                        } else {
+                            Log.v("getSamplingBill2请求成功!", "response.body is null");
+                            Snackbar.make(toolbar, "获取失败!(请求成功)",
+                                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                        }
+                    }
+                    DialogUIUtils.dismiss(dialog_loading);
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.v("getSamplingBill2请求失败!", t.getMessage());
+                    DialogUIUtils.dismiss(dialog_loading);
+                    Snackbar.make(toolbar, "获取失败!(请求失败)",
+                            Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                }
+            });
+        } else {
+            DialogUIUtils.dismiss(dialog_loading);
+            Snackbar.make(toolbar, "当前无网络",
+                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
+    }
+
     public void sendProblem() {
         final Task task_submit = Tasks.list_task.get(Tasks.position);
         Gson gson = new Gson();
@@ -2281,6 +2347,9 @@ public class DetailsActivity extends AppCompatActivity {
                 break;
             case R.id.action_SamplingBill:
                 attemptGetSamplingBill(task.getNO());
+                break;
+            case R.id.action_SamplingBill2:
+                attemptGetSamplingBill2(task.getNO());
                 break;
             case R.id.action_copy:
                 if (ClickUtil.isFastClick()) {

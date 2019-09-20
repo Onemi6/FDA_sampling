@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
 import com.fda_sampling.R;
+import com.fda_sampling.model.DelImgStatus;
 import com.fda_sampling.model.ImageInfo;
 import com.fda_sampling.model.UploadImg;
 import com.fda_sampling.service.FDA_API;
@@ -291,6 +292,43 @@ public class ImgUploadActivity extends AppCompatActivity {
             }
         });
 
+        adapter_uploadImg.setOnLongClickListener(new ImgAdapter.OnLongClickListener() {
+            @Override
+            public void onLongClick(View view, final int position) {
+
+                // 通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
+                AlertDialog.Builder builder = new AlertDialog.Builder(_context);
+                // 设置Title的图标
+                builder.setIcon(R.mipmap.ic_launcher);
+                // 设置Title的内容
+                builder.setTitle("提示");
+                // 设置Content来显示一个信息
+                builder.setMessage("确定删除第" + (position + 1) + "张图片?");
+                // 设置一个PositiveButton
+                builder.setPositiveButton("确定",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                int id = imageInfoList.get(position).getID();
+                                //Log.v("del_id", "" + id);
+                                delSamplingImg(id, position);
+                            }
+                        });
+                // 设置一个NegativeButton
+                builder.setNegativeButton("取消",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                //dialog.dismiss();
+                            }
+                        });
+                // 显示出该对话框
+                builder.show();
+            }
+        });
+
         btn_uploadImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -490,14 +528,10 @@ public class ImgUploadActivity extends AppCompatActivity {
                             if (imageInfoList.size() > 0) {
                                 for (int i = 0; i < imageInfoList.size(); i++) {
                                     int id = imageInfoList.get(i).getID();
-                                    /*Log.v("imageInfo.id", "" + id);
-                                    Log.v("imageInfo.APPLY_NO", imageInfoList.get(i).getAPPLY_NO());
-                                    Log.v("imageInfo.IMG_TYPE", imageInfoList.get(i).getIMG_TYPE());
-                                    Log.v("IMG_CONTENT_LEN", "" + imageInfoList.get(i)
-                                            .getIMG_CONTENT_LEN());*/
                                     if (!type_exists.contains(imageInfoList.get(i).getIMG_TYPE())) {
                                         type_exists.add(imageInfoList.get(i).getIMG_TYPE());
                                     }
+                                    //Log.v("id", "" + id);
                                     attemptImage(id);
                                 }
                             }
@@ -822,5 +856,55 @@ public class ImgUploadActivity extends AppCompatActivity {
                 attemptImgUpload(type, outfile);
             }
         });
+    }
+
+    public void delSamplingImg(final int id, final int pos) {
+        if (NetworkUtil.isNetworkAvailable(_context)) {
+            FDA_API request = HttpUtils.JsonApi();
+            if (((MyApplication) getApplication()).getTOKEN() == null) {
+                token = sharedPreferences.getString("TOKEN", null);
+            } else {
+                token = ((MyApplication) getApplication()).getTOKEN();
+            }
+            Call<DelImgStatus> call = request.delSamplingImg(token, id);
+            call.enqueue(new Callback<DelImgStatus>() {
+                @Override
+                public void onResponse(Call<DelImgStatus> call, Response<DelImgStatus>
+                        response) {
+                    if (response.code() == 401) {
+                        Log.v("delImage请求", "token过期");
+                        Intent intent_login = new Intent();
+                        intent_login.setClass(ImgUploadActivity.this,
+                                LoginActivity.class);
+                        intent_login.putExtra("login_type", 1);
+                        startActivity(intent_login);
+                    } else if (response.code() == 200) {
+                        if (response.body() != null) {
+                            DelImgStatus delImgStatus = response.body();
+                            if (delImgStatus.getMessage().equals("执行完成！")) {
+                                adapter_uploadImg.removeItem(pos);
+                                Snackbar.make(btn_uploadImg, "删除成功!",
+                                        Snackbar.LENGTH_LONG).setAction("Action", null)
+                                        .show();
+                            } else {
+                                Snackbar.make(btn_uploadImg, delImgStatus.getMessage(),
+                                        Snackbar.LENGTH_LONG).setAction("Action", null)
+                                        .show();
+                            }
+                        } else {
+                            Log.v("delImage请求成功!", "response.body is null");
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DelImgStatus> call, Throwable t) {
+                    Log.v("delImage请求失败!", t.getMessage());
+                }
+            });
+        } else {
+            Snackbar.make(btn_uploadImg, "当前无网络", Snackbar.LENGTH_LONG).setAction("Action",
+                    null).show();
+        }
     }
 }

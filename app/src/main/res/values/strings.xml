@@ -11,6 +11,7 @@
     <string name="submit">提交</string>
     <string name="upload_img">上传图片</string>
     <string name="SamplingBill">抽样单</string>
+    <string name="SamplingBill2">抽样单(无市场)</string>
     <string name="SamplingFeedback">反馈单</string>
     <string name="Notification">告知书</string>
     <string name="selectImg">选择图片</string>

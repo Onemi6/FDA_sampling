@@ -244,24 +244,27 @@ public class LoginActivity extends Activity {
     public void FileDir() {
         boolean sdCardExist = android.os.Environment.getExternalStorageState().equals(android.os
                 .Environment.MEDIA_MOUNTED);
-        String IMAGE_PATH, PAYMENT_PATH, SAMPLETAG_PATH, CRASH_PATH, BILL_PATH, FEEDBACK_PATH,
-                TOLDBOOK_PATH;
+        String IMAGE_PATH, PAYMENT_PATH, SAMPLETAG_PATH, CRASH_PATH, BILL_PATH, BILL2_PATH,
+                FEEDBACK_PATH, TOLDBOOK_PATH;
         if (sdCardExist) {
             IMAGE_PATH = Environment.getExternalStorageDirectory() + "/FDA/Image/";
             PAYMENT_PATH = Environment.getExternalStorageDirectory() + "/FDA/payment/";
             SAMPLETAG_PATH = Environment.getExternalStorageDirectory() + "/FDA/sampletag/";
             CRASH_PATH = Environment.getExternalStorageDirectory() + "/FDA/crash/";
             BILL_PATH = Environment.getExternalStorageDirectory() + "/FDA/Bill/";
+            BILL2_PATH = Environment.getExternalStorageDirectory() + "/FDA/Bill2/";
             FEEDBACK_PATH = Environment.getExternalStorageDirectory() + "/FDA/Feedback/";
             TOLDBOOK_PATH = Environment.getExternalStorageDirectory() + "/FDA/Toldbook/";
             //COMPRESS_PATH = Environment.getExternalStorageDirectory() + "/FDA/Compress/";
         } else {
-            IMAGE_PATH = PAYMENT_PATH = SAMPLETAG_PATH = CRASH_PATH = BILL_PATH = FEEDBACK_PATH =
-                    TOLDBOOK_PATH = this.getCacheDir().toString() + "/";
+            IMAGE_PATH = PAYMENT_PATH = SAMPLETAG_PATH = CRASH_PATH = BILL_PATH = BILL2_PATH =
+                    FEEDBACK_PATH =
+                            TOLDBOOK_PATH = this.getCacheDir().toString() + "/";
         }
         File image = new File(IMAGE_PATH), payment = new File(PAYMENT_PATH), sampletag = new File
-                (SAMPLETAG_PATH), crash = new File(CRASH_PATH), bill = new File(BILL_PATH), feedback
-                = new File(FEEDBACK_PATH), toldbook = new File(TOLDBOOK_PATH);
+                (SAMPLETAG_PATH), crash = new File(CRASH_PATH), bill = new File(BILL_PATH), bill2
+                = new File(BILL2_PATH), feedback = new File(FEEDBACK_PATH), toldbook = new File
+                (TOLDBOOK_PATH);
         if (!image.exists()) {
             image.mkdirs();
         }
@@ -276,6 +279,9 @@ public class LoginActivity extends Activity {
         }
         if (!bill.exists()) {
             bill.mkdirs();
+        }
+        if (!bill2.exists()) {
+            bill2.mkdirs();
         }
         if (!feedback.exists()) {
             feedback.mkdirs();
