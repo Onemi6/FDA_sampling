@@ -53,16 +53,11 @@ import com.fda_sampling.util.MyApplication;
 import com.fda_sampling.util.NetworkUtil;
 import com.google.gson.Gson;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -84,17 +79,19 @@ public class DetailsActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Spinner sp_SAMPLE_TYPE, sp_DOMESTIC_AREA, sp_PROVINCE, sp_CITY, sp_DISTRICT,
             sp_PERMIT_TYPE, sp_DRAW_ADDR, sp_SAMPLE_SOURCE, sp_SAMPLE_PROPERTY, sp_SAMPLE_STYLE,
-            sp_DATE_PRODUCT_TYPE, sp_UNIVALENT_UNIT, sp_I_AND_O, sp_DRAW_NUM_UNIT,
-            sp_DRAW_AMOUNT_UNIT, sp_STORAGESITE_UNIT, sp_SAMPLE_STATUS, sp_PACK_TYPE,
-            sp_SAVE_MODE, sp_PACK, sp_DRAW_METHOD, sp_FOOD_KIND1, sp_FOOD_KIND2, sp_FOOD_KIND3,
+            sp_DATE_PRODUCT_TYPE, sp_UNIVALENT_UNIT, sp_I_AND_O, /*sp_DRAW_NUM_UNIT,
+            sp_DRAW_AMOUNT_UNIT, sp_STORAGESITE_UNIT,*/
+            sp_SAMPLE_STATUS, sp_PACK_TYPE, sp_SAVE_MODE, sp_PACK, sp_DRAW_METHOD, sp_FOOD_KIND1,
+            sp_FOOD_KIND2, sp_FOOD_KIND3,
             sp_FOOD_KIND4, sp_CHILD_FOOD_KIND_ID, sp_MANU_PROVINCE, sp_MANU_CITY, sp_MANU_DISTRICT;
-    private ArrayAdapter<String> ada_UNIVALENT_UNIT, ada_AMOUNT_UNITS, ada_FOOD_KIND1,
-            ada_FOOD_KIND2, ada_FOOD_KIND3, ada_FOOD_KIND4, ada_CHILD_FOOD_KIND_ID, ada_PROVINCE,
-            ada_CITY, ada_DISTRICT, ada_MANU_PROVINCE, ada_MANU_CITY, ada_MANU_DISTRICT;
+    private ArrayAdapter<String> ada_UNIVALENT_UNIT, ada_FOOD_KIND1, ada_FOOD_KIND2,
+            ada_FOOD_KIND3, ada_FOOD_KIND4, ada_CHILD_FOOD_KIND_ID, ada_PROVINCE, ada_CITY,
+            ada_DISTRICT,
+            ada_MANU_PROVINCE, ada_MANU_CITY, ada_MANU_DISTRICT;
     private LinearLayout layout_return;
     private TextView tv_SUPPLIER_ADDR, tv_MANU_COMPANY_ADDR, tv_STATE, tv_CHECK_INFO, tv_NO,
             tv_DATE_PRODUCT, tv_DRAW_DATE, tv_CUSTOM_NO, tv_BUSINESS_SOURCE, tv_SAMPLE_ADDR,
-            tv_DRAW_ORG_ADDR;
+            tv_DRAW_ORG_ADDR, tv_DRAW_NUM_UNIT, tv_DRAW_AMOUNT_UNIT, tv_STORAGESITE_UNIT;
     private AutoCompleteTextView actv_SUPPLIER;
     private List<String> SUPPLIERS = new ArrayList<>();
     private List<sampleEnterprise> sampleEnterprises = new ArrayList<>();
@@ -102,14 +99,13 @@ public class DetailsActivity extends AppCompatActivity {
     private List<Province> getProvinces = new ArrayList<>();
     private List<City> getCites = new ArrayList<>(), getCites_MANU = new ArrayList<>();
     private List<District> getDistricts = new ArrayList<>(), getDistricts_MANU = new ArrayList<>();
-    private List<MeasureUnit> getMeasureUnit_AMOUNT_UNIT = new ArrayList<>(),
-            getMeasureUnit_UNIVALENT_UNIT = new ArrayList<>();
+    private List<MeasureUnit> getMeasureUnit_UNIVALENT_UNIT = new ArrayList<>();
     private List<FoodKind> getSamplingContract = new ArrayList<>(), getFoodKind1 = new
             ArrayList<>(), getFoodKind2 = new ArrayList<>(),
             getFoodKind3 = new ArrayList<>(), getFoodKind4 = new ArrayList<>();
     private String[] SamplingContracts = new String[]{"合同加载中"}, FoodKinds1 = new String[]{"分类加载中"},
             FoodKinds2 = new String[]{"分类加载中"}, FoodKinds3 = new String[]{"分类加载中"}, FoodKinds4 = new
-            String[]{"分类加载中"}, AMOUNT_UNITS = new String[]{"单位加载中"}, UNIVALENT_UNITS = new
+            String[]{"分类加载中"}, UNIVALENT_UNITS = new
             String[]{"单位加载中"}, Provinces = new String[]{"省加载中"}, Cites = new String[]{"区加载中"},
             Cites_MANU = new String[]{"区加载中"}, Districts = new String[]{"县加载中"}, Districts_MANU =
             new String[]{"县加载中"};
@@ -128,7 +124,7 @@ public class DetailsActivity extends AppCompatActivity {
     private int mYear, mMonth, mDay, /*num_select = 0,*/
             Contract_ID, num_Cites, num_Cites_MANU,
             num_Districts, num_Districts_MANU, num_FoodKinds1, num_FoodKinds2, num_FoodKinds3,
-            num_FoodKinds4, num_AMOUNT_UNITS, num_UNIVALENT_UNITS;
+            num_FoodKinds4, num_UNIVALENT_UNITS;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -144,7 +140,7 @@ public class DetailsActivity extends AppCompatActivity {
             DRAW_MAN_NO = ((MyApplication) getApplication()).getNO();
         }
         num_Cites = num_Cites_MANU = num_Districts = num_Districts_MANU = num_FoodKinds1 =
-                num_FoodKinds2 = num_FoodKinds3 = num_FoodKinds4 = num_AMOUNT_UNITS =
+                num_FoodKinds2 = num_FoodKinds3 = num_FoodKinds4 =
                         num_UNIVALENT_UNITS = 0;
         initView();
         initData();
@@ -199,9 +195,9 @@ public class DetailsActivity extends AppCompatActivity {
         et_UNIVALENT = findViewById(R.id.details_UNIVALENT);
         sp_UNIVALENT_UNIT = findViewById(R.id.details_UNIVALENT_UNIT);
         sp_I_AND_O = findViewById(R.id.details_I_AND_O);
-        sp_DRAW_NUM_UNIT = findViewById(R.id.details_DRAW_NUM_UNIT);
-        sp_DRAW_AMOUNT_UNIT = findViewById(R.id.details_DRAW_AMOUNT_UNIT);
-        sp_STORAGESITE_UNIT = findViewById(R.id.details_STORAGESITE_UNIT);
+        tv_DRAW_NUM_UNIT = findViewById(R.id.details_DRAW_NUM_UNIT);
+        tv_DRAW_AMOUNT_UNIT = findViewById(R.id.details_DRAW_AMOUNT_UNIT);
+        tv_STORAGESITE_UNIT = findViewById(R.id.details_STORAGESITE_UNIT);
         et_DRAW_NUM = findViewById(R.id.details_DRAW_NUM);
         et_DRAW_AMOUNT = findViewById(R.id.details_DRAW_AMOUNT);
         et_STORAGESITE = findViewById(R.id.details_STORAGESITE);
@@ -292,11 +288,6 @@ public class DetailsActivity extends AppCompatActivity {
                 .simple_spinner_dropdown_item, Districts);
         sp_DISTRICT.setAdapter(ada_DISTRICT);
 
-        ada_AMOUNT_UNITS = new ArrayAdapter<>(context, android.R.layout
-                .simple_spinner_dropdown_item, AMOUNT_UNITS);
-        sp_DRAW_NUM_UNIT.setAdapter(ada_AMOUNT_UNITS);
-        sp_DRAW_AMOUNT_UNIT.setAdapter(ada_AMOUNT_UNITS);
-        sp_STORAGESITE_UNIT.setAdapter(ada_AMOUNT_UNITS);
         ada_UNIVALENT_UNIT = new ArrayAdapter<>(context,
                 android.R.layout.simple_spinner_dropdown_item, UNIVALENT_UNITS);
         sp_UNIVALENT_UNIT.setAdapter(ada_UNIVALENT_UNIT);
@@ -1111,7 +1102,8 @@ public class DetailsActivity extends AppCompatActivity {
                     tv_MANU_COMPANY_ADDR.setText("/");
                 } else {
                     tv_MANU_COMPANY_ADDR.setText(String.format(getResources().getString(R.string
-                            .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem().toString(),
+                                    .manu_company_addr), sp_MANU_PROVINCE.getSelectedItem()
+                                    .toString(),
                             sp_MANU_CITY.getSelectedItem().toString(), sp_MANU_DISTRICT
                                     .getSelectedItem().toString(), et_MANU_TOWN.getText().toString()
                                     .replace("/", ""), s.toString().replace("/", "")));
@@ -1119,7 +1111,32 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
-        sp_DRAW_NUM_UNIT.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+        sp_UNIVALENT_UNIT.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // TODO 自动生成的方法存根
+                String[] arr = sp_UNIVALENT_UNIT.getSelectedItem().toString().split("/");
+                if (arr.length == 2) {
+                    tv_DRAW_NUM_UNIT.setText(arr[1]);
+                    tv_DRAW_AMOUNT_UNIT.setText(arr[1]);
+                    tv_STORAGESITE_UNIT.setText(arr[1]);
+                } else {
+                    tv_DRAW_NUM_UNIT.setText("格式错误");
+                    tv_DRAW_AMOUNT_UNIT.setText("格式错误");
+                    tv_STORAGESITE_UNIT.setText("格式错误");
+                    Log.v("AMOUNT_UNIT", "单位格式错误，请重新选择!");
+                    /*Snackbar.make(toolbar, "单位格式错误，请重新选择!", Snackbar.LENGTH_LONG).setAction
+                            ("Action", null).show();*/
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO 自动生成的方法存根
+            }
+        });
+
+        /*sp_DRAW_NUM_UNIT.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // TODO 自动生成的方法存根
@@ -1159,7 +1176,7 @@ public class DetailsActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {
                 // TODO 自动生成的方法存根
             }
-        });
+        });*/
     }
 
     public void attemptSampleEnterprises(String key) {
@@ -1422,42 +1439,7 @@ public class DetailsActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     if (response.body() != null) {
                         Log.v("getMeasureUnits请求成功!", "response.body is not null");
-                        if (type.equals("AMOUNT_UNIT")) {
-                            getMeasureUnit_AMOUNT_UNIT = response.body();
-                            if (getMeasureUnit_AMOUNT_UNIT.size() > 0) {
-                                Log.v("AMOUNT_UNITS.size", "" + getMeasureUnit_AMOUNT_UNIT
-                                        .size());
-                                AMOUNT_UNITS = new String[getMeasureUnit_AMOUNT_UNIT
-                                        .size()];
-                                for (int i = 0; i < getMeasureUnit_AMOUNT_UNIT.size(); i++) {
-                                    if (getMeasureUnit_AMOUNT_UNIT.get(i).getUNIT_NAME() != null) {
-                                        AMOUNT_UNITS[i] = getMeasureUnit_AMOUNT_UNIT
-                                                .get(i).getUNIT_NAME();
-                                    }
-                                }
-                            } else {
-                                AMOUNT_UNITS = new String[]{"无任何单位"};
-                            }
-                            ada_AMOUNT_UNITS = new ArrayAdapter<>(context, android.R.layout
-                                    .simple_spinner_dropdown_item, AMOUNT_UNITS);
-                            sp_DRAW_NUM_UNIT.setAdapter(ada_AMOUNT_UNITS);
-                            sp_DRAW_AMOUNT_UNIT.setAdapter(ada_AMOUNT_UNITS);
-                            sp_STORAGESITE_UNIT.setAdapter(ada_AMOUNT_UNITS);
-
-                            if (num_AMOUNT_UNITS == 0) {
-                                for (int i = 0; i < ada_AMOUNT_UNITS.getCount(); i++) {
-                                    if (task.getDRAW_AMOUNT_UNIT().equals(ada_AMOUNT_UNITS
-                                            .getItem(i))) {
-                                        sp_DRAW_NUM_UNIT.setSelection(i, true);
-                                        sp_DRAW_AMOUNT_UNIT.setSelection(i, true);
-                                        sp_STORAGESITE_UNIT.setSelection(i, true);
-                                        break;
-                                    }
-                                }
-                                num_AMOUNT_UNITS++;
-                            }
-
-                        } else if (type.equals("UNIVALENT_UNIT")) {
+                        if (type.equals("UNIVALENT_UNIT")) {
                             getMeasureUnit_UNIVALENT_UNIT = response.body();
                             if (getMeasureUnit_UNIVALENT_UNIT.size() > 0) {
                                 Log.v("UNIVALENT_UNITS.size", "" + getMeasureUnit_UNIVALENT_UNIT
@@ -1729,7 +1711,7 @@ public class DetailsActivity extends AppCompatActivity {
             task.setDRAW_NUM(et_DRAW_NUM.getText().toString());
             task.setDRAW_AMOUNT(et_DRAW_AMOUNT.getText().toString());
             task.setSTORAGESITE(et_STORAGESITE.getText().toString());
-            task.setDRAW_AMOUNT_UNIT(sp_DRAW_AMOUNT_UNIT.getSelectedItem().toString());
+            task.setDRAW_AMOUNT_UNIT(tv_DRAW_AMOUNT_UNIT.getText().toString());
             task.setSAMPLE_STATUS(sp_SAMPLE_STATUS.getSelectedItem().toString());
             task.setPACK_TYPE(sp_PACK_TYPE.getSelectedItem().toString());
             task.setMANU_COMPANY(et_MANU_COMPANY.getText().toString());
@@ -1815,12 +1797,6 @@ public class DetailsActivity extends AppCompatActivity {
                 ("分类加载中"))) {
             Snackbar.make(toolbar, "分类4正在加载，请稍等", Snackbar.LENGTH_LONG).setAction("Action", null)
                     .show();
-            return 1;
-        } else if (AMOUNT_UNITS.length == 0 || (AMOUNT_UNITS.length == 1 & AMOUNT_UNITS[0].equals
-                ("单位加载中"))) {
-            Snackbar.make(toolbar, "单位正在加载，请稍等", Snackbar.LENGTH_LONG).setAction("Action", null)
-                    .show();
-            attemptGetMeasureUnits("AMOUNT_UNIT");
             return 1;
         } else if (UNIVALENT_UNITS.length == 0 || (UNIVALENT_UNITS.length == 1 &
                 UNIVALENT_UNITS[0].equals("单位加载中"))) {
@@ -2351,26 +2327,6 @@ public class DetailsActivity extends AppCompatActivity {
             case R.id.action_SamplingBill2:
                 attemptGetSamplingBill2(task.getNO());
                 break;
-            case R.id.action_copy:
-                if (ClickUtil.isFastClick()) {
-                    doSaveData();
-                    DataCopy();
-                } else {
-                    Snackbar.make(toolbar, "提交太快了，请稍后再试",
-                            Snackbar.LENGTH_LONG).setAction("Action", null)
-                            .show();
-                }
-                break;
-            case R.id.action_paste:
-                if (ClickUtil.isFastClick()) {
-                    doSaveData();
-                    DataPaste();
-                } else {
-                    Snackbar.make(toolbar, "提交太快了，请稍后再试",
-                            Snackbar.LENGTH_LONG).setAction("Action", null)
-                            .show();
-                }
-                break;
             default:
                 break;
         }
@@ -2393,331 +2349,5 @@ public class DetailsActivity extends AppCompatActivity {
         v.setFocusable(true);
         v.setFocusableInTouchMode(true);
         v.requestFocus();//获取焦点 光标出现
-    }
-
-    public void DataCopy() {
-        Task task_copy = Tasks.list_task.get(Tasks.position);
-        Gson gson = new Gson();
-        String data = gson.toJson(task_copy);
-        FileOutputStream out;
-        BufferedWriter writer = null;
-        try {
-            // MODE_PRIVATE 覆盖内容
-            // MODE_APPEND 追加内容
-            out = openFileOutput("data.txt", Context.MODE_PRIVATE);
-            writer = new BufferedWriter(new OutputStreamWriter(out));
-            writer.write(data);
-            Snackbar.make(toolbar, "复制成功",
-                    Snackbar.LENGTH_LONG).setAction("Action", null)
-                    .show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void DataPaste() {
-        FileInputStream in;
-        BufferedReader reader = null;
-        StringBuilder content = new StringBuilder();
-        try {
-            in = openFileInput("data.txt");
-            reader = new BufferedReader(new InputStreamReader(in));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                content.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        String data = content.toString();
-        Gson gson = new Gson();
-        Task task_copy = gson.fromJson(data, Task.class);
-        //赋值
-        if (task_copy != null) {
-            if (task_copy.getSTATE() == null || task_copy.getSTATE().equals("")) {
-                layout_return.setVisibility(View.GONE);
-            } else {
-                tv_STATE.setText(task_copy.getSTATE());
-                tv_CHECK_INFO.setText(task_copy.getCHECK_INFO());
-            }
-            actv_SUPPLIER.setText(task_copy.getSUPPLIER());
-            tv_SUPPLIER_ADDR.setText(task_copy.getSUPPLIER_ADDR());
-            et_TOWN.setText(task_copy.getTOWN());
-            et_SUPPLIER_ADDR_TXT.setText(task_copy.getSUPPLIER_ADDR_TXT());
-            et_SUPPLIER_LEGAL.setText(task_copy.getSUPPLIER_LEGAL());
-            et_ANNUAL_SALES.setText(task_copy.getANNUAL_SALES());
-            et_BUSINESS_LICENCE.setText(task_copy.getBUSINESS_LICENCE());
-            et_SUPPLIER_PERSON.setText(task_copy.getSUPPLIER_PERSON());
-            et_PERMIT_NUM.setText(task_copy.getPERMIT_NUM());
-            et_SUPPLIER_PHONE.setText(task_copy.getSUPPLIER_PHONE());
-            et_SUPPLIER_FAX.setText(task_copy.getSUPPLIER_FAX());
-            et_SUPPLIER_ZIPCODE.setText(task_copy.getSUPPLIER_ZIPCODE());
-            et_DRAW_ADDR_OTHER.setText(task_copy.getDRAW_ADDR_OTHER());
-
-            /*
-            et_TRADEMARK.setText(task_copy.getTRADEMARK());
-            //tv_DATE_PRODUCT.setText(task_copy.getDATE_PRODUCT());
-            et_SAMPLE_MODEL.setText(task_copy.getSAMPLE_MODEL());
-            et_SAMPLE_NUMBER.setText(task_copy.getSAMPLE_NUMBER());
-            et_EXPIRATIONDATE.setText(task_copy.getEXPIRATIONDATE());
-            et_TEST_FILE_NO.setText(task_copy.getTEST_FILE_NO());
-            et_SAMPLE_CLASS.setText(task_copy.getSAMPLE_CLASS());
-            et_PRODUCTION_CERTIFICATE.setText(task_copy.getPRODUCTION_CERTIFICATE());
-            et_UNIVALENT.setText(task_copy.getUNIVALENT());
-            et_DRAW_NUM.setText(task_copy.getDRAW_NUM());
-            et_DRAW_AMOUNT.setText(task_copy.getDRAW_AMOUNT());
-            et_STORAGESITE.setText(task_copy.getSTORAGESITE());
-            et_MANU_COMPANY.setText(task_copy.getMANU_COMPANY());
-            et_MANU_TOWN.setText(task_copy.getMANU_TOWN());
-            et_MANU_COMPANY_ADDR_TXT.setText(task_copy.getMANU_COMPANY_ADDR_TXT());
-            et_MANU_COMPANY_PHONE.setText(task_copy.getMANU_COMPANY_PHONE());
-            tv_MANU_COMPANY_ADDR.setText(task_copy.getMANU_COMPANY_ADDR());
-            et_SAVE_MODE_OTHER.setText(task_copy.getSAVE_MODE_OTHER());
-            et_SAMPLE_CLOSE_DATE.setText(task_copy.getSAMPLE_CLOSE_DATE());
-            et_PACK_OTHER.setText(task_copy.getPACK_OTHER());
-            //tv_SAMPLE_ADDR.setText(task_copy.getSAMPLE_ADDR());
-            et_DRAW_ORG.setText(task_copy.getDRAW_ORG());
-            //tv_DRAW_ORG_ADDR.setText(task_copy.getDRAW_ORG_ADDR());
-            et_DRAW_PERSON.setText(task_copy.getDRAW_PERSON());
-            et_DRAW_PHONE.setText(task_copy.getDRAW_PHONE());
-            et_DRAW_FAX.setText(task_copy.getDRAW_FAX());
-            et_DRAW_ZIPCODE.setText(task_copy.getDRAW_ZIPCODE());
-            et_REMARK.setText(task_copy.getREMARK());
-            //tv_DRAW_DATE.setText(task_copy.getDRAW_DATE());
-            et_GOODS_TYPE.setText(task_copy.getGOODS_TYPE());
-            et_DRAW_MAN.setText(task_copy.getDRAW_MAN());
-            str_DATE_PRODUCT = str_DRAW_DATE = new SimpleDateFormat("yyyy-MM-dd", Locale
-                    .getDefault()).format(Calendar.getInstance().getTime());
-            if (task_copy.getDATE_PRODUCT().equals("")) {
-                tv_DATE_PRODUCT.setText(str_DATE_PRODUCT);
-            } else {
-                tv_DATE_PRODUCT.setText(task_copy.getDATE_PRODUCT());
-            }
-            if (task_copy.getDRAW_DATE().equals("")) {
-                tv_DRAW_DATE.setText(str_DRAW_DATE);
-            } else {
-                tv_DRAW_DATE.setText(task_copy.getDRAW_DATE());
-            }
-
-            SpinnerAdapter adapter1 = sp_SAMPLE_TYPE.getAdapter();
-            for (int i = 0; i < adapter1.getCount(); i++) {
-                if (task_copy.getSAMPLE_TYPE().equals(adapter1.getItem(i).toString())) {
-                    sp_SAMPLE_TYPE.setSelection(i, true);
-                    break;
-                }
-            }*/
-
-            SpinnerAdapter adapter2 = sp_DOMESTIC_AREA.getAdapter();
-            for (int i = 0; i < adapter2.getCount(); i++) {
-                if (task_copy.getDOMESTIC_AREA().equals(adapter2.getItem(i).toString())) {
-                    sp_DOMESTIC_AREA.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter3 = sp_PERMIT_TYPE.getAdapter();
-            for (int i = 0; i < adapter3.getCount(); i++) {
-                if (task_copy.getPERMIT_TYPE().equals(adapter3.getItem(i).toString())) {
-                    sp_PERMIT_TYPE.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter4 = sp_DRAW_ADDR.getAdapter();
-            for (int i = 0; i < adapter4.getCount(); i++) {
-                if (task_copy.getDRAW_ADDR().equals(adapter4.getItem(i).toString())) {
-                    sp_DRAW_ADDR.setSelection(i, true);
-                    break;
-                }
-            }
-/*
-            SpinnerAdapter adapter5 = sp_SAMPLE_SOURCE.getAdapter();
-            for (int i = 0; i < adapter5.getCount(); i++) {
-                if (task_copy.getSAMPLE_SOURCE().equals(adapter5.getItem(i).toString())) {
-                    sp_SAMPLE_SOURCE.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter6 = sp_SAMPLE_PROPERTY.getAdapter();
-            for (int i = 0; i < adapter6.getCount(); i++) {
-                if (task_copy.getSAMPLE_PROPERTY().equals(adapter6.getItem(i).toString())) {
-                    sp_SAMPLE_PROPERTY.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter7 = sp_SAMPLE_STYLE.getAdapter();
-            for (int i = 0; i < adapter7.getCount(); i++) {
-                if (task_copy.getSAMPLE_STYLE().equals(adapter7.getItem(i).toString())) {
-                    sp_SAMPLE_STYLE.setSelection(i, true);
-                    break;
-                }
-            }
-
-
-            SpinnerAdapter adapter8 = sp_DATE_PRODUCT_TYPE.getAdapter();
-            for (int i = 0; i < adapter8.getCount(); i++) {
-                if (task_copy.getDATE_PRODUCT_TYPE().equals(adapter8.getItem(i).toString())) {
-                    sp_DATE_PRODUCT_TYPE.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter9 = sp_I_AND_O.getAdapter();
-            for (int i = 0; i < adapter9.getCount(); i++) {
-                if (task_copy.getI_AND_O().equals(adapter9.getItem(i).toString())) {
-                    sp_I_AND_O.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter10 = sp_SAMPLE_STATUS.getAdapter();
-            for (int i = 0; i < adapter10.getCount(); i++) {
-                if (task_copy.getSAMPLE_STATUS().equals(adapter10.getItem(i).toString())) {
-                    sp_SAMPLE_STATUS.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter11 = sp_PACK_TYPE.getAdapter();
-            for (int i = 0; i < adapter11.getCount(); i++) {
-                if (task_copy.getPACK_TYPE().equals(adapter11.getItem(i).toString())) {
-                    sp_PACK_TYPE.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter12 = sp_SAVE_MODE.getAdapter();
-            for (int i = 0; i < adapter12.getCount(); i++) {
-                if (task_copy.getSAVE_MODE().equals(adapter12.getItem(i).toString())) {
-                    sp_SAVE_MODE.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter13 = sp_PACK.getAdapter();
-            for (int i = 0; i < adapter13.getCount(); i++) {
-                if (task_copy.getPACK().equals(adapter13.getItem(i).toString())) {
-                    sp_PACK.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter14 = sp_DRAW_METHOD.getAdapter();
-            for (int i = 0; i < adapter14.getCount(); i++) {
-                if (task_copy.getDRAW_METHOD().equals(adapter14.getItem(i).toString())) {
-                    sp_DRAW_METHOD.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter15 = sp_FOOD_KIND1.getAdapter();
-            for (int i = 0; i < adapter15.getCount(); i++) {
-                if (task_copy.getFOOD_KIND1().equals(adapter15.getItem(i).toString())) {
-                    sp_FOOD_KIND1.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter16 = sp_FOOD_KIND2.getAdapter();
-            for (int i = 0; i < adapter16.getCount(); i++) {
-                if (task_copy.getFOOD_KIND2().equals(adapter16.getItem(i).toString())) {
-                    sp_FOOD_KIND2.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter17 = sp_FOOD_KIND3.getAdapter();
-            for (int i = 0; i < adapter17.getCount(); i++) {
-                if (task_copy.getFOOD_KIND3().equals(adapter17.getItem(i).toString())) {
-                    sp_FOOD_KIND3.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter18 = sp_FOOD_KIND4.getAdapter();
-            for (int i = 0; i < adapter18.getCount(); i++) {
-                if (task_copy.getFOOD_KIND4().equals(adapter18.getItem(i).toString())) {
-                    sp_FOOD_KIND4.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter19 = sp_CHILD_FOOD_KIND_ID.getAdapter();
-            for (int i = 0; i < adapter19.getCount(); i++) {
-                if (task_copy.getCHILD_FOOD_KIND_ID().equals(adapter19.getItem(i).toString())) {
-                    sp_CHILD_FOOD_KIND_ID.setSelection(i, true);
-                    break;
-                }
-            }*/
-
-            SpinnerAdapter adapter20 = sp_PROVINCE.getAdapter();
-            for (int i = 0; i < adapter20.getCount(); i++) {
-                if (task_copy.getPROVINCE().equals(adapter20.getItem(i).toString())) {
-                    sp_PROVINCE.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter21 = sp_CITY.getAdapter();
-            for (int i = 0; i < adapter21.getCount(); i++) {
-                if (task_copy.getCITY().equals(adapter21.getItem(i).toString())) {
-                    sp_CITY.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter22 = sp_DISTRICT.getAdapter();
-            for (int i = 0; i < adapter22.getCount(); i++) {
-                if (task_copy.getDISTRICT().equals(adapter22.getItem(i).toString())) {
-                    sp_DISTRICT.setSelection(i, true);
-                    break;
-                }
-            }
-
-            /*SpinnerAdapter adapter23 = sp_MANU_PROVINCE.getAdapter();
-            for (int i = 0; i < adapter23.getCount(); i++) {
-                if (task_copy.getMANU_PROVINCE().equals(adapter23.getItem(i).toString())) {
-                    sp_MANU_PROVINCE.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter24 = sp_MANU_CITY.getAdapter();
-            for (int i = 0; i < adapter24.getCount(); i++) {
-                if (task_copy.getMANU_CITY().equals(adapter24.getItem(i).toString())) {
-                    sp_MANU_CITY.setSelection(i, true);
-                    break;
-                }
-            }
-
-            SpinnerAdapter adapter25 = sp_MANU_DISTRICT.getAdapter();
-            for (int i = 0; i < adapter25.getCount(); i++) {
-                if (task_copy.getMANU_DISTRICT().equals(adapter25.getItem(i).toString())) {
-                    sp_MANU_DISTRICT.setSelection(i, true);
-                    break;
-                }
-            }*/
-            Snackbar.make(toolbar, "粘贴成功",
-                    Snackbar.LENGTH_LONG).setAction("Action", null)
-                    .show();
-        }
     }
 }

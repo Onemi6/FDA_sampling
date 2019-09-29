@@ -58,12 +58,15 @@ import com.fda_sampling.util.ClickUtil;
 import com.fda_sampling.util.CrashHandler;
 import com.fda_sampling.util.MyApplication;
 import com.fda_sampling.util.NetworkUtil;
+import com.google.gson.Gson;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +79,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener {
 
-    private int pos, select_num, isHome = 0;
+    private int select_num, isHome = 0, last_pos = -1;
     private long mExitTime, mId;
     private Toolbar toolbar;
     private RecyclerView rv_tasks;
@@ -173,10 +176,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View view, int position) {
                 if (adapter.getMode() == 0) {
-                    Intent intent = new Intent(context, DetailsActivity.class);
-                    Tasks.position = position;
-                    startActivity(intent);
-                } else if (adapter.getMode() == 1) {
+                    switch (view.getId()) {
+                        case R.id.item_select_task:
+                            Intent intent = new Intent(context, DetailsActivity.class);
+                            Tasks.position = position;
+                            Tasks.pos_copy = -1;
+                            startActivity(intent);
+                            break;
+                        case R.id.btn_copy:
+                            if (last_pos != -1 && last_pos != position) {
+                                adapter.Refresh_item(last_pos);
+                            }
+                            DataCopy(position, view);
+                            break;
+                        case R.id.btn_paste:
+                            DataPaste(Tasks.pos_copy, position);
+                            break;
+                        default:
+                            /*Intent intent = new Intent(context, DetailsActivity.class);
+                            Tasks.position = position;
+                            startActivity(intent);*/
+                            break;
+                    }
+                } else if (adapter.getMode() == 1)
+
+                {
                     if (Tasks.list_task.get(position).getIsSelect() == 0) {
                         Tasks.list_task.get(position).setIsSelect(1);
                     } else if (Tasks.list_task.get(position).getIsSelect() == 1) {
@@ -731,7 +755,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void ShareAppCode() {
         LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.item_img, (ViewGroup) findViewById(R
+        View layout = inflater.inflate(R.layout.item_img_add, (ViewGroup) findViewById(R
                 .id.dialog_layout));
         ImageView imageview = layout.findViewById(R.id.imageView);
         imageview.setImageResource(R.mipmap.appcode);
@@ -880,6 +904,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+
     }
 
     @Override
@@ -1076,5 +1101,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         adapter.changList_add(Tasks.list_task);
+    }
+
+    public void DataCopy(int pos, View view) {
+        Task task_copy = Tasks.list_task.get(pos);
+        Gson gson = new Gson();
+        String data = gson.toJson(task_copy);
+        FileOutputStream out;
+        BufferedWriter writer = null;
+        try {
+            // MODE_PRIVATE 覆盖内容
+            // MODE_APPEND 追加内容
+            out = openFileOutput("data.txt", Context.MODE_PRIVATE);
+            writer = new BufferedWriter(new OutputStreamWriter(out));
+            writer.write(data);
+            Tasks.pos_copy = last_pos = pos;
+            ((Button) view).setText("已复制");
+            Snackbar.make(toolbar, "复制成功", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void DataPaste(int c, int p) {
+        if (c == -1) {
+            Snackbar.make(toolbar, "请先选择要复制的数据", Snackbar.LENGTH_LONG).setAction("Action", null)
+                    .show();
+        } else if (c == p) {
+            Snackbar.make(toolbar, "复制的是同一条数据", Snackbar.LENGTH_LONG).setAction("Action", null)
+                    .show();
+        } else {
+            Tasks.Task_copy(c, p);
+            adapter.Refresh_all();
+            Tasks.pos_copy = -1;
+            Snackbar.make(toolbar, "粘贴成功", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
     }
 }

@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,7 +24,8 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Context mContext;
     private OnClickListener mOnClickListener = null;
     private OnLongClickListener mOnLongClickListener = null;
-    private int mMode = 0;
+    private int mMode = 0, last_pos = -1;
+    private int[] pos = new int[]{-1, -1};
 
     public MainInfoAdapter(Context context, List<Task> mainInfoList) {
         this.mContext = context;
@@ -51,8 +53,14 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holder instanceof ViewHolder) {
             if (mMode == 0) {
                 ((ViewHolder) holder).img_check.setVisibility(View.GONE);
+                ((ViewHolder) holder).item_buttons.setVisibility(View.VISIBLE);
+                /*((ViewHolder) holder).btn_copy.setVisibility(View.VISIBLE);
+                ((ViewHolder) holder).btn_paste.setVisibility(View.VISIBLE);*/
             } else if (mMode == 1) {
                 ((ViewHolder) holder).img_check.setVisibility(View.VISIBLE);
+                ((ViewHolder) holder).item_buttons.setVisibility(View.GONE);
+                /*((ViewHolder) holder).btn_copy.setVisibility(View.GONE);
+                ((ViewHolder) holder).btn_paste.setVisibility(View.GONE);*/
             }
             Task task = mainInfoList.get(position);
             if (task.getIsSelect() == 0) {
@@ -64,12 +72,17 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ViewHolder) holder).NO.setText(task.getNO());
             ((ViewHolder) holder).BUSINESS_SOURCE.setText(task.getBUSINESS_SOURCE());
             ((ViewHolder) holder).GOODS_NAME.setText(task.getGOODS_NAME());
-
-            /*((ViewHolder) holder).num.setText(String.format(getResources().getString(R.string
-                    .select_num), String.valueOf(position + 1)));*/
-
-            ((ViewHolder) holder).num.setText(position + 1 + "");
+            ((ViewHolder) holder).num.setText(String.valueOf(position + 1));
             ((ViewHolder) holder).itemView.setTag(position);
+            ((ViewHolder) holder).item_select.setTag(position);
+            ((ViewHolder) holder).btn_copy.setTag(position);
+            ((ViewHolder) holder).btn_paste.setTag(position);
+
+            ((ViewHolder) holder).btn_copy.setText("复制");
+            if (pos[1] != -1 && position == pos[1]) {
+                ((ViewHolder) holder).btn_copy.setText("已复制");
+            }
+
             if (task.getSTATE() != null) {
                 if (task.getSTATE().equals("采样信息审核退回")) {
                     ((ViewHolder) holder).CUSTOM_NO.setTextColor(Color.parseColor("#ffff0000"));
@@ -83,8 +96,7 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     ((ViewHolder) holder).BUSINESS_SOURCE.setTextColor(Color.parseColor
                             ("#FF8000"));
                     ((ViewHolder) holder).GOODS_NAME.setTextColor(Color.parseColor("#FF8000"));
-                }
-                else if(task.getSTATE().equals("基础信息审核退回")){
+                } else if (task.getSTATE().equals("基础信息审核退回")) {
                     ((ViewHolder) holder).CUSTOM_NO.setTextColor(Color.parseColor("#055EDD"));
                     ((ViewHolder) holder).NO.setTextColor(Color.parseColor("#055EDD"));
                     ((ViewHolder) holder).BUSINESS_SOURCE.setTextColor(Color.parseColor
@@ -133,6 +145,18 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();
     }
 
+    public void Refresh_item(int position) {
+        pos[1] = pos[0];
+        pos[0] = position;
+        notifyItemChanged(position);
+    }
+
+    public void Refresh_all() {
+        pos[1] = -1;
+        pos[0] = -1;
+        notifyDataSetChanged();
+    }
+
     public void setOnClickListener(OnClickListener listener) {
         mOnClickListener = listener;
     }
@@ -140,7 +164,7 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onClick(View view) {
         if (null != mOnClickListener) {
-            mOnClickListener.onClick(view, (int) view.getTag());
+            mOnClickListener.onClick(view, (int) view.getTag()); //getTag()获取数据
         }
     }
 
@@ -171,10 +195,11 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onLongClick(View view, int position);
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView CUSTOM_NO, NO, BUSINESS_SOURCE, GOODS_NAME, num;
         private ImageView img_check;
-        private LinearLayout item_select;
+        private Button btn_copy, btn_paste;
+        private LinearLayout item_select, item_buttons;
 
         public ViewHolder(View view) {
             super(view);
@@ -184,7 +209,16 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             GOODS_NAME = view.findViewById(R.id.mainInfo_GOODS_NAME);
             num = view.findViewById(R.id.mainInfo_num);
             img_check = view.findViewById(R.id.mainInfo_check);
+            item_buttons = view.findViewById(R.id.item_buttons);
+            btn_copy = view.findViewById(R.id.btn_copy);
+            btn_paste = view.findViewById(R.id.btn_paste);
             item_select = view.findViewById(R.id.item_select_task);
+
+            // 为ItemView添加点击事件
+            //itemView.setOnClickListener(MainInfoAdapter.this);
+            item_select.setOnClickListener(MainInfoAdapter.this);
+            btn_copy.setOnClickListener(MainInfoAdapter.this);
+            btn_paste.setOnClickListener(MainInfoAdapter.this);
         }
     }
 
@@ -205,6 +239,4 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getMode() {
         return this.mMode;
     }
-
-
 }

@@ -1,7 +1,7 @@
 
 package com.fda_sampling.model;
 
-public class Task {
+public class Task implements Cloneable {
 
     private int isSelect;
     private int ID;
@@ -835,4 +835,14 @@ public class Task {
         return CHECK_INFO;
     }
 
+    @Override
+    public Object clone() {
+        Task task = null;
+        try {
+            task = (Task) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return task;
+    }
 }

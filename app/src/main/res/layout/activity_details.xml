@@ -932,7 +932,7 @@
                     android:gravity="end"
                     android:paddingEnd="@dimen/activity_vertical_margin4" />
 
-                <Spinner
+                <TextView
                     android:id="@+id/details_DRAW_NUM_UNIT"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
@@ -968,7 +968,7 @@
                     android:gravity="end"
                     android:paddingEnd="@dimen/activity_vertical_margin4" />
 
-                <Spinner
+                <TextView
                     android:id="@+id/details_DRAW_AMOUNT_UNIT"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
@@ -1004,7 +1004,7 @@
                     android:gravity="end"
                     android:paddingEnd="@dimen/activity_vertical_margin4" />
 
-                <Spinner
+                <TextView
                     android:id="@+id/details_STORAGESITE_UNIT"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"

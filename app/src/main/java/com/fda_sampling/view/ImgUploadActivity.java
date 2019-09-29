@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -114,52 +115,52 @@ public class ImgUploadActivity extends AppCompatActivity {
         initData();
 
         //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
-        GridLayoutManager layoutManager_1 = new GridLayoutManager(this, 2);
-        layoutManager_1.setOrientation(GridLayoutManager.VERTICAL);
+        LinearLayoutManager layoutManager_1 = new LinearLayoutManager(this);
+        layoutManager_1.setOrientation(LinearLayoutManager.HORIZONTAL);
         //设置RecyclerView 布局
         rv_add_img_1.setLayoutManager(layoutManager_1);
         //设置Adapter
         adapter_img_1 = new ImgAdapter(this, picList_1);
         rv_add_img_1.setAdapter(adapter_img_1);
 
-        GridLayoutManager layoutManager_2 = new GridLayoutManager(this, 2);
-        layoutManager_2.setOrientation(GridLayoutManager.VERTICAL);
+        LinearLayoutManager layoutManager_2 = new LinearLayoutManager(this);
+        layoutManager_2.setOrientation(LinearLayoutManager.HORIZONTAL);
         rv_add_img_2.setLayoutManager(layoutManager_2);
         adapter_img_2 = new ImgAdapter(this, picList_2);
         rv_add_img_2.setAdapter(adapter_img_2);
 
-        GridLayoutManager layoutManager_3 = new GridLayoutManager(this, 2);
-        layoutManager_3.setOrientation(GridLayoutManager.VERTICAL);
+        LinearLayoutManager layoutManager_3 = new LinearLayoutManager(this);
+        layoutManager_3.setOrientation(LinearLayoutManager.HORIZONTAL);
         rv_add_img_3.setLayoutManager(layoutManager_3);
         adapter_img_3 = new ImgAdapter(this, picList_3);
         rv_add_img_3.setAdapter(adapter_img_3);
 
-        GridLayoutManager layoutManager_4 = new GridLayoutManager(this, 2);
-        layoutManager_4.setOrientation(GridLayoutManager.VERTICAL);
+        LinearLayoutManager layoutManager_4 = new LinearLayoutManager(this);
+        layoutManager_4.setOrientation(LinearLayoutManager.HORIZONTAL);
         rv_add_img_4.setLayoutManager(layoutManager_4);
         adapter_img_4 = new ImgAdapter(this, picList_4);
         rv_add_img_4.setAdapter(adapter_img_4);
 
-        GridLayoutManager layoutManager_5 = new GridLayoutManager(this, 2);
-        layoutManager_5.setOrientation(GridLayoutManager.VERTICAL);
+        LinearLayoutManager layoutManager_5 = new LinearLayoutManager(this);
+        layoutManager_5.setOrientation(LinearLayoutManager.HORIZONTAL);
         rv_add_img_5.setLayoutManager(layoutManager_5);
         adapter_img_5 = new ImgAdapter(this, picList_5);
         rv_add_img_5.setAdapter(adapter_img_5);
 
-        GridLayoutManager layoutManager_6 = new GridLayoutManager(this, 2);
-        layoutManager_6.setOrientation(GridLayoutManager.VERTICAL);
+        LinearLayoutManager layoutManager_6 = new LinearLayoutManager(this);
+        layoutManager_6.setOrientation(LinearLayoutManager.HORIZONTAL);
         rv_add_img_6.setLayoutManager(layoutManager_6);
         adapter_img_6 = new ImgAdapter(this, picList_6);
         rv_add_img_6.setAdapter(adapter_img_6);
 
-        GridLayoutManager layoutManager_7 = new GridLayoutManager(this, 2);
-        layoutManager_7.setOrientation(GridLayoutManager.VERTICAL);
+        LinearLayoutManager layoutManager_7 = new LinearLayoutManager(this);
+        layoutManager_7.setOrientation(LinearLayoutManager.HORIZONTAL);
         rv_add_img_7.setLayoutManager(layoutManager_7);
         adapter_img_7 = new ImgAdapter(this, picList_7);
         rv_add_img_7.setAdapter(adapter_img_7);
 
-        GridLayoutManager layoutManager_8 = new GridLayoutManager(this, 2);
-        layoutManager_8.setOrientation(GridLayoutManager.VERTICAL);
+        LinearLayoutManager layoutManager_8 = new LinearLayoutManager(this);
+        layoutManager_8.setOrientation(LinearLayoutManager.HORIZONTAL);
         rv_add_img_8.setLayoutManager(layoutManager_8);
         adapter_img_8 = new ImgAdapter(this, picList_8);
         rv_add_img_8.setAdapter(adapter_img_8);
@@ -820,7 +821,7 @@ public class ImgUploadActivity extends AppCompatActivity {
 
     public void showImage(String path) {
         LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.item_img,
+        View layout = inflater.inflate(R.layout.item_img_show,
                 (ViewGroup) findViewById(R.id.dialog_layout));
         ImageView imageview = layout
                 .findViewById(R.id.imageView);

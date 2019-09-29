@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.fda_sampling.R;
@@ -35,7 +36,7 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(mActivity).inflate(R.layout.item_img, parent, false);
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.item_img_add, parent, false);
         view.setOnClickListener(this);
         view.setOnLongClickListener(this);
         return new ImgAdapter.ViewHolder(view);
@@ -65,6 +66,11 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
                 if (bm != null) {
                     ((ViewHolder) holder).img_add.setImageBitmap(bm);
                 }*/
+            }
+            if (position == 0) {
+                ((ViewHolder) holder).imageNum.setText(String.valueOf(""));
+            } else {
+                ((ViewHolder) holder).imageNum.setText(String.valueOf(position));
             }
             ((ViewHolder) holder).itemView.setTag(position);
         }
@@ -145,10 +151,12 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView img_add;
+        private TextView imageNum;
 
         public ViewHolder(View view) {
             super(view);
             img_add = view.findViewById(R.id.imageView);
+            imageNum = view.findViewById(R.id.imageNum);
         }
     }
 
