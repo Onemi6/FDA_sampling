@@ -36,6 +36,7 @@ import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
 import com.fda_sampling.R;
 import com.fda_sampling.model.City;
+import com.fda_sampling.model.Client;
 import com.fda_sampling.model.District;
 import com.fda_sampling.model.FoodKind;
 import com.fda_sampling.model.MeasureUnit;
@@ -44,7 +45,6 @@ import com.fda_sampling.model.Result;
 import com.fda_sampling.model.SubmitStatus;
 import com.fda_sampling.model.Task;
 import com.fda_sampling.model.Tasks;
-import com.fda_sampling.model.sampleEnterprise;
 import com.fda_sampling.service.FDA_API;
 import com.fda_sampling.service.HttpUtils;
 import com.fda_sampling.util.ClickUtil;
@@ -61,11 +61,11 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.text.SimpleDateFormat;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -77,25 +77,22 @@ public class DetailsActivity extends AppCompatActivity {
     private Task task;
     private Context context;
     private Toolbar toolbar;
-    private Spinner sp_SAMPLE_TYPE, sp_DOMESTIC_AREA, sp_PROVINCE, sp_CITY, sp_DISTRICT,
+    private Spinner sp_SAMPLE_TYPE, sp_CHILD_FOOD_KIND_ID, sp_FOOD_KIND1, sp_FOOD_KIND2,
+            sp_FOOD_KIND3, sp_FOOD_KIND4, sp_DOMESTIC_AREA, sp_PROVINCE, sp_CITY, sp_DISTRICT,
             sp_PERMIT_TYPE, sp_DRAW_ADDR, sp_SAMPLE_SOURCE, sp_SAMPLE_PROPERTY, sp_SAMPLE_STYLE,
-            sp_DATE_PRODUCT_TYPE, sp_UNIVALENT_UNIT, sp_I_AND_O, /*sp_DRAW_NUM_UNIT,
-            sp_DRAW_AMOUNT_UNIT, sp_STORAGESITE_UNIT,*/
-            sp_SAMPLE_STATUS, sp_PACK_TYPE, sp_SAVE_MODE, sp_PACK, sp_DRAW_METHOD, sp_FOOD_KIND1,
-            sp_FOOD_KIND2, sp_FOOD_KIND3,
-            sp_FOOD_KIND4, sp_CHILD_FOOD_KIND_ID, sp_MANU_PROVINCE, sp_MANU_CITY, sp_MANU_DISTRICT;
+            sp_DATE_PRODUCT_TYPE, sp_UNIVALENT_UNIT, sp_I_AND_O, sp_PACK_TYPE, sp_SAVE_MODE,
+            sp_DRAW_METHOD, sp_MANU_PROVINCE, sp_MANU_CITY, sp_MANU_DISTRICT, sp_THIRD_NATURE;
     private ArrayAdapter<String> ada_UNIVALENT_UNIT, ada_FOOD_KIND1, ada_FOOD_KIND2,
             ada_FOOD_KIND3, ada_FOOD_KIND4, ada_CHILD_FOOD_KIND_ID, ada_PROVINCE, ada_CITY,
-            ada_DISTRICT,
-            ada_MANU_PROVINCE, ada_MANU_CITY, ada_MANU_DISTRICT;
+            ada_DISTRICT, ada_MANU_PROVINCE, ada_MANU_CITY, ada_MANU_DISTRICT;
     private LinearLayout layout_return;
     private TextView tv_SUPPLIER_ADDR, tv_MANU_COMPANY_ADDR, tv_STATE, tv_CHECK_INFO, tv_NO,
             tv_DATE_PRODUCT, tv_DRAW_DATE, tv_CUSTOM_NO, tv_BUSINESS_SOURCE, tv_SAMPLE_ADDR,
             tv_DRAW_ORG_ADDR, tv_DRAW_NUM_UNIT, tv_DRAW_AMOUNT_UNIT, tv_STORAGESITE_UNIT;
     private AutoCompleteTextView actv_SUPPLIER;
     private List<String> SUPPLIERS = new ArrayList<>();
-    private List<sampleEnterprise> sampleEnterprises = new ArrayList<>();
-    private sampleEnterprise oneSampleEnterprise;
+    private List<Client> Clients = new ArrayList<>();
+    private Client Client;
     private List<Province> getProvinces = new ArrayList<>();
     private List<City> getCites = new ArrayList<>(), getCites_MANU = new ArrayList<>();
     private List<District> getDistricts = new ArrayList<>(), getDistricts_MANU = new ArrayList<>();
@@ -109,19 +106,23 @@ public class DetailsActivity extends AppCompatActivity {
             String[]{"单位加载中"}, Provinces = new String[]{"省加载中"}, Cites = new String[]{"区加载中"},
             Cites_MANU = new String[]{"区加载中"}, Districts = new String[]{"县加载中"}, Districts_MANU =
             new String[]{"县加载中"};
-    private EditText et_GOODS_NAME, et_SAMPLING_NOTICE_CODE, et_TOWN, et_SUPPLIER_ADDR_TXT,
+    private EditText et_DOMESTIC_AREA_OTHER, et_GOODS_NAME, et_SAMPLING_NOTICE_CODE, et_TOWN,
+            et_SUPPLIER_ADDR_TXT,
             et_SUPPLIER_LEGAL, et_ANNUAL_SALES, et_BUSINESS_LICENCE, et_SUPPLIER_PERSON,
             et_PERMIT_NUM, et_SUPPLIER_PHONE, et_SUPPLIER_FAX, et_SUPPLIER_ZIPCODE,
-            et_DRAW_ADDR_OTHER, et_TRADEMARK, et_SAMPLE_MODEL, et_SAMPLE_NUMBER,
+            et_DRAW_ADDR_OTHER, et_SAMPLE_SOURCE_OTHER, et_SAMPLE_PROPERTY_OTHER,
+            et_SAMPLE_STYLE_OTHER, et_TRADEMARK, et_SAMPLE_MODEL, et_SAMPLE_NUMBER,
             et_EXPIRATIONDATE, et_TEST_FILE_NO, et_SAMPLE_CLASS, et_PRODUCTION_CERTIFICATE,
             et_UNIVALENT, et_DRAW_NUM, et_DRAW_AMOUNT, et_STORAGESITE, et_MANU_COMPANY,
             et_MANU_TOWN, et_MANU_COMPANY_ADDR_TXT, et_SAVE_MODE_OTHER, et_MANU_COMPANY_PHONE,
-            et_SAMPLE_CLOSE_DATE, et_PACK_OTHER, et_DRAW_ORG,
-            et_DRAW_PERSON, et_DRAW_PHONE, et_DRAW_FAX, et_DRAW_ZIPCODE, et_REMARK,
-            et_GOODS_TYPE, et_DRAW_MAN;
+            et_SAMPLE_CLOSE_DATE, et_DRAW_ORG, et_DRAW_PERSON, et_DRAW_PHONE,
+            et_DRAW_FAX, et_DRAW_ZIPCODE, et_REMARK, et_GOODS_TYPE, et_DRAW_MAN, et_SAMPLE_MARK,
+            et_SAMPLE_AMOUNT, et_BARCODE, et_ORIGIN_COUNTRY, et_THIRD_NAME, et_THIRD_ADDR,
+            et_THIRD_NATURE_OTHER,
+            et_THIRD_CODE, et_THIRD_PHONE;
     private String token, DRAW_MAN_NO, str_DATE_PRODUCT, str_DRAW_DATE;
     private ProgressDialog mypDialog;
-    private int mYear, mMonth, mDay, /*num_select = 0,*/
+    private int mYear, mMonth, mDay,
             Contract_ID, num_Cites, num_Cites_MANU,
             num_Districts, num_Districts_MANU, num_FoodKinds1, num_FoodKinds2, num_FoodKinds3,
             num_FoodKinds4, num_UNIVALENT_UNITS;
@@ -148,25 +149,39 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     public void initView() {
+        toolbar = findViewById(R.id.toolbar_details);
+        toolbar.setTitle("详细信息");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        //设置toolbar
+        setSupportActionBar(toolbar);
+        //左边的小箭头（注意需要在setSupportActionBar(toolbar)之后才有效果）
+        toolbar.setNavigationIcon(R.drawable.ic_chevron_left_white);
+        //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
+        //toolbar.setOnMenuItemClickListener(onMenuItemClick);
+
         //退回layout
         layout_return = findViewById(R.id.details_return);
         tv_STATE = findViewById(R.id.details_STATE);
         tv_CHECK_INFO = findViewById(R.id.details_CHECK_INFO);
-
+        //主体layout
         tv_CUSTOM_NO = findViewById(R.id.details_CUSTOM_NO);
-        tv_NO = findViewById(R.id.details_NO);
-        et_GOODS_NAME = findViewById(R.id.details_GOODS_NAME);
-        et_SAMPLING_NOTICE_CODE = findViewById(R.id.details_SAMPLING_NOTICE_CODE);
         tv_BUSINESS_SOURCE = findViewById(R.id.details_BUSINESS_SOURCE);
         sp_SAMPLE_TYPE = findViewById(R.id.details_SAMPLE_TYPE);
+        tv_NO = findViewById(R.id.details_NO);
+        sp_CHILD_FOOD_KIND_ID = findViewById(R.id.details_CHILD_FOOD_KIND_ID);
+        sp_FOOD_KIND1 = findViewById(R.id.details_FOOD_KIND1);
+        sp_FOOD_KIND2 = findViewById(R.id.details_FOOD_KIND2);
+        sp_FOOD_KIND3 = findViewById(R.id.details_FOOD_KIND3);
+        sp_FOOD_KIND4 = findViewById(R.id.details_FOOD_KIND4);
+        et_GOODS_TYPE = findViewById(R.id.details_GOODS_TYPE);
+        et_SAMPLING_NOTICE_CODE = findViewById(R.id.details_SAMPLING_NOTICE_CODE);
         actv_SUPPLIER = findViewById(R.id.details_SUPPLIER);
         sp_DOMESTIC_AREA = findViewById(R.id.details_DOMESTIC_AREA);
+        et_DOMESTIC_AREA_OTHER = findViewById(R.id.details_DOMESTIC_AREA_OTHER);
         tv_SUPPLIER_ADDR = findViewById(R.id.details_SUPPLIER_ADDR);
-
         sp_PROVINCE = findViewById(R.id.details_PROVINCE);
         sp_CITY = findViewById(R.id.details_CITY);
         sp_DISTRICT = findViewById(R.id.details_DISTRICT);
-
         et_TOWN = findViewById(R.id.details_TOWN);
         et_SUPPLIER_ADDR_TXT = findViewById(R.id.details_SUPPLIER_ADDR_TXT);
         et_SUPPLIER_LEGAL = findViewById(R.id.details_SUPPLIER_LEGAL);
@@ -180,9 +195,14 @@ public class DetailsActivity extends AppCompatActivity {
         et_SUPPLIER_ZIPCODE = findViewById(R.id.details_SUPPLIER_ZIPCODE);
         sp_DRAW_ADDR = findViewById(R.id.details_DRAW_ADDR);
         et_DRAW_ADDR_OTHER = findViewById(R.id.details_DRAW_ADDR_OTHER);
+
         sp_SAMPLE_SOURCE = findViewById(R.id.details_SAMPLE_SOURCE);
+        et_SAMPLE_SOURCE_OTHER = findViewById(R.id.details_SAMPLE_SOURCE_OTHER);
         sp_SAMPLE_PROPERTY = findViewById(R.id.details_SAMPLE_PROPERTY);
+        et_SAMPLE_PROPERTY_OTHER = findViewById(R.id.details_SAMPLE_PROPERTY_OTHER);
         sp_SAMPLE_STYLE = findViewById(R.id.details_SAMPLE_STYLE);
+        et_SAMPLE_STYLE_OTHER = findViewById(R.id.details_SAMPLE_STYLE_OTHER);
+        et_GOODS_NAME = findViewById(R.id.details_GOODS_NAME);
         et_TRADEMARK = findViewById(R.id.details_TRADEMARK);
         sp_DATE_PRODUCT_TYPE = findViewById(R.id.details_DATE_PRODUCT_TYPE);
         tv_DATE_PRODUCT = findViewById(R.id.details_DATE_PRODUCT);
@@ -191,50 +211,51 @@ public class DetailsActivity extends AppCompatActivity {
         et_EXPIRATIONDATE = findViewById(R.id.details_EXPIRATIONDATE);
         et_TEST_FILE_NO = findViewById(R.id.details_TEST_FILE_NO);
         et_SAMPLE_CLASS = findViewById(R.id.details_SAMPLE_CLASS);
-        et_PRODUCTION_CERTIFICATE = findViewById(R.id.details_PRODUCTION_CERTIFICATE);
         et_UNIVALENT = findViewById(R.id.details_UNIVALENT);
         sp_UNIVALENT_UNIT = findViewById(R.id.details_UNIVALENT_UNIT);
         sp_I_AND_O = findViewById(R.id.details_I_AND_O);
-        tv_DRAW_NUM_UNIT = findViewById(R.id.details_DRAW_NUM_UNIT);
-        tv_DRAW_AMOUNT_UNIT = findViewById(R.id.details_DRAW_AMOUNT_UNIT);
-        tv_STORAGESITE_UNIT = findViewById(R.id.details_STORAGESITE_UNIT);
         et_DRAW_NUM = findViewById(R.id.details_DRAW_NUM);
+        tv_DRAW_NUM_UNIT = findViewById(R.id.details_DRAW_NUM_UNIT);
         et_DRAW_AMOUNT = findViewById(R.id.details_DRAW_AMOUNT);
+        tv_DRAW_AMOUNT_UNIT = findViewById(R.id.details_DRAW_AMOUNT_UNIT);
         et_STORAGESITE = findViewById(R.id.details_STORAGESITE);
-        sp_SAMPLE_STATUS = findViewById(R.id.details_SAMPLE_STATUS);
+        tv_STORAGESITE_UNIT = findViewById(R.id.details_STORAGESITE_UNIT);
         sp_PACK_TYPE = findViewById(R.id.details_PACK_TYPE);
-        et_MANU_COMPANY = findViewById(R.id.details_MANU_COMPANY);
-        et_MANU_TOWN = findViewById(R.id.details_MANU_TOWN);
-        et_MANU_COMPANY_ADDR_TXT = findViewById(R.id.details_MANU_COMPANY_ADDR_TXT);
-
-        et_MANU_COMPANY_PHONE = findViewById(R.id.details_MANU_COMPANY_PHONE);
-        tv_MANU_COMPANY_ADDR = findViewById(R.id.details_MANU_COMPANY_ADDR);
-        sp_MANU_PROVINCE = findViewById(R.id.details_MANU_PROVINCE);
-        sp_MANU_CITY = findViewById(R.id.details_MANU_CITY);
-        sp_MANU_DISTRICT = findViewById(R.id.details_MANU_DISTRICT);
         sp_SAVE_MODE = findViewById(R.id.details_SAVE_MODE);
         et_SAVE_MODE_OTHER = findViewById(R.id.details_SAVE_MODE_OTHER);
         et_SAMPLE_CLOSE_DATE = findViewById(R.id.details_SAMPLE_CLOSE_DATE);
         tv_SAMPLE_ADDR = findViewById(R.id.details_SAMPLE_ADDR);
-        sp_PACK = findViewById(R.id.details_PACK);
-        et_PACK_OTHER = findViewById(R.id.details_PACK_OTHER);
         sp_DRAW_METHOD = findViewById(R.id.details_DRAW_METHOD);
-        sp_FOOD_KIND1 = findViewById(R.id.details_FOOD_KIND1);
-        sp_FOOD_KIND2 = findViewById(R.id.details_FOOD_KIND2);
-        sp_FOOD_KIND3 = findViewById(R.id.details_FOOD_KIND3);
-        sp_FOOD_KIND4 = findViewById(R.id.details_FOOD_KIND4);
-        sp_CHILD_FOOD_KIND_ID = findViewById(R.id.details_CHILD_FOOD_KIND_ID);
+        et_SAMPLE_MARK = findViewById(R.id.details_SAMPLE_MARK);
+        et_SAMPLE_AMOUNT = findViewById(R.id.details_SAMPLE_AMOUNT);
+        et_BARCODE = findViewById(R.id.details_BARCODE);
+        et_ORIGIN_COUNTRY = findViewById(R.id.details_ORIGIN_COUNTRY);
+        et_MANU_COMPANY = findViewById(R.id.details_MANU_COMPANY);
+        tv_MANU_COMPANY_ADDR = findViewById(R.id.details_MANU_COMPANY_ADDR);
+        sp_MANU_PROVINCE = findViewById(R.id.details_MANU_PROVINCE);
+        sp_MANU_CITY = findViewById(R.id.details_MANU_CITY);
+        sp_MANU_DISTRICT = findViewById(R.id.details_MANU_DISTRICT);
+        et_MANU_TOWN = findViewById(R.id.details_MANU_TOWN);
+        et_MANU_COMPANY_ADDR_TXT = findViewById(R.id.details_MANU_COMPANY_ADDR_TXT);
+        et_PRODUCTION_CERTIFICATE = findViewById(R.id.details_PRODUCTION_CERTIFICATE);
+        et_MANU_COMPANY_PHONE = findViewById(R.id.details_MANU_COMPANY_PHONE);
         et_DRAW_ORG = findViewById(R.id.details_DRAW_ORG);
         tv_DRAW_ORG_ADDR = findViewById(R.id.details_DRAW_ORG_ADDR);
         et_DRAW_PERSON = findViewById(R.id.details_DRAW_PERSON);
         et_DRAW_PHONE = findViewById(R.id.details_DRAW_PHONE);
         et_DRAW_FAX = findViewById(R.id.details_DRAW_FAX);
         et_DRAW_ZIPCODE = findViewById(R.id.details_DRAW_ZIPCODE);
-        et_REMARK = findViewById(R.id.details_REMARK);
         tv_DRAW_DATE = findViewById(R.id.details_DRAW_DATE);
-        et_GOODS_TYPE = findViewById(R.id.details_GOODS_TYPE);
         et_DRAW_MAN = findViewById(R.id.details_DRAW_MAN);
+        et_REMARK = findViewById(R.id.details_REMARK);
+        et_THIRD_NAME = findViewById(R.id.details_THIRD_NAME);
+        et_THIRD_ADDR = findViewById(R.id.details_THIRD_ADDR);
+        sp_THIRD_NATURE = findViewById(R.id.details_THIRD_NATURE);
+        et_THIRD_NATURE_OTHER = findViewById(R.id.details_THIRD_NATURE_OTHER);
+        et_THIRD_CODE = findViewById(R.id.details_THIRD_CODE);
+        et_THIRD_PHONE = findViewById(R.id.details_THIRD_PHONE);
 
+        //Spinner数据源不变
         ArrayAdapter ada_SAMPLE_TYPE = ArrayAdapter.createFromResource(context, R.array
                 .SAMPLE_TYPE, android.R.layout.simple_spinner_dropdown_item);
         sp_SAMPLE_TYPE.setAdapter(ada_SAMPLE_TYPE);
@@ -262,21 +283,34 @@ public class DetailsActivity extends AppCompatActivity {
         ArrayAdapter ada_I_AND_O = ArrayAdapter.createFromResource(context, R.array.I_AND_O,
                 android.R.layout.simple_spinner_dropdown_item);
         sp_I_AND_O.setAdapter(ada_I_AND_O);
-        ArrayAdapter ada_SAMPLE_STATUS = ArrayAdapter.createFromResource(context, R.array
-                .SAMPLE_STATUS, android.R.layout.simple_spinner_dropdown_item);
-        sp_SAMPLE_STATUS.setAdapter(ada_SAMPLE_STATUS);
         ArrayAdapter ada_PACK_TYPE = ArrayAdapter.createFromResource(context, R.array.PACK_TYPE,
                 android.R.layout.simple_spinner_dropdown_item);
         sp_PACK_TYPE.setAdapter(ada_PACK_TYPE);
         ArrayAdapter ada_SAVE_MODE = ArrayAdapter.createFromResource(context, R.array.SAVE_MODE,
                 android.R.layout.simple_spinner_dropdown_item);
         sp_SAVE_MODE.setAdapter(ada_SAVE_MODE);
-        ArrayAdapter ada_PACK = ArrayAdapter.createFromResource(context, R.array.PACK,
-                android.R.layout.simple_spinner_dropdown_item);
-        sp_PACK.setAdapter(ada_PACK);
         ArrayAdapter ada_DRAW_METHOD = ArrayAdapter.createFromResource(context, R.array
                 .DRAW_METHOD, android.R.layout.simple_spinner_dropdown_item);
         sp_DRAW_METHOD.setAdapter(ada_DRAW_METHOD);
+        ArrayAdapter ada_THIRD_NATURE = ArrayAdapter.createFromResource(context, R.array
+                .THIRD_NATURE, android.R.layout.simple_spinner_dropdown_item);
+        sp_THIRD_NATURE.setAdapter(ada_THIRD_NATURE);
+        //Spinner数据源动态
+        ada_CHILD_FOOD_KIND_ID = new ArrayAdapter<>
+                (context, android.R.layout.simple_list_item_1, SamplingContracts);
+        sp_CHILD_FOOD_KIND_ID.setAdapter(ada_CHILD_FOOD_KIND_ID);
+        ada_FOOD_KIND1 = new ArrayAdapter<>(context,
+                android.R.layout.simple_list_item_1, FoodKinds1);
+        sp_FOOD_KIND1.setAdapter(ada_FOOD_KIND1);
+        ada_FOOD_KIND2 = new ArrayAdapter<>(context,
+                android.R.layout.simple_list_item_1, FoodKinds2);
+        sp_FOOD_KIND2.setAdapter(ada_FOOD_KIND2);
+        ada_FOOD_KIND3 = new ArrayAdapter<>(context,
+                android.R.layout.simple_list_item_1, FoodKinds3);
+        sp_FOOD_KIND3.setAdapter(ada_FOOD_KIND3);
+        ada_FOOD_KIND4 = new ArrayAdapter<>(context,
+                android.R.layout.simple_list_item_1, FoodKinds4);
+        sp_FOOD_KIND4.setAdapter(ada_FOOD_KIND4);
 
         ada_PROVINCE = new ArrayAdapter<>(context, android.R.layout
                 .simple_spinner_dropdown_item, Provinces);
@@ -292,22 +326,6 @@ public class DetailsActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_dropdown_item, UNIVALENT_UNITS);
         sp_UNIVALENT_UNIT.setAdapter(ada_UNIVALENT_UNIT);
 
-        ada_FOOD_KIND1 = new ArrayAdapter<>(context,
-                android.R.layout.simple_list_item_1, FoodKinds1);
-        sp_FOOD_KIND1.setAdapter(ada_FOOD_KIND1);
-        ada_FOOD_KIND2 = new ArrayAdapter<>(context,
-                android.R.layout.simple_list_item_1, FoodKinds2);
-        sp_FOOD_KIND2.setAdapter(ada_FOOD_KIND2);
-        ada_FOOD_KIND3 = new ArrayAdapter<>(context,
-                android.R.layout.simple_list_item_1, FoodKinds3);
-        sp_FOOD_KIND3.setAdapter(ada_FOOD_KIND3);
-        ada_FOOD_KIND4 = new ArrayAdapter<>(context,
-                android.R.layout.simple_list_item_1, FoodKinds4);
-        sp_FOOD_KIND4.setAdapter(ada_FOOD_KIND4);
-        ada_CHILD_FOOD_KIND_ID = new ArrayAdapter<>
-                (context, android.R.layout.simple_list_item_1, SamplingContracts);
-        sp_CHILD_FOOD_KIND_ID.setAdapter(ada_CHILD_FOOD_KIND_ID);
-
         ada_MANU_PROVINCE = new ArrayAdapter<>(context, android.R.layout
                 .simple_spinner_dropdown_item, Provinces);
         sp_MANU_PROVINCE.setAdapter(ada_MANU_PROVINCE);
@@ -318,21 +336,10 @@ public class DetailsActivity extends AppCompatActivity {
                 .simple_spinner_dropdown_item, Districts_MANU);
         sp_MANU_DISTRICT.setAdapter(ada_MANU_DISTRICT);
 
-        toolbar = findViewById(R.id.toolbar_details);
-        toolbar.setTitle("详细信息");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        //设置toolbar
-        setSupportActionBar(toolbar);
-        //左边的小箭头（注意需要在setSupportActionBar(toolbar)之后才有效果）
-        toolbar.setNavigationIcon(R.drawable.ic_chevron_left_white);
-        //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
-        //toolbar.setOnMenuItemClickListener(onMenuItemClick);
-
         attemptGetProvinces();
-        attemptGetMeasureUnits("AMOUNT_UNIT");
+        //attemptGetMeasureUnits("AMOUNT_UNIT");
         attemptGetMeasureUnits("UNIVALENT_UNIT");
         attemptGetSamplingContract();
-
         //sendProblem();
     }
 
@@ -400,7 +407,6 @@ public class DetailsActivity extends AppCompatActivity {
             tv_MANU_COMPANY_ADDR.setText(task.getMANU_COMPANY_ADDR());
             et_SAVE_MODE_OTHER.setText(task.getSAVE_MODE_OTHER());
             et_SAMPLE_CLOSE_DATE.setText(task.getSAMPLE_CLOSE_DATE());
-            et_PACK_OTHER.setText(task.getPACK_OTHER());
             //tv_SAMPLE_ADDR.setText(task.getSAMPLE_ADDR());
             et_DRAW_ORG.setText(task.getDRAW_ORG());
             //tv_DRAW_ORG_ADDR.setText(task.getDRAW_ORG_ADDR());
@@ -412,6 +418,21 @@ public class DetailsActivity extends AppCompatActivity {
             //tv_DRAW_DATE.setText(task.getDRAW_DATE());
             et_GOODS_TYPE.setText(task.getGOODS_TYPE());
             et_DRAW_MAN.setText(task.getDRAW_MAN());
+
+            et_DOMESTIC_AREA_OTHER.setText(task.getDOMESTIC_AREA_OTHER());
+            et_SAMPLE_SOURCE_OTHER.setText(task.getSAMPLE_SOURCE_OTHER());
+            et_SAMPLE_PROPERTY_OTHER.setText(task.getSAMPLE_PROPERTY_OTHER());
+            et_SAMPLE_STYLE_OTHER.setText(task.getSAMPLE_STYLE_OTHER());
+
+            et_SAMPLE_MARK.setText(task.getSAMPLE_MARK());
+            et_SAMPLE_AMOUNT.setText(task.getSAMPLE_AMOUNT());
+            et_BARCODE.setText(task.getBARCODE());
+            et_ORIGIN_COUNTRY.setText(task.getORIGIN_COUNTRY());
+            et_THIRD_NAME.setText(task.getTHIRD_NAME());
+            et_THIRD_ADDR.setText(task.getTHIRD_ADDR());
+            et_THIRD_NATURE_OTHER.setText(task.getTHIRD_NATURE_OTHER());
+            et_THIRD_CODE.setText(task.getTHIRD_CODE());
+            et_THIRD_PHONE.setText(task.getTHIRD_PHONE());
 
             str_DATE_PRODUCT = str_DRAW_DATE = new SimpleDateFormat("yyyy-MM-dd", Locale
                     .getDefault()).format(Calendar.getInstance().getTime());
@@ -499,14 +520,6 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             }
 
-            SpinnerAdapter adapter10 = sp_SAMPLE_STATUS.getAdapter();
-            for (int i = 0; i < adapter10.getCount(); i++) {
-                if (task.getSAMPLE_STATUS().equals(adapter10.getItem(i).toString())) {
-                    sp_SAMPLE_STATUS.setSelection(i, true);
-                    break;
-                }
-            }
-
             SpinnerAdapter adapter11 = sp_PACK_TYPE.getAdapter();
             for (int i = 0; i < adapter11.getCount(); i++) {
                 if (task.getPACK_TYPE().equals(adapter11.getItem(i).toString())) {
@@ -523,18 +536,17 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             }
 
-            SpinnerAdapter adapter13 = sp_PACK.getAdapter();
-            for (int i = 0; i < adapter13.getCount(); i++) {
-                if (task.getPACK().equals(adapter13.getItem(i).toString())) {
-                    sp_PACK.setSelection(i, true);
-                    break;
-                }
-            }
-
             SpinnerAdapter adapter14 = sp_DRAW_METHOD.getAdapter();
             for (int i = 0; i < adapter14.getCount(); i++) {
                 if (task.getDRAW_METHOD().equals(adapter14.getItem(i).toString())) {
                     sp_DRAW_METHOD.setSelection(i, true);
+                    break;
+                }
+            }
+            SpinnerAdapter adapter15 = sp_THIRD_NATURE.getAdapter();
+            for (int i = 0; i < adapter15.getCount(); i++) {
+                if (task.getTHIRD_NATURE().equals(adapter15.getItem(i).toString())) {
+                    sp_THIRD_NATURE.setSelection(i, true);
                     break;
                 }
             }
@@ -625,8 +637,8 @@ public class DetailsActivity extends AppCompatActivity {
                     sp_MANU_DISTRICT.setSelection(i, true);
                     break;
                 }
-            }
-            */
+            }*/
+
         }
     }
 
@@ -651,7 +663,8 @@ public class DetailsActivity extends AppCompatActivity {
                             1000) {
                         if (s.length() < 10) {
                             Log.v("attempt", "1");
-                            attemptSampleEnterprises(s.toString());
+                            //attemptSampleEnterprises(s.toString());
+                            SearchClient(s.toString());
                         } else {
                             Log.v("isSelect", "1");
                         }
@@ -667,7 +680,7 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int pos = SUPPLIERS.indexOf(actv_SUPPLIER.getText().toString());
-                oneSampleEnterprise = sampleEnterprises.get(pos);
+                Client = Clients.get(pos);
                 try {
                     FormatData(2);
                 } catch (NoSuchMethodException e) {
@@ -680,13 +693,13 @@ public class DetailsActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Log.v("FormatData()", "IllegalAccessException");
                 }
-                et_SUPPLIER_LEGAL.setText(oneSampleEnterprise.getLEGAL());
-                et_SUPPLIER_FAX.setText(oneSampleEnterprise.getFAX());
-                et_SUPPLIER_PERSON.setText(oneSampleEnterprise.getPERSON());
-                tv_SUPPLIER_ADDR.setText(oneSampleEnterprise.getADDR());
+                et_SUPPLIER_LEGAL.setText(Client.getLEGALPERSON());
+                et_SUPPLIER_FAX.setText(Client.getFAX());
+                et_SUPPLIER_PERSON.setText(Client.getCONTACT_PERSON());
+                tv_SUPPLIER_ADDR.setText(Client.getADDR());
                 SpinnerAdapter adapter1 = sp_PROVINCE.getAdapter();
                 for (int i = 0; i < adapter1.getCount(); i++) {
-                    if (oneSampleEnterprise.getPROVINCE().equals(adapter1.getItem(i).toString()
+                    if (Client.getPROVINCE().equals(adapter1.getItem(i).toString()
                     )) {
                         sp_PROVINCE.setSelection(i, true);
                         break;
@@ -694,7 +707,7 @@ public class DetailsActivity extends AppCompatActivity {
                 }
                 SpinnerAdapter adapter2 = sp_CITY.getAdapter();
                 for (int i = 0; i < adapter2.getCount(); i++) {
-                    if (oneSampleEnterprise.getCITY().equals(adapter2.getItem(i).toString()
+                    if (Client.getCITY().equals(adapter2.getItem(i).toString()
                     )) {
                         sp_CITY.setSelection(i, true);
                         break;
@@ -702,27 +715,35 @@ public class DetailsActivity extends AppCompatActivity {
                 }
                 SpinnerAdapter adapter3 = sp_DISTRICT.getAdapter();
                 for (int i = 0; i < adapter3.getCount(); i++) {
-                    if (oneSampleEnterprise.getDISTRICT().equals(adapter3.getItem(i).toString()
+                    if (Client.getDISTRICT().equals(adapter3.getItem(i).toString()
                     )) {
                         sp_DISTRICT.setSelection(i, true);
                         break;
                     }
                 }
-                et_TOWN.setText(oneSampleEnterprise.getTOWN());
-                et_SUPPLIER_ADDR_TXT.setText(oneSampleEnterprise.getSUPPLIER_ADDR_TXT());
-                et_SUPPLIER_PHONE.setText(oneSampleEnterprise.getPHONE());
-                et_ANNUAL_SALES.setText(oneSampleEnterprise.getANNUAL_SALES());
-                et_BUSINESS_LICENCE.setText(oneSampleEnterprise.getBUSINESS_LICENCE());
+                //et_TOWN.setText(Client.getTOWN());
+                et_SUPPLIER_ADDR_TXT.setText(Client.getADDR());
+                et_SUPPLIER_PHONE.setText(Client.getTEL());
+                et_ANNUAL_SALES.setText(Client.getANNUAL_SALES());
+                et_BUSINESS_LICENCE.setText(Client.getBUSINESS_LICENCE());
                 SpinnerAdapter adapter4 = sp_PERMIT_TYPE.getAdapter();
                 for (int i = 0; i < adapter4.getCount(); i++) {
-                    if (oneSampleEnterprise.getPERMIT_TYPE().equals(adapter4.getItem(i).toString()
+                    if (Client.getPERMIT_TYPE().equals(adapter4.getItem(i).toString()
                     )) {
                         sp_PERMIT_TYPE.setSelection(i, true);
                         break;
                     }
                 }
-                et_PERMIT_NUM.setText(oneSampleEnterprise.getPERMIT_NUM());
-                et_SUPPLIER_ZIPCODE.setText(oneSampleEnterprise.getZIPCODE());
+                et_PERMIT_NUM.setText(Client.getPERMIT_NUM());
+                et_SUPPLIER_ZIPCODE.setText(Client.getZIPCODE());
+                SpinnerAdapter adapter5 = sp_DRAW_ADDR.getAdapter();
+                for (int i = 0; i < adapter5.getCount(); i++) {
+                    if (Client.getDRAW_ADDR().equals(adapter5.getItem(i).toString()
+                    )) {
+                        sp_DRAW_ADDR.setSelection(i, true);
+                        break;
+                    }
+                }
             }
         });
 
@@ -741,8 +762,6 @@ public class DetailsActivity extends AppCompatActivity {
                 // TODO 自动生成的方法存根
             }
         });
-
-
         sp_FOOD_KIND1.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -1179,35 +1198,33 @@ public class DetailsActivity extends AppCompatActivity {
         });*/
     }
 
-    public void attemptSampleEnterprises(String key) {
+    public void SearchClient(String Name) {
         if (((MyApplication) getApplication()).getTOKEN() == null) {
             token = sharedPreferences.getString("TOKEN", null);
         } else {
             token = ((MyApplication) getApplication()).getTOKEN();
         }
         FDA_API request = HttpUtils.JsonApi();
-        Call<List<sampleEnterprise>> call = request.sampleEnterprises(token, key);
-        call.enqueue(new Callback<List<sampleEnterprise>>() {
+        Call<List<Client>> call = request.Search(token, Name);
+        call.enqueue(new Callback<List<Client>>() {
             @Override
-            public void onResponse(Call<List<sampleEnterprise>> call,
-                                   Response<List<sampleEnterprise>> response) {
+            public void onResponse(Call<List<Client>> call, Response<List<Client>> response) {
                 if (response.code() == 401) {
-                    Log.v("sampleEnterprises请求", "token过期");
+                    Log.v("Search请求", "token过期");
                     Intent intent_login = new Intent();
-                    intent_login.setClass(DetailsActivity.this,
-                            LoginActivity.class);
+                    intent_login.setClass(DetailsActivity.this, LoginActivity.class);
                     intent_login.putExtra("login_type", 1);
                     startActivity(intent_login);
                 } else if (response.code() == 200) {
                     if (response.body() != null) {
-                        Log.v("SampleEnterprises请求成功!", "response.body is not null");
-                        sampleEnterprises = response.body();
-                        //Log.v("sampleEnterprises.size", "" + sampleEnterprises.size());
+                        Log.v("Search请求成功!", "response.body is not null");
+                        Clients = response.body();
+                        //Log.v("Clients.size", "" + Clients.size());
                         SUPPLIERS.clear();
-                        for (int i = 0; i < sampleEnterprises.size(); i++) {
-                            SUPPLIERS.add(sampleEnterprises.get(i).getNAME());
+                        for (int i = 0; i < Clients.size(); i++) {
+                            SUPPLIERS.add(Clients.get(i).getNAME());
                         }
-                        //Log.v("sampleEnterprises.size", "over");
+                        //Log.v("Clients.size", "over");
                         /*需要一个适配器 初始化数据源--这个数据源去匹配文本框中输入的内容*/
                         ArrayAdapter ada_SUPPLIER = new ArrayAdapter<>(context, android.R.layout
                                 .simple_list_item_1, SUPPLIERS);
@@ -1215,16 +1232,16 @@ public class DetailsActivity extends AppCompatActivity {
                         actv_SUPPLIER.setAdapter(ada_SUPPLIER);
                         ada_SUPPLIER.notifyDataSetChanged();
                     } else {
-                        Log.v("SampleEnterprises请求成功!", "response.body is null");
+                        Log.v("Search请求成功!", "response.body is null");
                     }
                 } else {
-                    Log.v("SampleEnterprises请求成功!", "提交失败!(" + response.code() + ")请稍后再试");
+                    Log.v("Search请求成功!", "提交失败!(" + response.code() + ")请稍后再试");
                 }
             }
 
             @Override
-            public void onFailure(Call<List<sampleEnterprise>> call, Throwable t) {
-                Log.v("SampleEnterprises请求失败!", t.getMessage());
+            public void onFailure(Call<List<Client>> call, Throwable t) {
+                Log.v("Search请求失败!", t.getMessage());
             }
         });
     }
@@ -1240,7 +1257,7 @@ public class DetailsActivity extends AppCompatActivity {
                         Log.v("getProvinces请求成功!", "response.body is not null");
                         getProvinces = response.body();
                         if (getProvinces.size() > 0) {
-                            Log.v("Provinces.size", "" + getProvinces.size());
+                            //Log.v("Provinces.size", "" + getProvinces.size());
                             Provinces = new String[getProvinces.size()];
                             for (int i = 0; i < getProvinces.size(); i++) {
                                 Provinces[i] = getProvinces.get(i).getNAME();
@@ -1293,7 +1310,7 @@ public class DetailsActivity extends AppCompatActivity {
                         if (type == 1) {
                             getCites = response.body();
                             if (getCites.size() > 0) {
-                                Log.v("Cites.size", "" + getCites.size());
+                                //Log.v("Cites.size", "" + getCites.size());
                                 Cites = new String[getCites.size()];
                                 for (int i = 0; i < getCites.size(); i++) {
                                     Cites[i] = getCites.get(i).getNAME();
@@ -1667,11 +1684,11 @@ public class DetailsActivity extends AppCompatActivity {
 
     public void doSaveData() {
         try {
-            task.setCUSTOM_NO(tv_CUSTOM_NO.getText().toString());
+            //task.setCUSTOM_NO(tv_CUSTOM_NO.getText().toString());
             //task.setNO(tv_NO.getText().toString());
             task.setGOODS_NAME(et_GOODS_NAME.getText().toString());
             task.setSAMPLING_NOTICE_CODE(et_SAMPLING_NOTICE_CODE.getText().toString());
-            task.setBUSINESS_SOURCE(tv_BUSINESS_SOURCE.getText().toString());
+            //task.setBUSINESS_SOURCE(tv_BUSINESS_SOURCE.getText().toString());
             task.setSAMPLE_TYPE(sp_SAMPLE_TYPE.getSelectedItem().toString());
             task.setSUPPLIER(actv_SUPPLIER.getText().toString());
             task.setDOMESTIC_AREA(sp_DOMESTIC_AREA.getSelectedItem().toString());
@@ -1712,7 +1729,6 @@ public class DetailsActivity extends AppCompatActivity {
             task.setDRAW_AMOUNT(et_DRAW_AMOUNT.getText().toString());
             task.setSTORAGESITE(et_STORAGESITE.getText().toString());
             task.setDRAW_AMOUNT_UNIT(tv_DRAW_AMOUNT_UNIT.getText().toString());
-            task.setSAMPLE_STATUS(sp_SAMPLE_STATUS.getSelectedItem().toString());
             task.setPACK_TYPE(sp_PACK_TYPE.getSelectedItem().toString());
             task.setMANU_COMPANY(et_MANU_COMPANY.getText().toString());
             task.setMANU_COMPANY_PHONE(et_MANU_COMPANY_PHONE.getText().toString());
@@ -1735,8 +1751,6 @@ public class DetailsActivity extends AppCompatActivity {
             task.setSAVE_MODE_OTHER(et_SAVE_MODE_OTHER.getText().toString());
             task.setSAMPLE_CLOSE_DATE(et_SAMPLE_CLOSE_DATE.getText().toString());
             task.setSAMPLE_ADDR(tv_SAMPLE_ADDR.getText().toString());
-            task.setPACK(sp_PACK.getSelectedItem().toString());
-            task.setPACK_OTHER(et_PACK_OTHER.getText().toString());
             task.setDRAW_METHOD(sp_DRAW_METHOD.getSelectedItem().toString());
             task.setFOOD_KIND1(sp_FOOD_KIND1.getSelectedItem().toString());
             task.setFOOD_KIND2(sp_FOOD_KIND2.getSelectedItem().toString());
@@ -1764,6 +1778,22 @@ public class DetailsActivity extends AppCompatActivity {
             task.setGOODS_TYPE(et_GOODS_TYPE.getText().toString());
             task.setDRAW_MAN(et_DRAW_MAN.getText().toString());
             task.setDRAW_MAN_NO(DRAW_MAN_NO);
+
+            task.setSAMPLE_MARK(et_SAMPLE_MARK.getText().toString());
+            task.setSAMPLE_AMOUNT(et_SAMPLE_AMOUNT.getText().toString());
+
+            task.setDOMESTIC_AREA_OTHER(et_DOMESTIC_AREA_OTHER.getText().toString());
+            task.setSAMPLE_SOURCE_OTHER(et_SAMPLE_SOURCE_OTHER.getText().toString());
+            task.setSAMPLE_PROPERTY_OTHER(et_SAMPLE_PROPERTY_OTHER.getText().toString());
+            task.setSAMPLE_STYLE_OTHER(et_SAMPLE_STYLE_OTHER.getText().toString());
+            task.setBARCODE(et_BARCODE.getText().toString());
+            task.setORIGIN_COUNTRY(et_ORIGIN_COUNTRY.getText().toString());
+            task.setTHIRD_NAME(et_THIRD_NAME.getText().toString());
+            task.setTHIRD_ADDR(et_THIRD_ADDR.getText().toString());
+            task.setTHIRD_NATURE(sp_THIRD_NATURE.getSelectedItem().toString());
+            task.setTHIRD_NATURE_OTHER(et_THIRD_NATURE_OTHER.getText().toString());
+            task.setTHIRD_CODE(et_THIRD_CODE.getText().toString());
+            task.setTHIRD_PHONE(et_THIRD_PHONE.getText().toString());
 
             //更新列表
             Tasks.list_task.set(Tasks.position, task);
@@ -2237,7 +2267,7 @@ public class DetailsActivity extends AppCompatActivity {
         if (type == 1) {
             fields = task.getClass().getDeclaredFields();
         } else if (type == 2) {
-            fields = oneSampleEnterprise.getClass().getDeclaredFields();
+            fields = Client.getClass().getDeclaredFields();
         }
         String name;
         Field f;
@@ -2264,13 +2294,13 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             } else if (type == 2) {
                 if (!name.equals("$change")) {
-                    Method getMethod = oneSampleEnterprise.getClass().getMethod("get" + name);
+                    Method getMethod = Client.getClass().getMethod("get" + name);
                     //Log.v("getMethod", getMethod.getName().toString());
-                    value = getMethod.invoke(oneSampleEnterprise);
+                    value = getMethod.invoke(Client);
                     if (value == null) {
-                        Method setMethod = oneSampleEnterprise.getClass().getMethod("set" + name,
+                        Method setMethod = Client.getClass().getMethod("set" + name,
                                 String.class);
-                        setMethod.invoke(oneSampleEnterprise, "");
+                        setMethod.invoke(Client, "");
                     }
                 }
             }
@@ -2315,8 +2345,7 @@ public class DetailsActivity extends AppCompatActivity {
                 break;
             case R.id.action_uploadImg:
                 Intent intent_uploadImg = new Intent();
-                intent_uploadImg.setClass(DetailsActivity.this,
-                        ImgUploadActivity.class);
+                intent_uploadImg.setClass(DetailsActivity.this, ImgUploadActivity.class);
                 intent_uploadImg.putExtra("NO", tv_NO.getText().toString());
                 //finish();// 结束当前活动
                 startActivity(intent_uploadImg);

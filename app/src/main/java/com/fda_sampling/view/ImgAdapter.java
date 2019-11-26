@@ -48,7 +48,7 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
 
         if (holder instanceof ImgAdapter.ViewHolder) {
             String picPath = imgList.get(position);
-            if (position == 0 && picPath.equals("加号")) {
+            if ((position == 0 || position == 1 || position == 2) && picPath.equals("加号")) {
                 //((ViewHolder) holder).img_add.setImageResource(R.mipmap.ic_add);
                 Glide.with(mActivity).load(R.mipmap.ic_add)
                         .placeholder(R.mipmap.logo)
@@ -57,15 +57,10 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
             } else if (position == 0 && picPath.equals("空白")) {
                 //((ViewHolder) holder).img_add.setImageResource(R.mipmap.logo);
             } else {
-                //File picFile = new File(picPath);
                 Glide.with(mActivity).load(picPath)
                         .placeholder(R.mipmap.logo)
                         .error(R.mipmap.error)
                         .into(((ViewHolder) holder).img_add);
-                /*Bitmap bm = getBM(picPath);
-                if (bm != null) {
-                    ((ViewHolder) holder).img_add.setImageBitmap(bm);
-                }*/
             }
             if (position == 0) {
                 ((ViewHolder) holder).imageNum.setText(String.valueOf(""));
@@ -101,13 +96,13 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
         notifyDataSetChanged();
     }
 
-    public void changList_add(List<String> imgList) {
+    public void changeList_add(List<String> imgList) {
         this.imgList = imgList;
         notifyDataSetChanged();
     }
 
 
-    /****************************************
+    /************
      * Listener
      */
 

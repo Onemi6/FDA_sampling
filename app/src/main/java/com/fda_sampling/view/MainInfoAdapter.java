@@ -71,6 +71,7 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ViewHolder) holder).CUSTOM_NO.setText(task.getCUSTOM_NO());
             ((ViewHolder) holder).NO.setText(task.getNO());
             ((ViewHolder) holder).BUSINESS_SOURCE.setText(task.getBUSINESS_SOURCE());
+            ((ViewHolder) holder).SUPPLIER.setText(task.getSUPPLIER());
             ((ViewHolder) holder).GOODS_NAME.setText(task.getGOODS_NAME());
             ((ViewHolder) holder).num.setText(String.valueOf(position + 1));
             ((ViewHolder) holder).itemView.setTag(position);
@@ -89,24 +90,28 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     ((ViewHolder) holder).NO.setTextColor(Color.parseColor("#ffff0000"));
                     ((ViewHolder) holder).BUSINESS_SOURCE.setTextColor(Color.parseColor
                             ("#ffff0000"));
+                    ((ViewHolder) holder).SUPPLIER.setTextColor(Color.parseColor("#ffff0000"));
                     ((ViewHolder) holder).GOODS_NAME.setTextColor(Color.parseColor("#ffff0000"));
                 } else if (task.getSTATE().equals("样品审核退回")) {
                     ((ViewHolder) holder).CUSTOM_NO.setTextColor(Color.parseColor("#FF8000"));
                     ((ViewHolder) holder).NO.setTextColor(Color.parseColor("#FF8000"));
                     ((ViewHolder) holder).BUSINESS_SOURCE.setTextColor(Color.parseColor
                             ("#FF8000"));
+                    ((ViewHolder) holder).SUPPLIER.setTextColor(Color.parseColor("#FF8000"));
                     ((ViewHolder) holder).GOODS_NAME.setTextColor(Color.parseColor("#FF8000"));
                 } else if (task.getSTATE().equals("基础信息审核退回")) {
                     ((ViewHolder) holder).CUSTOM_NO.setTextColor(Color.parseColor("#055EDD"));
                     ((ViewHolder) holder).NO.setTextColor(Color.parseColor("#055EDD"));
                     ((ViewHolder) holder).BUSINESS_SOURCE.setTextColor(Color.parseColor
                             ("#055EDD"));
+                    ((ViewHolder) holder).SUPPLIER.setTextColor(Color.parseColor("#055EDD"));
                     ((ViewHolder) holder).GOODS_NAME.setTextColor(Color.parseColor("#055EDD"));
                 }
             } else {
                 ((ViewHolder) holder).CUSTOM_NO.setTextColor(Color.parseColor("#727272"));
                 ((ViewHolder) holder).NO.setTextColor(Color.parseColor("#727272"));
                 ((ViewHolder) holder).BUSINESS_SOURCE.setTextColor(Color.parseColor("#727272"));
+                ((ViewHolder) holder).SUPPLIER.setTextColor(Color.parseColor("#727272"));
                 ((ViewHolder) holder).GOODS_NAME.setTextColor(Color.parseColor("#727272"));
                 ((ViewHolder) holder).num.setTextColor(Color.parseColor("#727272"));
             }
@@ -196,7 +201,7 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView CUSTOM_NO, NO, BUSINESS_SOURCE, GOODS_NAME, num;
+        private TextView CUSTOM_NO, NO, BUSINESS_SOURCE, SUPPLIER, GOODS_NAME, num;
         private ImageView img_check;
         private Button btn_copy, btn_paste;
         private LinearLayout item_select, item_buttons;
@@ -206,6 +211,7 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             CUSTOM_NO = view.findViewById(R.id.mainInfo_CUSTOM_NO);
             NO = view.findViewById(R.id.mainInfo_NO);
             BUSINESS_SOURCE = view.findViewById(R.id.mainInfo_BUSINESS_SOURCE);
+            SUPPLIER=view.findViewById(R.id.mainInfo_SUPPLIER);
             GOODS_NAME = view.findViewById(R.id.mainInfo_GOODS_NAME);
             num = view.findViewById(R.id.mainInfo_num);
             img_check = view.findViewById(R.id.mainInfo_check);

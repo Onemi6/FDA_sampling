@@ -57,18 +57,20 @@ public class ImgUploadActivity extends AppCompatActivity {
     private Context _context;
     private Button btn_uploadImg;
     private String number = null, token;
-    private List<String> picList_1 = new ArrayList<>(), picList_2 = new ArrayList<>(), picList_3
-            = new ArrayList<>(), picList_4 = new ArrayList<>(), picList_5 = new ArrayList<>(),
-            picList_6 = new ArrayList<>(), picList_7 = new ArrayList<>(), picList_8 = new
-            ArrayList<>(), uploadImage = new ArrayList<>(), status = new ArrayList<>(),
-            type_exists = new ArrayList<>();
+    private List<String> picList_0 = new ArrayList<>(), picList_1 = new ArrayList<>(), picList_2
+            = new ArrayList<>(), picList_3 = new ArrayList<>(), picList_4 = new ArrayList<>(),
+            picList_5 = new ArrayList<>(), picList_6 = new ArrayList<>(), picList_7 = new
+            ArrayList<>(), picList_8 = new ArrayList<>(), uploadImage = new ArrayList<>(), status
+            = new ArrayList<>(), type_exists = new ArrayList<>();
     private List<ImageInfo> imageInfoList = new ArrayList<>();
-    private ImgAdapter adapter_img_1, adapter_img_2, adapter_img_3, adapter_img_4, adapter_img_5,
-            adapter_img_6, adapter_img_7, adapter_img_8, adapter_uploadImg;
+    private ImgAdapter adapter_img_1, adapter_img_2, adapter_img_3, adapter_img_4,
+            adapter_img_5, adapter_img_6, adapter_img_7, adapter_img_8, adapter_uploadImg;
+    private SignatureImgAdapter adapter_img_0;
     private int fail_num, finish, picNum;
     private BuildBean dialog_ImgUpload;
     private SharedPreferences sharedPreferences;
 
+    private static final int TYPE_IMAGE_add = -1;
     private static final int TYPE_IMAGE_0 = 0;
     private static final int TYPE_IMAGE_1 = 1;
     private static final int TYPE_IMAGE_2 = 2;
@@ -78,6 +80,8 @@ public class ImgUploadActivity extends AppCompatActivity {
     private static final int TYPE_IMAGE_6 = 6;
     private static final int TYPE_IMAGE_7 = 7;
     private static final int TYPE_IMAGE_8 = 8;
+
+    private static final int requestCode_signature = 55;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +94,83 @@ public class ImgUploadActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
         Tiny.getInstance().init(getApplication());
 
+        initView();
+        initData();
+        ViewAction();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            List<String> selectPaths;
+            switch (requestCode) {
+                case TYPE_IMAGE_1:
+                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
+                    picList_1.addAll(selectPaths);
+                    break;
+                case TYPE_IMAGE_2:
+                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
+                    picList_2.addAll(selectPaths);
+                    break;
+                case TYPE_IMAGE_3:
+                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
+                    picList_3.addAll(selectPaths);
+                    break;
+                case TYPE_IMAGE_4:
+                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
+                    picList_4.addAll(selectPaths);
+                    break;
+                case TYPE_IMAGE_5:
+                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
+                    picList_5.addAll(selectPaths);
+                    break;
+                case TYPE_IMAGE_6:
+                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
+                    picList_6.addAll(selectPaths);
+                    break;
+                case TYPE_IMAGE_7:
+                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
+                    picList_7.addAll(selectPaths);
+                    break;
+                case TYPE_IMAGE_8:
+                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
+                    picList_8.addAll(selectPaths);
+                    break;
+                case requestCode_signature:
+                    String path = data.getStringExtra("path");
+                    Log.v("path", path);
+                    if (data.getStringExtra("type").equals("抽样员本人")) {
+                        picList_0.set(0, path);
+                    } else if (data.getStringExtra("type").equals("被抽样单位人员")) {
+                        picList_0.set(1, path);
+                    } else if (data.getStringExtra("type").equals("同行抽样人员")) {
+                        picList_0.add(picList_0.size() - 1, path);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            selectPaths = null;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //adapter_img_0.changeList_add(picList_0);
+        adapter_img_1.changeList_add(picList_1);
+        adapter_img_2.changeList_add(picList_2);
+        adapter_img_3.changeList_add(picList_3);
+        adapter_img_4.changeList_add(picList_4);
+        adapter_img_5.changeList_add(picList_5);
+        adapter_img_6.changeList_add(picList_6);
+        adapter_img_7.changeList_add(picList_7);
+        adapter_img_8.changeList_add(picList_8);
+    }
+
+    public void initView() {
+        //RecyclerView rv_add_img_0 = findViewById(R.id.rv_img_add_0);
         RecyclerView rv_add_img_1 = findViewById(R.id.rv_img_add_1);
         RecyclerView rv_add_img_2 = findViewById(R.id.rv_img_add_2);
         RecyclerView rv_add_img_3 = findViewById(R.id.rv_img_add_3);
@@ -112,7 +193,14 @@ public class ImgUploadActivity extends AppCompatActivity {
         //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
         //toolbar.setOnMenuItemClickListener(onMenuItemClick);
 
-        initData();
+        /*//GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
+        LinearLayoutManager layoutManager_0 = new LinearLayoutManager(this);
+        layoutManager_0.setOrientation(LinearLayoutManager.HORIZONTAL);
+        //设置RecyclerView 布局
+        rv_add_img_0.setLayoutManager(layoutManager_0);
+        //设置Adapter
+        adapter_img_0 = new SignatureImgAdapter(this, picList_0);
+        rv_add_img_0.setAdapter(adapter_img_0);*/
 
         //GridLayoutManager 对象 这里使用 GridLayoutManager 是网格布局的意思
         LinearLayoutManager layoutManager_1 = new LinearLayoutManager(this);
@@ -170,6 +258,39 @@ public class ImgUploadActivity extends AppCompatActivity {
         rv_upload_img.setLayoutManager(layoutManager_upload);
         adapter_uploadImg = new ImgAdapter(this, uploadImage);
         rv_upload_img.setAdapter(adapter_uploadImg);
+    }
+
+    public void initData() {
+
+        picList_0.add("加号");
+        picList_0.add("加号");
+        picList_0.add("加号");
+        picList_1.add("加号");
+        picList_2.add("加号");
+        picList_3.add("加号");
+        picList_4.add("加号");
+        picList_5.add("加号");
+        picList_6.add("加号");
+        picList_7.add("加号");
+        picList_8.add("加号");
+        //uploadImage.add("空白");
+        attemptImageInfo();
+    }
+
+    public void ViewAction() {
+        /*adapter_img_0.setOnClickListener(new SignatureImgAdapter.OnClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                SignatureOnClick(position);
+            }
+        });
+
+        adapter_img_0.setOnLongClickListener(new SignatureImgAdapter.OnLongClickListener() {
+            @Override
+            public void onLongClick(View view, int position) {
+                //ImgOnLongClick(position, TYPE_IMAGE_0);
+            }
+        });*/
 
         adapter_img_1.setOnClickListener(new ImgAdapter.OnClickListener() {
             @Override
@@ -289,7 +410,7 @@ public class ImgUploadActivity extends AppCompatActivity {
         adapter_uploadImg.setOnClickListener(new ImgAdapter.OnClickListener() {
             @Override
             public void onClick(View view, int position) {
-                ImgOnClick(position, TYPE_IMAGE_0);
+                ImgOnClick(position, TYPE_IMAGE_add);
             }
         });
 
@@ -342,77 +463,6 @@ public class ImgUploadActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            List<String> selectPaths;
-            switch (requestCode) {
-                case TYPE_IMAGE_1:
-                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
-                    picList_1.addAll(selectPaths);
-                    break;
-                case TYPE_IMAGE_2:
-                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
-                    picList_2.addAll(selectPaths);
-                    break;
-                case TYPE_IMAGE_3:
-                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
-                    picList_3.addAll(selectPaths);
-                    break;
-                case TYPE_IMAGE_4:
-                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
-                    picList_4.addAll(selectPaths);
-                    break;
-                case TYPE_IMAGE_5:
-                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
-                    picList_5.addAll(selectPaths);
-                    break;
-                case TYPE_IMAGE_6:
-                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
-                    picList_6.addAll(selectPaths);
-                    break;
-                case TYPE_IMAGE_7:
-                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
-                    picList_7.addAll(selectPaths);
-                    break;
-                case TYPE_IMAGE_8:
-                    selectPaths = data.getStringArrayListExtra(MultiImageSelector.EXTRA_RESULT);
-                    picList_8.addAll(selectPaths);
-                    break;
-                default:
-                    break;
-            }
-            selectPaths = null;
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        adapter_img_1.changList_add(picList_1);
-        adapter_img_2.changList_add(picList_2);
-        adapter_img_3.changList_add(picList_3);
-        adapter_img_4.changList_add(picList_4);
-        adapter_img_5.changList_add(picList_5);
-        adapter_img_6.changList_add(picList_6);
-        adapter_img_7.changList_add(picList_7);
-        adapter_img_8.changList_add(picList_8);
-    }
-
-    public void initData() {
-        picList_1.add("加号");
-        picList_2.add("加号");
-        picList_3.add("加号");
-        picList_4.add("加号");
-        picList_5.add("加号");
-        picList_6.add("加号");
-        picList_7.add("加号");
-        picList_8.add("加号");
-        //uploadImage.add("空白");
-        attemptImageInfo();
     }
 
     @Override
@@ -563,8 +613,8 @@ public class ImgUploadActivity extends AppCompatActivity {
         if (image.exists()) {
             Log.v("图片", "已经存在");
             uploadImage.add(image_path);
-            adaChang();
-            //adapter_uploadImg.changList_add(uploadImage);
+            adaChange();
+            //adapter_uploadImg.changeList_add(uploadImage);
         } else {
             if (NetworkUtil.isNetworkAvailable(_context)) {
                 FDA_API request = HttpUtils.JsonApi();
@@ -596,8 +646,8 @@ public class ImgUploadActivity extends AppCompatActivity {
                                     outStream.close();
                                     Log.v("图片", "下载成功");
                                     uploadImage.add(image_path);
-                                    adaChang();
-                                    //adapter_uploadImg.changList_add(uploadImage);
+                                    adaChange();
+                                    //adapter_uploadImg.changeList_add(uploadImage);
                                 } catch (FileNotFoundException e) {
                                     e.printStackTrace();
                                     Log.v("ResponseBody", "FileNotFoundException");
@@ -623,14 +673,33 @@ public class ImgUploadActivity extends AppCompatActivity {
         }
     }
 
+    public void SignatureOnClick(int pos) {
+        Intent intent_signature = new Intent();
+        intent_signature.setClass(ImgUploadActivity.this, SignatureActivity.class);
+        intent_signature.putExtra("NO", number);
+        if (pos < picList_0.size() - 1 && pos > 1) {
+
+            showImage(picList_0.get(pos));
+        } else {
+            if (pos == 0) {
+                intent_signature.putExtra("type", "抽样员本人");
+            } else if (pos == 1) {
+                intent_signature.putExtra("type", "被抽样单位人员");
+            } else {
+                intent_signature.putExtra("type", "同行抽样人员");
+            }
+            startActivityForResult(intent_signature, requestCode_signature);
+        }
+    }
+
     public void ImgOnClick(int pos, int TYPE_IMAGE) {
-        if (pos == 0 && TYPE_IMAGE != TYPE_IMAGE_0) {
+        if (pos == 0 && TYPE_IMAGE != TYPE_IMAGE_add) {
             MultiImageSelector.create()
                     .multi()
                     .start(ImgUploadActivity.this, TYPE_IMAGE);
         } else {
             String path = null;
-            if (TYPE_IMAGE == TYPE_IMAGE_0) {
+            if (TYPE_IMAGE == TYPE_IMAGE_add) {
                 path = uploadImage.get(pos);
             } else if (TYPE_IMAGE == TYPE_IMAGE_1) {
                 path = picList_1.get(pos);
@@ -756,7 +825,7 @@ public class ImgUploadActivity extends AppCompatActivity {
             Snackbar.make(btn_uploadImg, getResources().getString(R.string.img_type_8) +
                     "至少选择一张", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         } else {
-            Log.v("图片", "八种类别都已经上传过");
+            //Log.v("图片", "八种类别都已经上传过");
             picNum = picList_1.size() + picList_2.size() + picList_3.size() + picList_4.size() +
                     picList_5.size() + picList_6.size() + picList_7.size() + picList_8.size() - 8;
 
@@ -835,9 +904,9 @@ public class ImgUploadActivity extends AppCompatActivity {
                 .into(imageview);
     }
 
-    public void adaChang() {
+    public void adaChange() {
         if (uploadImage.size() >= imageInfoList.size()) {
-            adapter_uploadImg.changList_add(uploadImage);
+            adapter_uploadImg.changeList_add(uploadImage);
         }
     }
 

@@ -245,7 +245,7 @@ public class LoginActivity extends Activity {
         boolean sdCardExist = android.os.Environment.getExternalStorageState().equals(android.os
                 .Environment.MEDIA_MOUNTED);
         String IMAGE_PATH, PAYMENT_PATH, SAMPLETAG_PATH, CRASH_PATH, BILL_PATH, BILL2_PATH,
-                FEEDBACK_PATH, TOLDBOOK_PATH;
+                FEEDBACK_PATH, TOLDBOOK_PATH, SIGNATURE_PATH;
         if (sdCardExist) {
             IMAGE_PATH = Environment.getExternalStorageDirectory() + "/FDA/Image/";
             PAYMENT_PATH = Environment.getExternalStorageDirectory() + "/FDA/payment/";
@@ -255,16 +255,17 @@ public class LoginActivity extends Activity {
             BILL2_PATH = Environment.getExternalStorageDirectory() + "/FDA/Bill2/";
             FEEDBACK_PATH = Environment.getExternalStorageDirectory() + "/FDA/Feedback/";
             TOLDBOOK_PATH = Environment.getExternalStorageDirectory() + "/FDA/Toldbook/";
+            SIGNATURE_PATH = Environment.getExternalStorageDirectory() + "/FDA/Signature/";
             //COMPRESS_PATH = Environment.getExternalStorageDirectory() + "/FDA/Compress/";
         } else {
             IMAGE_PATH = PAYMENT_PATH = SAMPLETAG_PATH = CRASH_PATH = BILL_PATH = BILL2_PATH =
-                    FEEDBACK_PATH =
-                            TOLDBOOK_PATH = this.getCacheDir().toString() + "/";
+                    FEEDBACK_PATH = TOLDBOOK_PATH = SIGNATURE_PATH = this.getCacheDir().toString
+                            () + "/";
         }
         File image = new File(IMAGE_PATH), payment = new File(PAYMENT_PATH), sampletag = new File
                 (SAMPLETAG_PATH), crash = new File(CRASH_PATH), bill = new File(BILL_PATH), bill2
                 = new File(BILL2_PATH), feedback = new File(FEEDBACK_PATH), toldbook = new File
-                (TOLDBOOK_PATH);
+                (TOLDBOOK_PATH), signature = new File(SIGNATURE_PATH);
         if (!image.exists()) {
             image.mkdirs();
         }
@@ -288,6 +289,9 @@ public class LoginActivity extends Activity {
         }
         if (!toldbook.exists()) {
             toldbook.mkdirs();
+        }
+        if (!signature.exists()) {
+            signature.mkdirs();
         }
     }
 }

@@ -755,7 +755,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void ShareAppCode() {
         LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.item_img_add, (ViewGroup) findViewById(R
+        View layout = inflater.inflate(R.layout.item_img_show, (ViewGroup) findViewById(R
                 .id.dialog_layout));
         ImageView imageview = layout.findViewById(R.id.imageView);
         imageview.setImageResource(R.mipmap.appcode);

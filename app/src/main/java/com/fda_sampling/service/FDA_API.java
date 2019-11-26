@@ -2,6 +2,7 @@ package com.fda_sampling.service;
 
 import com.fda_sampling.model.ChildFoodKind;
 import com.fda_sampling.model.City;
+import com.fda_sampling.model.Client;
 import com.fda_sampling.model.DelImgStatus;
 import com.fda_sampling.model.District;
 import com.fda_sampling.model.FoodKind;
@@ -119,6 +120,9 @@ public interface FDA_API {
 
     @GET("api/Param/getDistrictsByID")
     Call<List<District>> getDistrictsByID(@Query("ID") int ID);
+
+    @GET("api/Client/Search")
+    Call<List<Client>> Search(@Header("LIMS_Token") String LIMS_Token, @Query("Name") String Name);
 
     @GET("problem")
     Call<Result> sendProblem(@Query("name") String name, @Query("content") String content);

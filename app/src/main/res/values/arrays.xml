@@ -3,17 +3,20 @@
     <string-array name="SAMPLE_TYPE">
         <item>监督抽检</item>
         <item>风险监测</item>
+        <item>评价性抽检</item>
     </string-array>
 
     <string-array name="DOMESTIC_AREA">
-        <item>城市</item>
-        <item>乡村</item>
         <item>景点</item>
+        <item>城市</item>
+        <item>乡镇</item>
+        <item>学校周边</item>
+        <item>其他</item>
     </string-array>
 
     <string-array name="PERMIT_TYPE">
-        <item>流通许可证</item>
-        <item>餐饮服务许可证</item>
+        <item>经营许可证</item>
+        <item>生产许可证</item>
     </string-array>
 
     <string-array name="DRAW_ADDR">
@@ -22,13 +25,13 @@
         <item>生产环节:半成品库</item>
         <item>生产环节:成品库(待检区)</item>
         <item>生产环节:成品库(已检区)</item>
+        <item>生产环节:其他</item>
         <item>流通环节:农贸市场</item>
         <item>流通环节:菜市场</item>
         <item>流通环节:批发市场</item>
         <item>流通环节:商场</item>
         <item>流通环节:超市</item>
         <item>流通环节:小食杂店</item>
-        <item>流通环节:网购</item>
         <item>流通环节:其他</item>
         <item>餐饮环节:餐馆(特大型餐馆)</item>
         <item>餐饮环节:餐馆(大型餐馆)</item>
@@ -46,20 +49,6 @@
         <item>餐饮环节:其他</item>
     </string-array>
 
-    <string-array name="SAMPLE_SOURCE">
-        <item>加工/自制</item>
-        <item>委托生产</item>
-        <item>外购</item>
-        <item>其他</item>
-    </string-array>
-
-    <string-array name="SAMPLE_PROPERTY">
-        <item>普通食品</item>
-        <item>特殊膳食食品</item>
-        <item>节令食品</item>
-        <item>重大活动保障食品</item>
-    </string-array>
-
     <string-array name="SAMPLE_STYLE">
         <item>食用农产品</item>
         <item>工业加工食品</item>
@@ -69,10 +58,31 @@
         <item>其他</item>
     </string-array>
 
+    <string-array name="SAMPLE_SOURCE">
+        <item>加工/自制</item>
+        <item>委托生产</item>
+        <item>外购</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="SAMPLE_PROPERTY">
+        <item>普通食品</item>
+        <item>特殊食品</item>
+        <item>节令食品</item>
+        <item>重大活动保障食品</item>
+        <item>其他</item>
+    </string-array>
+
     <string-array name="DATE_PRODUCT_TYPE">
-        <item>生产</item>
-        <item>加工</item>
+        <item>生产日期</item>
         <item>购进日期</item>
+        <item>加工日期</item>
+        <item>检疫日期</item>
+    </string-array>
+
+    <string-array name="DRAW_METHOD">
+        <item>无菌抽样</item>
+        <item>非无菌抽样</item>
     </string-array>
 
     <string-array name="I_AND_O">
@@ -80,16 +90,17 @@
         <item>否</item>
     </string-array>
 
-    <string-array name="SAMPLE_STATUS">
+    <!--<string-array name="SAMPLE_STATUS">
         <item>固体</item>
         <item>半固体</item>
         <item>液体</item>
         <item>气体</item>
-    </string-array>
+    </string-array>-->
 
     <string-array name="PACK_TYPE">
-        <item>散装</item>
         <item>预包装</item>
+        <item>非定量包装</item>
+        <item>无包装</item>
     </string-array>
 
     <string-array name="SAVE_MODE">
@@ -98,30 +109,37 @@
         <item>冷冻</item>
         <item>避光</item>
         <item>密闭</item>
+        <item>阴凉</item>
+        <item>通风</item>
+        <item>干燥</item>
         <item>其他</item>
     </string-array>
 
-    <string-array name="PACK">
+    <string-array name="THIRD_NATURE">
+        <item>委托</item>
+        <item>代理</item>
+        <item>经销</item>
+        <item>进口</item>
+        <item>其他</item>
+    </string-array>
+
+    <!--<string-array name="PACK">
         <item>玻璃瓶</item>
         <item>塑料瓶</item>
         <item>塑料袋</item>
         <item>无菌袋</item>
         <item>其他</item>
-    </string-array>
+    </string-array>-->
 
-    <string-array name="DRAW_METHOD">
-        <item>无菌抽样</item>
-        <item>非无菌抽样</item>
-    </string-array>
 
-    <string-array name="IMG_TYPE">
+    <!--<string-array name="IMG_TYPE">
         <item>样品照片</item>
         <item>现场照片</item>
         <item>营业执照</item>
         <item>经营许可证</item>
         <item>告知书</item>
         <item>反馈单</item>
-    </string-array>
+    </string-array>-->
 
     <string-array name="TASk_MON">
         <item>全年</item>

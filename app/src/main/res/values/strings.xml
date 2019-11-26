@@ -6,6 +6,7 @@
     <string name="info_DRAW">抽样单位信息</string>
     <string name="info_SUPPLIER">被抽样单位信息</string>
     <string name="info_sample">样品信息</string>
+    <string name="info_third">(标称)第三方企业信息</string>
     <string name="details">详细情况</string>
     <string name="prov_submit">暂存</string>
     <string name="submit">提交</string>
@@ -36,6 +37,7 @@
     <string name="update_title">检测到新版本V%1$s</string>
     <string name="update_content">更新内容</string>
     <string name="update_btn">马上升级</string>
+    <string name="img_type_0">签名</string>
     <string name="img_type_1">样品照片</string>
     <string name="img_type_2">现场照片</string>
     <string name="img_type_3">营业执照</string>
@@ -64,5 +66,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="copy">复制</string>
     <string name="paste">粘贴</string>
+    <string name="signature_clear">清除</string>
+    <string name="signature_save">保存</string>
+    <string name="title_activity_signature">SignatureActivity</string>
 
 </resources>
