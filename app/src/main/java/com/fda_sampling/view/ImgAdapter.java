@@ -3,7 +3,6 @@ package com.fda_sampling.view;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -16,18 +15,23 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.fda_sampling.R;
+import com.fda_sampling.model.ImageInfo;
 
 import java.util.List;
+
+/**
+ * Created by yy on 2019/11/28.
+ */
 
 public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View
         .OnClickListener, View.OnLongClickListener {
     private static final int VIEW_TYPE = -1;
-    private List<String> imgList;
+    private List<ImageInfo> imgList;
     private Activity mActivity;
     private ImgAdapter.OnClickListener mOnClickListener = null;
     private ImgAdapter.OnLongClickListener mOnLongClickListener = null;
 
-    public ImgAdapter(Activity activity, List<String> imgList) {
+    public ImgAdapter(Activity activity, List<ImageInfo> imgList) {
         this.mActivity = activity;
         this.imgList = imgList;
     }
@@ -47,27 +51,32 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         if (holder instanceof ImgAdapter.ViewHolder) {
-            String picPath = imgList.get(position);
-            if ((position == 0 || position == 1 || position == 2) && picPath.equals("加号")) {
+            String picPath = imgList.get(position).getPATH();
+            Glide.with(mActivity).load(picPath)
+                    .placeholder(R.mipmap.logo)
+                    .error(R.mipmap.error)
+                    .into(((ImgAdapter.ViewHolder) holder).img_add);
+            ((ImgAdapter.ViewHolder) holder).imageNum.setText(String.valueOf(position + 1));
+            ((ImgAdapter.ViewHolder) holder).itemView.setTag(position);
+            /*if ((position == 0 || position == 1 || position == 2) && picPath.equals("加号")) {
                 //((ViewHolder) holder).img_add.setImageResource(R.mipmap.ic_add);
                 Glide.with(mActivity).load(R.mipmap.ic_add)
                         .placeholder(R.mipmap.logo)
                         .error(R.mipmap.error)
-                        .into(((ViewHolder) holder).img_add);
+                        .into(((ImgAdapter.ViewHolder) holder).img_add);
             } else if (position == 0 && picPath.equals("空白")) {
                 //((ViewHolder) holder).img_add.setImageResource(R.mipmap.logo);
             } else {
                 Glide.with(mActivity).load(picPath)
                         .placeholder(R.mipmap.logo)
                         .error(R.mipmap.error)
-                        .into(((ViewHolder) holder).img_add);
+                        .into(((ImgAdapter.ViewHolder) holder).img_add);
             }
             if (position == 0) {
-                ((ViewHolder) holder).imageNum.setText(String.valueOf(""));
+                ((ImgAdapter.ViewHolder) holder).imageNum.setText(String.valueOf(""));
             } else {
-                ((ViewHolder) holder).imageNum.setText(String.valueOf(position));
-            }
-            ((ViewHolder) holder).itemView.setTag(position);
+                ((ImgAdapter.ViewHolder) holder).imageNum.setText(String.valueOf(position));
+            }*/
         }
     }
 
@@ -87,7 +96,7 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
         return super.getItemViewType(position);
     }
 
-    public List<String> getImgList() {
+    public List<ImageInfo> getImgList() {
         return this.imgList;
     }
 
@@ -96,11 +105,10 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
         notifyDataSetChanged();
     }
 
-    public void changeList_add(List<String> imgList) {
+    public void changeList_add(List<ImageInfo> imgList) {
         this.imgList = imgList;
         notifyDataSetChanged();
     }
-
 
     /************
      * Listener
@@ -157,7 +165,7 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
 
     public Bitmap getBM(String path) {
         if (!TextUtils.isEmpty(path)) {
-            Options opt = new Options();
+            BitmapFactory.Options opt = new BitmapFactory.Options();
             opt.inJustDecodeBounds = true;
             BitmapFactory.decodeFile(path, opt);
             int imageHeight = opt.outHeight;
@@ -187,5 +195,4 @@ public class ImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> im
         }
         return null;
     }
-
 }

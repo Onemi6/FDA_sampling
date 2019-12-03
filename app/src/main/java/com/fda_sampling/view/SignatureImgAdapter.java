@@ -9,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.fda_sampling.R;
+import com.fda_sampling.model.ImageInfoAdd;
 
 import java.util.List;
 
@@ -20,12 +22,12 @@ import java.util.List;
 public class SignatureImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements View.OnClickListener, View.OnLongClickListener {
     private static final int VIEW_TYPE = -1;
-    private List<String> imgList;
+    private List<ImageInfoAdd> imgList;
     private Activity mActivity;
     private SignatureImgAdapter.OnClickListener mOnClickListener = null;
     private SignatureImgAdapter.OnLongClickListener mOnLongClickListener = null;
 
-    public SignatureImgAdapter(Activity activity, List<String> imgList) {
+    public SignatureImgAdapter(Activity activity, List<ImageInfoAdd> imgList) {
         this.mActivity = activity;
         this.imgList = imgList;
     }
@@ -43,16 +45,17 @@ public class SignatureImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     //对RecyclerView子项数据进行赋值
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
         if (holder instanceof SignatureImgAdapter.ViewHolder) {
-            String picPath = imgList.get(position);
+            String picPath = imgList.get(position).getPATH();
             if (picPath.equals("加号")) {
                 Glide.with(mActivity).load(R.mipmap.ic_add)
                         .placeholder(R.mipmap.logo)
                         .error(R.mipmap.error)
                         .into(((SignatureImgAdapter.ViewHolder) holder).img_add);
             } else {
-                Glide.with(mActivity).load(picPath)
+                //需要替换图片所以要清缓存
+                Glide.with(mActivity).load(picPath).skipMemoryCache(true).diskCacheStrategy
+                        (DiskCacheStrategy.NONE)
                         .placeholder(R.mipmap.logo)
                         .error(R.mipmap.error)
                         .into(((SignatureImgAdapter.ViewHolder) holder).img_add);
@@ -87,7 +90,7 @@ public class SignatureImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return super.getItemViewType(position);
     }
 
-    public List<String> getImgList() {
+    public List<ImageInfoAdd> getImgList() {
         return this.imgList;
     }
 
@@ -96,7 +99,7 @@ public class SignatureImgAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyDataSetChanged();
     }
 
-    public void changeList_add(List<String> imgList) {
+    public void changeList_add(List<ImageInfoAdd> imgList) {
         this.imgList = imgList;
         notifyDataSetChanged();
     }

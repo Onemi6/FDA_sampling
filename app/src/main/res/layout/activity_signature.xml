@@ -19,9 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
-
     </android.support.design.widget.AppBarLayout>
-
 
     <com.fda_sampling.view.SignatureView
         android:id="@+id/signatureView"
@@ -50,8 +48,5 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/signature_save" />
-
     </LinearLayout>
-
-
 </RelativeLayout>

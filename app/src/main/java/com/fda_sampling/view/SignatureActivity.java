@@ -73,8 +73,8 @@ public class SignatureActivity extends AppCompatActivity {
                         path = path + "-2.jpg";
                     } else if (title.equals("同行抽样人员")) {
                         path = path + "-3-";
+                        int i = 0;
                         while (true) {
-                            int i = 0;
                             i++;
                             if (!new File(path + String.valueOf(i) + ".jpg").exists()) {
                                 path = path + String.valueOf(i) + ".jpg";
@@ -83,6 +83,7 @@ public class SignatureActivity extends AppCompatActivity {
                         }
                     }
                     try {
+                        //Log.v("path", path);
                         signatureView.save(path, true, 10);
                         Intent data = new Intent();
                         //data.putStringArrayListExtra()
@@ -94,7 +95,7 @@ public class SignatureActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    Snackbar.make(btn_signature_save, "您没有签名~", Snackbar.LENGTH_LONG).setAction
+                    Snackbar.make(btn_signature_save, "您还没有签名~", Snackbar.LENGTH_LONG).setAction
                             ("Action", null).show();
                 }
             }

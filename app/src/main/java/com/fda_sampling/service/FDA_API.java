@@ -126,4 +126,8 @@ public interface FDA_API {
 
     @GET("problem")
     Call<Result> sendProblem(@Query("name") String name, @Query("content") String content);
+
+    @Multipart
+    @POST("FileUpload")
+    Call<UploadImg> FileUpload(@Query("name") String name, @Part MultipartBody.Part file);
 }

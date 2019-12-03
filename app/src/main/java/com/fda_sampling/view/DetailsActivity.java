@@ -61,11 +61,11 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.text.SimpleDateFormat;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -73,7 +73,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetailsActivity extends AppCompatActivity {
-
     private Task task;
     private Context context;
     private Toolbar toolbar;
@@ -83,8 +82,8 @@ public class DetailsActivity extends AppCompatActivity {
             sp_DATE_PRODUCT_TYPE, sp_UNIVALENT_UNIT, sp_I_AND_O, sp_PACK_TYPE, sp_SAVE_MODE,
             sp_DRAW_METHOD, sp_MANU_PROVINCE, sp_MANU_CITY, sp_MANU_DISTRICT, sp_THIRD_NATURE;
     private ArrayAdapter<String> ada_UNIVALENT_UNIT, ada_FOOD_KIND1, ada_FOOD_KIND2,
-            ada_FOOD_KIND3, ada_FOOD_KIND4, ada_CHILD_FOOD_KIND_ID, ada_PROVINCE, ada_CITY,
-            ada_DISTRICT, ada_MANU_PROVINCE, ada_MANU_CITY, ada_MANU_DISTRICT;
+            ada_FOOD_KIND3, ada_FOOD_KIND4, ada_CHILD_FOOD_KIND_ID, ada_PROVINCE, ada_CITY, ada_DISTRICT,
+            ada_MANU_PROVINCE, ada_MANU_CITY, ada_MANU_DISTRICT;
     private LinearLayout layout_return;
     private TextView tv_SUPPLIER_ADDR, tv_MANU_COMPANY_ADDR, tv_STATE, tv_CHECK_INFO, tv_NO,
             tv_DATE_PRODUCT, tv_DRAW_DATE, tv_CUSTOM_NO, tv_BUSINESS_SOURCE, tv_SAMPLE_ADDR,
@@ -98,34 +97,29 @@ public class DetailsActivity extends AppCompatActivity {
     private List<District> getDistricts = new ArrayList<>(), getDistricts_MANU = new ArrayList<>();
     private List<MeasureUnit> getMeasureUnit_UNIVALENT_UNIT = new ArrayList<>();
     private List<FoodKind> getSamplingContract = new ArrayList<>(), getFoodKind1 = new
-            ArrayList<>(), getFoodKind2 = new ArrayList<>(),
-            getFoodKind3 = new ArrayList<>(), getFoodKind4 = new ArrayList<>();
-    private String[] SamplingContracts = new String[]{"合同加载中"}, FoodKinds1 = new String[]{"分类加载中"},
-            FoodKinds2 = new String[]{"分类加载中"}, FoodKinds3 = new String[]{"分类加载中"}, FoodKinds4 = new
-            String[]{"分类加载中"}, UNIVALENT_UNITS = new
-            String[]{"单位加载中"}, Provinces = new String[]{"省加载中"}, Cites = new String[]{"区加载中"},
-            Cites_MANU = new String[]{"区加载中"}, Districts = new String[]{"县加载中"}, Districts_MANU =
-            new String[]{"县加载中"};
+            ArrayList<>(), getFoodKind2 = new ArrayList<>(), getFoodKind3 = new ArrayList<>(),
+            getFoodKind4 = new ArrayList<>();
+    private String[] SamplingContracts = new String[]{"合同加载中"}, FoodKinds1 = new
+            String[]{"分类加载中"}, FoodKinds2 = new String[]{"分类加载中"}, FoodKinds3 = new String[]{"分类加载中"},
+            FoodKinds4 = new String[]{"分类加载中"}, UNIVALENT_UNITS = new String[]{"单位加载中"}, Provinces = new
+            String[]{"省加载中"}, Cites = new String[]{"区加载中"}, Cites_MANU = new String[]{"区加载中"}, Districts
+            = new String[]{"县加载中"}, Districts_MANU = new String[]{"县加载中"};
     private EditText et_DOMESTIC_AREA_OTHER, et_GOODS_NAME, et_SAMPLING_NOTICE_CODE, et_TOWN,
-            et_SUPPLIER_ADDR_TXT,
-            et_SUPPLIER_LEGAL, et_ANNUAL_SALES, et_BUSINESS_LICENCE, et_SUPPLIER_PERSON,
-            et_PERMIT_NUM, et_SUPPLIER_PHONE, et_SUPPLIER_FAX, et_SUPPLIER_ZIPCODE,
-            et_DRAW_ADDR_OTHER, et_SAMPLE_SOURCE_OTHER, et_SAMPLE_PROPERTY_OTHER,
-            et_SAMPLE_STYLE_OTHER, et_TRADEMARK, et_SAMPLE_MODEL, et_SAMPLE_NUMBER,
-            et_EXPIRATIONDATE, et_TEST_FILE_NO, et_SAMPLE_CLASS, et_PRODUCTION_CERTIFICATE,
-            et_UNIVALENT, et_DRAW_NUM, et_DRAW_AMOUNT, et_STORAGESITE, et_MANU_COMPANY,
-            et_MANU_TOWN, et_MANU_COMPANY_ADDR_TXT, et_SAVE_MODE_OTHER, et_MANU_COMPANY_PHONE,
-            et_SAMPLE_CLOSE_DATE, et_DRAW_ORG, et_DRAW_PERSON, et_DRAW_PHONE,
+            et_SUPPLIER_ADDR_TXT, et_SUPPLIER_LEGAL, et_ANNUAL_SALES, et_BUSINESS_LICENCE,
+            et_SUPPLIER_PERSON, et_PERMIT_NUM, et_SUPPLIER_PHONE, et_SUPPLIER_FAX, et_SUPPLIER_ZIPCODE,
+            et_DRAW_ADDR_OTHER, et_SAMPLE_SOURCE_OTHER, et_SAMPLE_PROPERTY_OTHER, et_SAMPLE_STYLE_OTHER,
+            et_TRADEMARK, et_SAMPLE_MODEL, et_SAMPLE_NUMBER, et_EXPIRATIONDATE, et_TEST_FILE_NO,
+            et_SAMPLE_CLASS, et_PRODUCTION_CERTIFICATE, et_UNIVALENT, et_DRAW_NUM, et_DRAW_AMOUNT,
+            et_STORAGESITE, et_MANU_COMPANY, et_MANU_TOWN, et_MANU_COMPANY_ADDR_TXT, et_SAVE_MODE_OTHER,
+            et_MANU_COMPANY_PHONE, et_SAMPLE_CLOSE_DATE, et_DRAW_ORG, et_DRAW_PERSON, et_DRAW_PHONE,
             et_DRAW_FAX, et_DRAW_ZIPCODE, et_REMARK, et_GOODS_TYPE, et_DRAW_MAN, et_SAMPLE_MARK,
             et_SAMPLE_AMOUNT, et_BARCODE, et_ORIGIN_COUNTRY, et_THIRD_NAME, et_THIRD_ADDR,
-            et_THIRD_NATURE_OTHER,
-            et_THIRD_CODE, et_THIRD_PHONE;
+            et_THIRD_NATURE_OTHER, et_THIRD_CODE, et_THIRD_PHONE;
     private String token, DRAW_MAN_NO, str_DATE_PRODUCT, str_DRAW_DATE;
     private ProgressDialog mypDialog;
-    private int mYear, mMonth, mDay,
-            Contract_ID, num_Cites, num_Cites_MANU,
-            num_Districts, num_Districts_MANU, num_FoodKinds1, num_FoodKinds2, num_FoodKinds3,
-            num_FoodKinds4, num_UNIVALENT_UNITS;
+    private int mYear, mMonth, mDay, Contract_ID, num_Cites, num_Cites_MANU, num_Districts,
+            num_Districts_MANU, num_FoodKinds1, num_FoodKinds2, num_FoodKinds3, num_FoodKinds4,
+            num_UNIVALENT_UNITS;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -135,14 +129,11 @@ public class DetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details);
         context = this;
         sharedPreferences = getSharedPreferences("Info", MODE_PRIVATE);
-        if (((MyApplication) getApplication()).getNO() == null) {
+        if (((MyApplication) getApplication()).getNO() == null)
             DRAW_MAN_NO = sharedPreferences.getString("NO", null);
-        } else {
-            DRAW_MAN_NO = ((MyApplication) getApplication()).getNO();
-        }
+        else DRAW_MAN_NO = ((MyApplication) getApplication()).getNO();
         num_Cites = num_Cites_MANU = num_Districts = num_Districts_MANU = num_FoodKinds1 =
-                num_FoodKinds2 = num_FoodKinds3 = num_FoodKinds4 =
-                        num_UNIVALENT_UNITS = 0;
+                num_FoodKinds2 = num_FoodKinds3 = num_FoodKinds4 = num_UNIVALENT_UNITS = 0;
         initView();
         initData();
         viewAction();
@@ -152,18 +143,16 @@ public class DetailsActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar_details);
         toolbar.setTitle("详细信息");
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        //设置toolbar
+        /*设置toolbar*/
         setSupportActionBar(toolbar);
-        //左边的小箭头（注意需要在setSupportActionBar(toolbar)之后才有效果）
+        /*左边的小箭头（注意需要在setSupportActionBar(toolbar)之后才有效果）*/
         toolbar.setNavigationIcon(R.drawable.ic_chevron_left_white);
-        //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
-        //toolbar.setOnMenuItemClickListener(onMenuItemClick);
-
+        /*菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
+        toolbar.setOnMenuItemClickListener(onMenuItemClick);*/
         //退回layout
         layout_return = findViewById(R.id.details_return);
         tv_STATE = findViewById(R.id.details_STATE);
-        tv_CHECK_INFO = findViewById(R.id.details_CHECK_INFO);
-        //主体layout
+        tv_CHECK_INFO = findViewById(R.id.details_CHECK_INFO); /*主体layout*/
         tv_CUSTOM_NO = findViewById(R.id.details_CUSTOM_NO);
         tv_BUSINESS_SOURCE = findViewById(R.id.details_BUSINESS_SOURCE);
         sp_SAMPLE_TYPE = findViewById(R.id.details_SAMPLE_TYPE);
@@ -195,7 +184,6 @@ public class DetailsActivity extends AppCompatActivity {
         et_SUPPLIER_ZIPCODE = findViewById(R.id.details_SUPPLIER_ZIPCODE);
         sp_DRAW_ADDR = findViewById(R.id.details_DRAW_ADDR);
         et_DRAW_ADDR_OTHER = findViewById(R.id.details_DRAW_ADDR_OTHER);
-
         sp_SAMPLE_SOURCE = findViewById(R.id.details_SAMPLE_SOURCE);
         et_SAMPLE_SOURCE_OTHER = findViewById(R.id.details_SAMPLE_SOURCE_OTHER);
         sp_SAMPLE_PROPERTY = findViewById(R.id.details_SAMPLE_PROPERTY);
@@ -253,9 +241,7 @@ public class DetailsActivity extends AppCompatActivity {
         sp_THIRD_NATURE = findViewById(R.id.details_THIRD_NATURE);
         et_THIRD_NATURE_OTHER = findViewById(R.id.details_THIRD_NATURE_OTHER);
         et_THIRD_CODE = findViewById(R.id.details_THIRD_CODE);
-        et_THIRD_PHONE = findViewById(R.id.details_THIRD_PHONE);
-
-        //Spinner数据源不变
+        et_THIRD_PHONE = findViewById(R.id.details_THIRD_PHONE); /*Spinner数据源不变*/
         ArrayAdapter ada_SAMPLE_TYPE = ArrayAdapter.createFromResource(context, R.array
                 .SAMPLE_TYPE, android.R.layout.simple_spinner_dropdown_item);
         sp_SAMPLE_TYPE.setAdapter(ada_SAMPLE_TYPE);
@@ -294,38 +280,34 @@ public class DetailsActivity extends AppCompatActivity {
         sp_DRAW_METHOD.setAdapter(ada_DRAW_METHOD);
         ArrayAdapter ada_THIRD_NATURE = ArrayAdapter.createFromResource(context, R.array
                 .THIRD_NATURE, android.R.layout.simple_spinner_dropdown_item);
-        sp_THIRD_NATURE.setAdapter(ada_THIRD_NATURE);
-        //Spinner数据源动态
-        ada_CHILD_FOOD_KIND_ID = new ArrayAdapter<>
-                (context, android.R.layout.simple_list_item_1, SamplingContracts);
+        sp_THIRD_NATURE.setAdapter(ada_THIRD_NATURE); /*Spinner数据源动态*/
+        ada_CHILD_FOOD_KIND_ID = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,
+                SamplingContracts);
         sp_CHILD_FOOD_KIND_ID.setAdapter(ada_CHILD_FOOD_KIND_ID);
-        ada_FOOD_KIND1 = new ArrayAdapter<>(context,
-                android.R.layout.simple_list_item_1, FoodKinds1);
+        ada_FOOD_KIND1 = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,
+                FoodKinds1);
         sp_FOOD_KIND1.setAdapter(ada_FOOD_KIND1);
-        ada_FOOD_KIND2 = new ArrayAdapter<>(context,
-                android.R.layout.simple_list_item_1, FoodKinds2);
+        ada_FOOD_KIND2 = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,
+                FoodKinds2);
         sp_FOOD_KIND2.setAdapter(ada_FOOD_KIND2);
-        ada_FOOD_KIND3 = new ArrayAdapter<>(context,
-                android.R.layout.simple_list_item_1, FoodKinds3);
+        ada_FOOD_KIND3 = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,
+                FoodKinds3);
         sp_FOOD_KIND3.setAdapter(ada_FOOD_KIND3);
-        ada_FOOD_KIND4 = new ArrayAdapter<>(context,
-                android.R.layout.simple_list_item_1, FoodKinds4);
+        ada_FOOD_KIND4 = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1,
+                FoodKinds4);
         sp_FOOD_KIND4.setAdapter(ada_FOOD_KIND4);
-
-        ada_PROVINCE = new ArrayAdapter<>(context, android.R.layout
-                .simple_spinner_dropdown_item, Provinces);
+        ada_PROVINCE = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,
+                Provinces);
         sp_PROVINCE.setAdapter(ada_PROVINCE);
-        ada_CITY = new ArrayAdapter<>(context, android.R.layout
-                .simple_spinner_dropdown_item, Cites);
+        ada_CITY = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,
+                Cites);
         sp_CITY.setAdapter(ada_CITY);
-        ada_DISTRICT = new ArrayAdapter<>(context, android.R.layout
-                .simple_spinner_dropdown_item, Districts);
+        ada_DISTRICT = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,
+                Districts);
         sp_DISTRICT.setAdapter(ada_DISTRICT);
-
-        ada_UNIVALENT_UNIT = new ArrayAdapter<>(context,
-                android.R.layout.simple_spinner_dropdown_item, UNIVALENT_UNITS);
+        ada_UNIVALENT_UNIT = new ArrayAdapter<>(context, android.R.layout
+                .simple_spinner_dropdown_item, UNIVALENT_UNITS);
         sp_UNIVALENT_UNIT.setAdapter(ada_UNIVALENT_UNIT);
-
         ada_MANU_PROVINCE = new ArrayAdapter<>(context, android.R.layout
                 .simple_spinner_dropdown_item, Provinces);
         sp_MANU_PROVINCE.setAdapter(ada_MANU_PROVINCE);
@@ -335,18 +317,14 @@ public class DetailsActivity extends AppCompatActivity {
         ada_MANU_DISTRICT = new ArrayAdapter<>(context, android.R.layout
                 .simple_spinner_dropdown_item, Districts_MANU);
         sp_MANU_DISTRICT.setAdapter(ada_MANU_DISTRICT);
-
-        attemptGetProvinces();
-        //attemptGetMeasureUnits("AMOUNT_UNIT");
+        attemptGetProvinces(); /*attemptGetMeasureUnits("AMOUNT_UNIT");*/
         attemptGetMeasureUnits("UNIVALENT_UNIT");
-        attemptGetSamplingContract();
-        //sendProblem();
+        attemptGetSamplingContract(); /*sendProblem();*/
     }
 
     public void initData() {
-        if (Tasks.position != -1) {
+        if (Tasks.position != -1)
             task = Tasks.list_task.get(Tasks.position);
-        }
         try {
             FormatData(1);
         } catch (NoSuchMethodException e) {
@@ -1144,8 +1122,6 @@ public class DetailsActivity extends AppCompatActivity {
                     tv_DRAW_AMOUNT_UNIT.setText("格式错误");
                     tv_STORAGESITE_UNIT.setText("格式错误");
                     Log.v("AMOUNT_UNIT", "单位格式错误，请重新选择!");
-                    /*Snackbar.make(toolbar, "单位格式错误，请重新选择!", Snackbar.LENGTH_LONG).setAction
-                            ("Action", null).show();*/
                 }
             }
 
@@ -1196,6 +1172,73 @@ public class DetailsActivity extends AppCompatActivity {
                 // TODO 自动生成的方法存根
             }
         });*/
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.details, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.action_prov_submit:
+                if (ClickUtil.isFastClick()) {
+                    doSaveData();
+                    if (isLoad() == 0) {
+                        attemptProvSubmit();
+                    }
+                } else {
+                    Snackbar.make(toolbar, "点击太快了，请稍后再试",
+                            Snackbar.LENGTH_LONG).setAction("Action", null)
+                            .show();
+                }
+                break;
+            case R.id.action_submit:
+                if (ClickUtil.isFastClick()) {
+                    doSaveData();
+                    attemptSubmit();
+                } else {
+                    Snackbar.make(toolbar, "提交太快了，请稍后再试",
+                            Snackbar.LENGTH_LONG).setAction("Action", null)
+                            .show();
+                }
+                break;
+            case R.id.action_uploadImg:
+                Intent intent_uploadImg = new Intent();
+                intent_uploadImg.setClass(DetailsActivity.this, ImgUploadActivity.class);
+                intent_uploadImg.putExtra("NO", tv_NO.getText().toString());
+                //finish();// 结束当前活动
+                startActivity(intent_uploadImg);
+                break;
+            case R.id.action_SamplingBill:
+                attemptGetSamplingBill(task.getNO());
+                break;
+            case R.id.action_SamplingBill2:
+                attemptGetSamplingBill2(task.getNO());
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPause() {
+        doSaveData();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        doSaveData();
+        super.onDestroy();
     }
 
     public void SearchClient(String Name) {
@@ -2305,73 +2348,6 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.details, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case android.R.id.home:
-                finish();
-                break;
-            case R.id.action_prov_submit:
-                if (ClickUtil.isFastClick()) {
-                    doSaveData();
-                    if (isLoad() == 0) {
-                        attemptProvSubmit();
-                    }
-                } else {
-                    Snackbar.make(toolbar, "点击太快了，请稍后再试",
-                            Snackbar.LENGTH_LONG).setAction("Action", null)
-                            .show();
-                }
-                break;
-            case R.id.action_submit:
-                if (ClickUtil.isFastClick()) {
-                    doSaveData();
-                    attemptSubmit();
-                } else {
-                    Snackbar.make(toolbar, "提交太快了，请稍后再试",
-                            Snackbar.LENGTH_LONG).setAction("Action", null)
-                            .show();
-                }
-                break;
-            case R.id.action_uploadImg:
-                Intent intent_uploadImg = new Intent();
-                intent_uploadImg.setClass(DetailsActivity.this, ImgUploadActivity.class);
-                intent_uploadImg.putExtra("NO", tv_NO.getText().toString());
-                //finish();// 结束当前活动
-                startActivity(intent_uploadImg);
-                break;
-            case R.id.action_SamplingBill:
-                attemptGetSamplingBill(task.getNO());
-                break;
-            case R.id.action_SamplingBill2:
-                attemptGetSamplingBill2(task.getNO());
-                break;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onPause() {
-        doSaveData();
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        doSaveData();
-        super.onDestroy();
     }
 
     public void setFocus(View v) {

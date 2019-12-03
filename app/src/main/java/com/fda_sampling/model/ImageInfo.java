@@ -9,6 +9,8 @@ public class ImageInfo {
 
     private int IMG_CONTENT_LEN;
 
+    private String PATH;
+
     public void setID(int ID) {
         this.ID = ID;
     }
@@ -39,5 +41,13 @@ public class ImageInfo {
 
     public int getIMG_CONTENT_LEN() {
         return this.IMG_CONTENT_LEN;
+    }
+
+    public void setPATH(String PATH) {
+        this.PATH = PATH;
+    }
+
+    public String getPATH() {
+        return this.PATH;
     }
 }
