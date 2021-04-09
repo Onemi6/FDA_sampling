@@ -16,10 +16,10 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
@@ -30,6 +30,7 @@ import com.fda_sampling.service.HttpUtils;
 import com.fda_sampling.util.MyApplication;
 import com.fda_sampling.util.NetworkUtil;
 import com.fda_sampling.util.RSAUtil;
+import com.fda_sampling.util.Util;
 
 import java.io.File;
 import java.security.PublicKey;
@@ -43,11 +44,12 @@ import retrofit2.Response;
 public class LoginActivity extends Activity {
 
     private EditText et_mAccount, et_mPassword;
+    private TextView imei_type;
     private CheckBox remember_password;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private Button btn_login;
-    private String account, password;
+    private String account, password,imei;
     private int login_type;
     private Context _context;
     public static final int MY_PERMISSIONS_REQUEST = 3000;
@@ -65,54 +67,85 @@ public class LoginActivity extends Activity {
         initView();
         getPermission();
         FileDir();
-        if (login_type == 1) {
-            account = sharedPreferences.getString("Login_Name", null);
-            password = sharedPreferences.getString("Password", null);
-            attemptLogin();
+        try {
+            Thread.sleep(2000);
+            login();
+        } catch (Exception e) {
+            Log.v("sleep-error", e.toString());
         }
-        btn_login.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                account = et_mAccount.getText().toString();
-                password = et_mPassword.getText().toString();
-                if (TextUtils.isEmpty(account)) {
-                    et_mAccount.requestFocus();
-                    et_mAccount.setError("账号不能为空");
-                } else {
-                    et_mAccount.setError(null);
-                    if (TextUtils.isEmpty(password)) {
-                        et_mPassword.requestFocus();
-                        et_mPassword.setError("密码不能为空");
-                    } else {
-                        et_mPassword.setError(null);
-                        if (NetworkUtil.isNetworkAvailable(_context)) {
-                            attemptLogin();
-                        } else {
-                            Snackbar.make(btn_login, "当前网络不可用",
-                                    Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                        }
-                    }
-                }
-            }
-        });
     }
 
     private void initView() {
         et_mAccount = findViewById(R.id.account);
         et_mPassword = findViewById(R.id.password);
+        imei_type=findViewById(R.id.imei_type);
         remember_password = findViewById(R.id.remember_password);
         btn_login = findViewById(R.id.btn_login);
         if (sharedPreferences != null) {
             boolean isRemember = sharedPreferences.getBoolean("isRemember", false);
+            et_mAccount.setText(sharedPreferences.getString("Login_Name", null));
             if (isRemember) {
-                et_mAccount.setText(sharedPreferences.getString("Login_Name", null));
                 et_mPassword.setText(sharedPreferences.getString("Password", null));
                 remember_password.setChecked(true);
             } else {
-                et_mAccount.setText(sharedPreferences.getString("Login_Name", null));
                 //et_mPassword.setText(sharedPreferences.getString("Password", null));
                 remember_password.setChecked(false);
             }
+        }
+    }
+
+    public void login() {
+        //imei = Util.getIMEI(_context);
+        //imei = Util.getMac().replace(":","").toUpperCase();
+        //imei = Util.getSN();
+        if(!TextUtils.isEmpty(Util.getIMEI(_context))){
+            imei = Util.getIMEI(_context);
+        }else{
+            imei = Util.getMac().replace(":","").toUpperCase();
+        }
+        if (!TextUtils.isEmpty(imei)) {
+            imei_type.setText("IMEI/MAC: "+imei);
+            Log.v("IMEI", imei);
+            if (login_type == 1) {
+                account = sharedPreferences.getString("Login_Name", null);
+                password = sharedPreferences.getString("Password", null);
+                attemptLogin();
+            }
+            btn_login.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    account = et_mAccount.getText().toString();
+                    password = et_mPassword.getText().toString();
+                    if (TextUtils.isEmpty(account)) {
+                        et_mAccount.requestFocus();
+                        et_mAccount.setError("账号不能为空");
+                    } else {
+                        et_mAccount.setError(null);
+                        if (TextUtils.isEmpty(password)) {
+                            et_mPassword.requestFocus();
+                            et_mPassword.setError("密码不能为空");
+                        } else {
+                            et_mPassword.setError(null);
+                            //至少8个字符，至少1个大写字母，1个小写字母和1个数字
+                            if (password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\s\\S]{8,}$")) {
+                                et_mPassword.setError(null);
+                                if (NetworkUtil.isNetworkAvailable(_context)) {
+                                    attemptLogin();
+                                } else {
+                                    Snackbar.make(btn_login, "当前网络不可用",
+                                            Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                }
+                            }
+                            else{
+                                //Log.v("password", password+"密码强度不够");
+                                et_mPassword.setError("密码强度不够");
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            Log.v("IMEI", " is null");
         }
     }
 
@@ -123,36 +156,41 @@ public class LoginActivity extends Activity {
         dialog_login.show();
         try {
             PublicKey publicKey = RSAUtil.loadPublicKey(RSAUtil.PUCLIC_KEY);
+            //Log.v("publicKey",publicKey.toString());
             // 加密
             byte[] encryptByte = RSAUtil.encryptData(password.getBytes(), publicKey);
             // 为了方便观察吧加密后的数据用base64加密转一下，要不然看起来是乱码,所以解密是也是要用Base64先转换
             String password_afterEncrypt = Base64.encodeToString(encryptByte, Base64.DEFAULT);
             String data = "{\"Login_Name\":\"" + account + "\"," + "\"Password\":\"" +
-                    password_afterEncrypt + "\"}";
+                    password_afterEncrypt +  "\"," + "\"IMEI\":\"" +imei + "\"}";
+
+            /*byte[] encryptByte = RSAUtil.encryptData("784512Mustafa".getBytes(), publicKey);
+            // 为了方便观察吧加密后的数据用base64加密转一下，要不然看起来是乱码,所以解密是也是要用Base64先转换
+            String password_afterEncrypt = Base64.encodeToString(encryptByte, Base64.DEFAULT);
+            String data = "{\"Login_Name\":\"" + "mustafa" + "\"," + "\"Password\":\"" +
+                    password_afterEncrypt +  "\"," + "\"IMEI\":\"" +"861695037552457" + "\"}";*/
+
             FDA_API request = HttpUtils.JsonApi();
+            //Log.v("password",password);
+            //Log.v("data",data);
             Call<LoginStatus> call = request.Login(data);
             call.enqueue(new Callback<LoginStatus>() {
                 @Override
                 public void onResponse(Call<LoginStatus> call, Response<LoginStatus> response) {
                     if (response.body() != null) {
-                        Log.v("Login请求成功!", "response.body() is not null");
+                        //Log.v("Login请求成功!", "response.body() is not null");
                         if (response.body().getMESSAGE() == null) {
                             editor = sharedPreferences.edit();
                             if (remember_password.isChecked()) {
                                 editor.putBoolean("isRemember", true);
-                                editor.putString("Login_Name", account);
-                                editor.putString("Password", password);
-                                editor.putString("TOKEN", response.body().getTOKEN());
-                                editor.putString("NAME", response.body().getNAME());
-                                editor.putString("NO", response.body().getNO());
                             } else {
                                 editor.putBoolean("isRemember", false);
-                                editor.putString("Login_Name", account);
-                                editor.putString("Password", password);
-                                editor.putString("TOKEN", response.body().getTOKEN());
-                                editor.putString("NAME", response.body().getNAME());
-                                editor.putString("NO", response.body().getNO());
                             }
+                            editor.putString("Login_Name", account);
+                            editor.putString("Password", password);
+                            editor.putString("TOKEN", response.body().getTOKEN());
+                            editor.putString("NAME", response.body().getNAME());
+                            editor.putString("NO", response.body().getNO());
                             editor.apply();
                             ((MyApplication) getApplication()).setTOKEN(response.body()
                                     .getTOKEN());
@@ -210,6 +248,7 @@ public class LoginActivity extends Activity {
         permissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         permissionList.add(Manifest.permission.CAMERA);
+        permissionList.add(Manifest.permission.READ_PHONE_STATE);
         checkAndRequestPermissions(permissionList);
     }
 
@@ -245,7 +284,7 @@ public class LoginActivity extends Activity {
         boolean sdCardExist = android.os.Environment.getExternalStorageState().equals(android.os
                 .Environment.MEDIA_MOUNTED);
         String IMAGE_PATH, PAYMENT_PATH, SAMPLETAG_PATH, CRASH_PATH, BILL_PATH, BILL2_PATH,
-                FEEDBACK_PATH, TOLDBOOK_PATH, SIGNATURE_PATH;
+                FEEDBACK_PATH, TOLDBOOK_PATH, SIGNATURE_PATH,TASK_PATH;
         if (sdCardExist) {
             IMAGE_PATH = Environment.getExternalStorageDirectory() + "/FDA/Image/";
             PAYMENT_PATH = Environment.getExternalStorageDirectory() + "/FDA/payment/";
@@ -256,16 +295,16 @@ public class LoginActivity extends Activity {
             FEEDBACK_PATH = Environment.getExternalStorageDirectory() + "/FDA/Feedback/";
             TOLDBOOK_PATH = Environment.getExternalStorageDirectory() + "/FDA/Toldbook/";
             SIGNATURE_PATH = Environment.getExternalStorageDirectory() + "/FDA/Signature/";
+            TASK_PATH= Environment.getExternalStorageDirectory() + "/FDA/Task/";
             //COMPRESS_PATH = Environment.getExternalStorageDirectory() + "/FDA/Compress/";
         } else {
             IMAGE_PATH = PAYMENT_PATH = SAMPLETAG_PATH = CRASH_PATH = BILL_PATH = BILL2_PATH =
-                    FEEDBACK_PATH = TOLDBOOK_PATH = SIGNATURE_PATH = this.getCacheDir().toString
-                            () + "/";
+                    FEEDBACK_PATH = TOLDBOOK_PATH = SIGNATURE_PATH =TASK_PATH= this.getCacheDir().toString() + "/";
         }
         File image = new File(IMAGE_PATH), payment = new File(PAYMENT_PATH), sampletag = new File
                 (SAMPLETAG_PATH), crash = new File(CRASH_PATH), bill = new File(BILL_PATH), bill2
                 = new File(BILL2_PATH), feedback = new File(FEEDBACK_PATH), toldbook = new File
-                (TOLDBOOK_PATH), signature = new File(SIGNATURE_PATH);
+                (TOLDBOOK_PATH), signature = new File(SIGNATURE_PATH),task=new File(TASK_PATH);
         if (!image.exists()) {
             image.mkdirs();
         }
@@ -292,6 +331,9 @@ public class LoginActivity extends Activity {
         }
         if (!signature.exists()) {
             signature.mkdirs();
+        }
+        if (!task.exists()) {
+            task.mkdirs();
         }
     }
 }

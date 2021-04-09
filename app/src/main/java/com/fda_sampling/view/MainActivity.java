@@ -33,6 +33,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -49,6 +50,7 @@ import android.widget.TextView;
 import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
 import com.fda_sampling.R;
+import com.fda_sampling.model.AppUpdate;
 import com.fda_sampling.model.Task;
 import com.fda_sampling.model.Tasks;
 import com.fda_sampling.model.UpdateInfo;
@@ -58,6 +60,7 @@ import com.fda_sampling.util.ClickUtil;
 import com.fda_sampling.util.CrashHandler;
 import com.fda_sampling.util.MyApplication;
 import com.fda_sampling.util.NetworkUtil;
+import com.fda_sampling.util.Util;
 import com.google.gson.Gson;
 
 import java.io.BufferedWriter;
@@ -79,7 +82,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener {
 
-    private int select_num, isHome = 0, last_pos = -1;
+    private int select_num, isHome = 0, last_pos = -1,isUpdate;
     private long mExitTime, mId;
     private Toolbar toolbar;
     private RecyclerView rv_tasks;
@@ -87,17 +90,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tv_select_title, tv_select_num, tv_select_all;
     private Button btn_select_confirm;
     private MainInfoAdapter adapter;
-    private String TAG_UPDATE = "update", versionName, token;
+    private String TAG_UPDATE = "update", versionName, token, appid, version, imei;
     private Context context;
     private SharedPreferences sharedPreferences;
     private UpdateInfo info;
+    private AppUpdate appUpdate;
     private ProgressDialog pd;
+    private BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+
+//        String apkPath = getPackageCodePath();
+//        MessageDigest msgDigest = null;
+//        try {
+//            msgDigest = MessageDigest.getInstance("SHA-1");
+//            byte[] bytes = new byte[1024];
+//            int byteCount;
+//            FileInputStream fis = new FileInputStream(new File(apkPath));
+//            while ((byteCount = fis.read(bytes)) > 0)
+//            {
+//                msgDigest.update(bytes, 0, byteCount);
+//            }
+//            BigInteger bi = new BigInteger(1, msgDigest.digest());
+//            String sha = bi.toString(16);
+//            fis.close();
+//            //这里添加从服务器中获取哈希值然后进行对比校验
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+
         context = this;
         CrashHandler.getInstance().init(context);
         toolbar = findViewById(R.id.toolbar_mainInfo);
@@ -139,8 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
                 //toolbar.setOnMenuItemClickListener(onMenuItemClick);
 
-                tv_user_name.setText(String.format(getResources().getString(R.string.user_name),
-                        name));
+                tv_user_name.setText(String.format(getResources().getString(R.string.user_name),name));
                 tv_app_versionName.setText(String.format(getResources().getString(R.string
                         .app_versionName), versionName));
                 ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -199,7 +225,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             break;
                     }
                 } else if (adapter.getMode() == 1)
-
                 {
                     if (Tasks.list_task.get(position).getIsSelect() == 0) {
                         Tasks.list_task.get(position).setIsSelect(1);
@@ -278,8 +303,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          * @param isWhiteBg        true为白色背景false为灰色背景
          */
         final BuildBean dialog_task = DialogUIUtils.showLoading(context, "任务刷新中...", false, true,
-                false,
-                false);
+                false,false);
         dialog_task.show();
         String Emp_No;
         FDA_API request = HttpUtils.JsonApi();
@@ -359,9 +383,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (Double.parseDouble(info.getVersion()) > Double
                             .parseDouble(versionName)) {
                         Log.i(TAG_UPDATE, "服务器版本号大于本地 ,提示用户升级 ");
+                        isUpdate=1;
                         showUpdateDialog();
                     } else if (Double.parseDouble(info.getVersion()) == Double
                             .parseDouble(versionName)) {
+                        isUpdate=0;
                         Log.i(TAG_UPDATE, "无需升级");
                     }
                 } else {
@@ -371,6 +397,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onFailure(Call<UpdateInfo> call, Throwable t) {
+                Log.v("update请求失败!", t.getMessage());
+            }
+        });
+    }
+
+    public void attemptUpdate2() {
+        //创建 网络请求接口 的实例
+        FDA_API request = HttpUtils.JsonApi();
+        appid=""+1;
+        version=versionName;
+        imei = Util.getIMEI(context);
+        Call<AppUpdate> call = request.CheckUpdate(appid,version,imei);
+        call.enqueue(new Callback<AppUpdate>() {
+            @Override
+            public void onResponse(Call<AppUpdate> call, Response<AppUpdate> response) {
+                if (response.body() != null) {
+                    appUpdate = response.body();
+                    if(!TextUtils.isEmpty(appUpdate.getVersion())) {
+                        Log.i(TAG_UPDATE, "服务器版本号大于本地 ,提示用户升级 ");
+                        showUpdateDialog();
+                    }else{
+                        Log.i(TAG_UPDATE, "无需升级");
+                    }
+                } else {
+                    Log.v("update请求成功!", "response.body is null");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AppUpdate> call, Throwable t) {
                 Log.v("update请求失败!", t.getMessage());
             }
         });
@@ -772,8 +828,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextView tv_title = v.findViewById(R.id.tv_title);
         TextView tv_msg = v.findViewById(R.id.tv_msg);
         Button btn_commit = v.findViewById(R.id.btn_commit);
-        tv_title.setText(String.format(getResources().getString(R.string.update_title), info
-                .getVersion()));
+        tv_title.setText(String.format(getResources().getString(R.string.update_title), info.getVersion()));
         tv_msg.setText(info.getDescription());
         //builer.setView(v);//这里如果使用builer.setView(v)，自定义布局只会覆盖title和button之间的那部分
         final Dialog dialog = builder.create();
@@ -833,7 +888,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // 安装apk
     public void installApk(File file) {
-
         if (file != null) {   // file 即 apk文件
             Intent intent = new Intent(Intent.ACTION_VIEW);
             // 由于没有在Activity环境下启动Activity,设置下面的标签
@@ -858,7 +912,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void listener(final long id) {
         IntentFilter intentFilter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 final File apkFile = getExternalFilesDir("DownLoad/FDA_sampling.apk");
@@ -1079,7 +1133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 builder.show();
                 break;
             case R.id.nav_task_query:
-                startActivity(new Intent(this, TaskQueryActivity.class));
+                startActivity(new Intent(this, TaskQueryActivity2.class));
                 break;
             case R.id.nav_share:
                 ShareAppCode();
@@ -1101,6 +1155,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         adapter.changList_add(Tasks.list_task);
+    }
+
+    @Override
+    public void onDestroy() {
+        // TODO Auto-generated method stub
+        if(isUpdate==1) {
+            unregisterReceiver(broadcastReceiver);
+        }
+        super.onDestroy();
     }
 
     public void DataCopy(int pos, View view) {

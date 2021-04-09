@@ -11,6 +11,11 @@ public class ImageInfo {
 
     private String PATH;
 
+    public ImageInfo(String IMG_TYPE, String PATH) {
+        this.IMG_TYPE = IMG_TYPE;
+        this.PATH = PATH;
+    }
+
     public void setID(int ID) {
         this.ID = ID;
     }

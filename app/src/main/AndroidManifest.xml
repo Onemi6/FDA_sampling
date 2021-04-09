@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.fda_sampling"
     android:versionCode="2"
-    android:versionName="2.46">
+    android:versionName="2.53">
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" /> <!-- 安装权限 -->
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 网络 -->
@@ -14,6 +15,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /><!-- 使用手机状态，获取SN -->
 
     <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
     <application
@@ -25,7 +27,8 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:targetApi="n">
 
         <!-- configChanges 设置旋转不刷新 -->
         <activity
@@ -45,6 +48,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.TaskQueryActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.TaskQueryActivity2"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.SignatureActivity"
@@ -71,7 +77,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

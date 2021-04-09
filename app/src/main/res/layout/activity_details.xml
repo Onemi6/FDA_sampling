@@ -345,8 +345,8 @@
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
                     android:gravity="end"
-                    android:paddingEnd="@dimen/activity_vertical_margin4"
-                    android:text="单位地址:" />
+                    android:paddingEnd="@dimen/activity_vertical_margin4" />
+                <!--android:text="单位地址:" />-->
 
                 <TextView
                     android:id="@+id/details_SUPPLIER_ADDR"
@@ -355,7 +355,7 @@
             </TableRow>
 
 
-            <TableRow>
+            <!--<TableRow>
 
                 <TextView
                     android:layout_width="1dip"
@@ -421,7 +421,7 @@
                     android:imeOptions="actionNext"
                     android:nextFocusForward="@+id/details_SUPPLIER_ADDR_TXT"
                     android:singleLine="true" />
-            </TableRow>
+            </TableRow>-->
 
             <TableRow>
 
@@ -430,7 +430,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:paddingEnd="@dimen/activity_vertical_margin4"
-                    android:text="详细地址:" />
+                    android:text="单位地址:" />
 
                 <EditText
                     android:id="@+id/details_SUPPLIER_ADDR_TXT"
@@ -1113,11 +1113,103 @@
                     android:paddingEnd="@dimen/activity_vertical_margin4"
                     android:text="储存条件:" />
 
-                <Spinner
+                <LinearLayout
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/SAVE_MODE_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="常温" />
+
+                    <CheckBox
+                        android:id="@+id/SAVE_MODE_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="冷藏" />
+
+                    <CheckBox
+                        android:id="@+id/SAVE_MODE_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="冷冻" />
+
+                </LinearLayout>
+                <!--<Spinner
                     android:id="@+id/details_SAVE_MODE"
                     android:layout_width="1dip"
                     android:layout_height="wrap_content"
-                    android:overlapAnchor="false" />
+                    android:overlapAnchor="false" />-->
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4" />
+
+                <LinearLayout
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/SAVE_MODE_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="避光" />
+
+                    <CheckBox
+                        android:id="@+id/SAVE_MODE_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="密闭" />
+
+                    <CheckBox
+                        android:id="@+id/SAVE_MODE_6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="阴凉" />
+
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:paddingEnd="@dimen/activity_vertical_margin4" />
+
+                <LinearLayout
+                    android:layout_width="1dip"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/SAVE_MODE_7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="通风" />
+
+                    <CheckBox
+                        android:id="@+id/SAVE_MODE_8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="干燥" />
+
+                    <CheckBox
+                        android:id="@+id/SAVE_MODE_9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="其他" />
+
+                </LinearLayout>
             </TableRow>
 
             <TableRow>
@@ -1352,7 +1444,7 @@
                     android:layout_height="wrap_content" />
             </TableRow>
 
-            <TableRow>
+            <!--<TableRow>
 
                 <TextView
                     android:layout_width="1dip"
@@ -1419,7 +1511,7 @@
                     android:imeOptions="actionNext"
                     android:nextFocusForward="@+id/details_MANU_COMPANY_ADDR_TXT"
                     android:singleLine="true" />
-            </TableRow>
+            </TableRow>-->
 
             <TableRow>
 

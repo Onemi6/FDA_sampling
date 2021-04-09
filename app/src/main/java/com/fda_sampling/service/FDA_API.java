@@ -1,5 +1,6 @@
 package com.fda_sampling.service;
 
+import com.fda_sampling.model.AppUpdate;
 import com.fda_sampling.model.ChildFoodKind;
 import com.fda_sampling.model.City;
 import com.fda_sampling.model.Client;
@@ -130,4 +131,7 @@ public interface FDA_API {
     @Multipart
     @POST("FileUpload")
     Call<UploadImg> FileUpload(@Query("name") String name, @Part MultipartBody.Part file);
+
+    @GET("api/checkUpdate")
+    Call<AppUpdate> CheckUpdate(@Query("appid") String appid, @Query("version") String version, @Query("imei") String imei);
 }
