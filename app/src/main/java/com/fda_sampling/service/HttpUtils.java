@@ -8,10 +8,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 public class HttpUtils {
-    //private static String ip = "http://test.3tpi.com:7050/";
-    //private static String ip = "http://124.117.209.42:8088/WebApi/";
     private static String ip = "http://139.155.250.179:83/";
-    private static String ip_WebReport = "http://139.155.250.179:8080/WebReport/";
+    private static String ip_WebReport = "http://139.155.250.179/WebReport/";
+    //private static String ip = "http://www.cloudlimslab.com:6072/";
+    //private static String ip_WebReport = "http://www.cloudlimslab.com:6073/WebReport/";
     private static String ip_problem = "http://122.237.103.35:6666/";
 
     public static FDA_API JsonApi() {

@@ -225,6 +225,8 @@ public class MainInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             item_select.setOnClickListener(MainInfoAdapter.this);
             btn_copy.setOnClickListener(MainInfoAdapter.this);
             btn_paste.setOnClickListener(MainInfoAdapter.this);
+
+            item_select.setOnLongClickListener(MainInfoAdapter.this);
         }
     }
 

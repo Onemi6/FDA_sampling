@@ -1,5 +1,6 @@
 package com.fda_sampling.view;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -51,6 +52,7 @@ import com.dou361.dialogui.DialogUIUtils;
 import com.dou361.dialogui.bean.BuildBean;
 import com.fda_sampling.R;
 import com.fda_sampling.model.AppUpdate;
+import com.fda_sampling.model.DelImgStatus;
 import com.fda_sampling.model.Task;
 import com.fda_sampling.model.Tasks;
 import com.fda_sampling.model.UpdateInfo;
@@ -73,6 +75,7 @@ import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -82,7 +85,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         NavigationView.OnNavigationItemSelectedListener {
 
-    private int select_num, isHome = 0, last_pos = -1,isUpdate;
+    private int select_num, isHome = 0, last_pos = -1, isUpdate, del_pos = -1;
     private long mExitTime, mId;
     private Toolbar toolbar;
     private RecyclerView rv_tasks;
@@ -90,7 +93,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tv_select_title, tv_select_num, tv_select_all;
     private Button btn_select_confirm;
     private MainInfoAdapter adapter;
-    private String TAG_UPDATE = "update", versionName, token, appid, version, imei;
+    private String TAG_UPDATE = "update";
+    private String versionName;
+    private String token;
     private Context context;
     private SharedPreferences sharedPreferences;
     private UpdateInfo info;
@@ -98,33 +103,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ProgressDialog pd;
     private BroadcastReceiver broadcastReceiver;
 
+    // 判断apk是否安装
+    public static boolean appIsInstalled(Context context, String pageName) {
+        try {
+            context.getPackageManager().getPackageInfo(pageName, 0);
+            return true;
+        } catch (NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    // 获取sdcard中的缓存目录
+    public static File getCacheDir(Context context) {
+        String APP_DIR_NAME = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                "/Android/data/";
+        File dir = new File(APP_DIR_NAME + context.getPackageName() + "/cache/");
+        if (!dir.exists()) dir.mkdirs();
+        return dir;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-
-//        String apkPath = getPackageCodePath();
-//        MessageDigest msgDigest = null;
-//        try {
-//            msgDigest = MessageDigest.getInstance("SHA-1");
-//            byte[] bytes = new byte[1024];
-//            int byteCount;
-//            FileInputStream fis = new FileInputStream(new File(apkPath));
-//            while ((byteCount = fis.read(bytes)) > 0)
-//            {
-//                msgDigest.update(bytes, 0, byteCount);
-//            }
-//            BigInteger bi = new BigInteger(1, msgDigest.digest());
-//            String sha = bi.toString(16);
-//            fis.close();
-//            //这里添加从服务器中获取哈希值然后进行对比校验
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-
         context = this;
         CrashHandler.getInstance().init(context);
         toolbar = findViewById(R.id.toolbar_mainInfo);
@@ -166,7 +168,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //菜单点击事件（注意需要在setSupportActionBar(toolbar)之后才有效果）
                 //toolbar.setOnMenuItemClickListener(onMenuItemClick);
 
-                tv_user_name.setText(String.format(getResources().getString(R.string.user_name),name));
+                tv_user_name.setText(String.format(getResources().getString(R.string.user_name),
+                        name));
                 tv_app_versionName.setText(String.format(getResources().getString(R.string
                         .app_versionName), versionName));
                 ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -188,9 +191,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 rv_tasks.setAdapter(adapter);
 
                 viewAction();
-                attemptUpdate();
-                //初始化List数据
-                attemptGetTasks();
+                attemptUpdate2();
             }
         } catch (NameNotFoundException e) {
             e.printStackTrace();
@@ -224,8 +225,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             startActivity(intent);*/
                             break;
                     }
-                } else if (adapter.getMode() == 1)
-                {
+                } else if (adapter.getMode() == 1) {
                     if (Tasks.list_task.get(position).getIsSelect() == 0) {
                         Tasks.list_task.get(position).setIsSelect(1);
                     } else if (Tasks.list_task.get(position).getIsSelect() == 1) {
@@ -244,52 +244,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        /*adapter.setOnLongClickListener(new MainInfoAdapter.OnLongClickListener() {
+        adapter.setOnLongClickListener(new MainInfoAdapter.OnLongClickListener() {
             @Override
             public void onLongClick(View view, int position) {
-                pos = position;
-                // 通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        context);
-                // 设置Title的图标
-                builder.setIcon(R.mipmap.ic_launcher);
-                // 设置Title的内容
-                // builder.setTitle("弹出警告框");
-                // 设置Content来显示一个信息
-                builder.setMessage("确定删除？");
-                // 设置一个PositiveButton
-                builder.setPositiveButton("确定",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                try {
-                                    adapter.removeItem(pos);
-                                    Snackbar.make(rv_tasks, "删除成功",
-                                            Snackbar.LENGTH_LONG).setAction("Action", null)
-                                            .show();
-
-                                } catch (Exception e) {
-                                    // TODO 自动生成的 catch 块
-                                    e.printStackTrace();
-                                    Snackbar.make(rv_tasks, "删除失败",
-                                            Snackbar.LENGTH_LONG).setAction("Action", null)
-                                            .show();
+                if (view.getId() == R.id.item_select_task) {
+                    del_pos = position;
+                    // 通过AlertDialog.Builder这个类来实例化我们的一个AlertDialog的对象
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    // 设置Title的图标
+                    builder.setIcon(R.mipmap.ic_launcher);
+                    // 设置Title的内容
+                    // builder.setTitle("弹出警告框");
+                    // 设置Content来显示一个信息
+                    builder.setMessage(Tasks.list_task.get(del_pos).getNO() + "确定删除？");
+                    // 设置一个PositiveButton
+                    builder.setPositiveButton("确定",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    delSamplingData();
                                 }
-                            }
-                        });
-                // 设置一个NegativeButton
-                builder.setNegativeButton("取消",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                            }
-                        });
-                // 显示出该对话框
-                builder.show();
+                            });
+                    // 设置一个NegativeButton
+                    builder.setNegativeButton("取消",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            });
+                    // 显示出该对话框
+                    builder.show();
+                }
             }
-        });*/
+        });
     }
 
     public void attemptGetTasks() {
@@ -303,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          * @param isWhiteBg        true为白色背景false为灰色背景
          */
         final BuildBean dialog_task = DialogUIUtils.showLoading(context, "任务刷新中...", false, true,
-                false,false);
+                false, false);
         dialog_task.show();
         String Emp_No;
         FDA_API request = HttpUtils.JsonApi();
@@ -374,21 +361,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onResponse(Call<UpdateInfo> call, Response<UpdateInfo> response) {
                 if (response.body() != null) {
                     info = response.body();
-                    /*try {
-                        versionName = getPackageManager().getPackageInfo(getPackageName(), 0)
-                                .versionName;
-                    } catch (NameNotFoundException e) {
-                        e.printStackTrace();
-                    }*/
                     if (Double.parseDouble(info.getVersion()) > Double
                             .parseDouble(versionName)) {
                         Log.i(TAG_UPDATE, "服务器版本号大于本地 ,提示用户升级 ");
-                        isUpdate=1;
+                        isUpdate = 1;
                         showUpdateDialog();
                     } else if (Double.parseDouble(info.getVersion()) == Double
                             .parseDouble(versionName)) {
-                        isUpdate=0;
+                        isUpdate = 0;
                         Log.i(TAG_UPDATE, "无需升级");
+                        attemptGetTasks();
                     }
                 } else {
                     Log.v("update请求成功!", "response.body is null");
@@ -405,20 +387,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void attemptUpdate2() {
         //创建 网络请求接口 的实例
         FDA_API request = HttpUtils.JsonApi();
-        appid=""+1;
-        version=versionName;
-        imei = Util.getIMEI(context);
-        Call<AppUpdate> call = request.CheckUpdate(appid,version,imei);
+        String appId = "" + 1;
+        String version = versionName;
+        String imei = sharedPreferences.getString("IMEI", null);
+        if(imei ==null || TextUtils.isEmpty(imei)){
+            if(!TextUtils.isEmpty(Util.getIMEI(context))){
+                imei = Util.getIMEI(context);
+            }else{
+                imei = Objects.requireNonNull(Util.getMac()).replace(":","").toUpperCase();
+            }
+        }
+        Call<AppUpdate> call = request.CheckUpdate(appId, version, imei);
         call.enqueue(new Callback<AppUpdate>() {
             @Override
             public void onResponse(Call<AppUpdate> call, Response<AppUpdate> response) {
                 if (response.body() != null) {
                     appUpdate = response.body();
-                    if(!TextUtils.isEmpty(appUpdate.getVersion())) {
+                    if (!TextUtils.isEmpty(appUpdate.getVersion()) && Double.parseDouble(appUpdate.getVersion()) > Double.parseDouble(versionName)) {
                         Log.i(TAG_UPDATE, "服务器版本号大于本地 ,提示用户升级 ");
-                        showUpdateDialog();
-                    }else{
+                        showUpdateDialog2();
+                    } else {
                         Log.i(TAG_UPDATE, "无需升级");
+                        attemptGetTasks();
                     }
                 } else {
                     Log.v("update请求成功!", "response.body is null");
@@ -769,16 +759,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }, 1000); /* 延时1s执行*/
     }
 
-    // 判断apk是否安装
-    public static boolean appIsInstalled(Context context, String pageName) {
-        try {
-            context.getPackageManager().getPackageInfo(pageName, 0);
-            return true;
-        } catch (NameNotFoundException e) {
-            return false;
-        }
-    }
-
     // 把Asset下的apk拷贝到sdcard下 /Android/data/你的包名/cache 目录下
     public File getAssetFileToCacheDir(Context context, String fileName) {
         try {
@@ -800,15 +780,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return null;
     }
 
-    // 获取sdcard中的缓存目录
-    public static File getCacheDir(Context context) {
-        String APP_DIR_NAME = Environment.getExternalStorageDirectory().getAbsolutePath() +
-                "/Android/data/";
-        File dir = new File(APP_DIR_NAME + context.getPackageName() + "/cache/");
-        if (!dir.exists()) dir.mkdirs();
-        return dir;
-    }
-
     private void ShareAppCode() {
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.item_img_show, (ViewGroup) findViewById(R
@@ -824,16 +795,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void showUpdateDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialog_update);
         LayoutInflater inflater = LayoutInflater.from(context);
-        View v = inflater.inflate(R.layout.dialog_update, null);
+        @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.dialog_update, null);
         TextView tv_title = v.findViewById(R.id.tv_title);
         TextView tv_msg = v.findViewById(R.id.tv_msg);
         Button btn_commit = v.findViewById(R.id.btn_commit);
-        tv_title.setText(String.format(getResources().getString(R.string.update_title), info.getVersion()));
+        tv_title.setText(String.format(getResources().getString(R.string.update_title),
+                info.getVersion()));
         tv_msg.setText(info.getDescription());
         //builer.setView(v);//这里如果使用builer.setView(v)，自定义布局只会覆盖title和button之间的那部分
         final Dialog dialog = builder.create();
         dialog.show();
-        dialog.getWindow().setContentView(v);//自定义布局应该在这里添加，要在dialog.show()的后面
+        Objects.requireNonNull(dialog.getWindow()).setContentView(v);//自定义布局应该在这里添加，要在dialog.show()的后面
         //dialog.getWindow().setGravity(Gravity.CENTER);//可以设置显示的位置
         dialog.setCanceledOnTouchOutside(false);//点击对话框以外的区域，对话框不消失
         dialog.setCancelable(false);//点击返回键，对话框不消失
@@ -843,10 +815,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 dialog.dismiss();
                 File apkFile = getExternalFilesDir("DownLoad/FDA_sampling.apk");
+                assert apkFile != null;
                 if (apkFile.exists()) {
                     apkFile.delete();
                 }
                 downloadApp();
+            }
+        });
+    }
+
+    /* 弹出更新对话框 */
+    public void showUpdateDialog2() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialog_update);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.dialog_update, null);
+        TextView tv_title = v.findViewById(R.id.tv_title);
+        TextView tv_msg = v.findViewById(R.id.tv_msg);
+        Button btn_commit = v.findViewById(R.id.btn_commit);
+        tv_title.setText(String.format(getResources().getString(R.string.update_title), appUpdate.getVersion()));
+        tv_msg.setText(appUpdate.getNote());
+        //builer.setView(v);//这里如果使用builer.setView(v)，自定义布局只会覆盖title和button之间的那部分
+        final Dialog dialog = builder.create();
+        dialog.show();
+        Objects.requireNonNull(dialog.getWindow()).setContentView(v);//自定义布局应该在这里添加，要在dialog.show()的后面
+        //dialog.getWindow().setGravity(Gravity.CENTER);//可以设置显示的位置
+        dialog.setCanceledOnTouchOutside(false);//点击对话框以外的区域，对话框不消失
+        dialog.setCancelable(false);//点击返回键，对话框不消失
+        btn_commit.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                File apkFile = getExternalFilesDir("DownLoad/FDA_sampling.apk");
+                assert apkFile != null;
+                if (apkFile.exists()) {
+                    apkFile.delete();
+                }
+                downloadApp2();
             }
         });
     }
@@ -886,6 +891,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pd.show();
     }
 
+    public void downloadApp2() {
+        //此处使用DownLoadManager开启下载任务
+        DownloadManager mDownloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(appUpdate.getUrl()));
+        // 下载过程和下载完成后通知栏有通知消息。
+        request.setNotificationVisibility(DownloadManager.Request
+                .VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setTitle("下载");
+        request.setDescription("apk正在下载");
+        //设置保存目录  /storage/emulated/0/Android/包名/files/Download
+        request.setDestinationInExternalFilesDir(MainActivity.this, Environment
+                .DIRECTORY_DOWNLOADS, "FDA_sampling.apk");
+        mId = mDownloadManager.enqueue(request);
+
+        //注册内容观察者，实时显示进度
+        MainActivity.MyContentObserver downloadChangeObserver = new MainActivity
+                .MyContentObserver(null);
+        getContentResolver().registerContentObserver(Uri.parse
+                ("content://downloads/my_downloads"), true, downloadChangeObserver);
+
+        //广播监听下载完成
+        listener(mId);
+        //弹出进度条，先隐藏前一个dialog
+        //dialog.dismiss();
+        //显示进度的对话框
+        pd = new ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);// 设置水平进度条
+        pd.setCancelable(false);// 设置是否可以通过点击Back键取消
+        pd.setCanceledOnTouchOutside(false);// 设置在点击Dialog外是否取消Dialog进度条
+        pd.setIcon(R.mipmap.logo);// 设置提示的title的图标，默认是没有的
+        pd.setTitle("提示");
+        pd.setMessage("玩命儿下载中,请稍后...");
+        pd.show();
+    }
     // 安装apk
     public void installApk(File file) {
         if (file != null) {   // file 即 apk文件
@@ -928,37 +967,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
         registerReceiver(broadcastReceiver, intentFilter);
-    }
-
-    public class MyContentObserver extends ContentObserver {
-
-        private MyContentObserver(Handler handler) {
-            super(handler);
-        }
-
-        @TargetApi(Build.VERSION_CODES.N)
-        @Override
-        public void onChange(boolean selfChange) {
-            DownloadManager.Query query = new DownloadManager.Query();
-            query.setFilterById(mId);
-            DownloadManager dManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-            final Cursor cursor = dManager.query(query);
-            if (cursor != null && cursor.moveToFirst()) {
-                final int totalColumn = cursor.getColumnIndex(DownloadManager
-                        .COLUMN_TOTAL_SIZE_BYTES);
-                final int currentColumn = cursor.getColumnIndex(DownloadManager
-                        .COLUMN_BYTES_DOWNLOADED_SO_FAR);
-                int totalSize = cursor.getInt(totalColumn);
-                int currentSize = cursor.getInt(currentColumn);
-                float percent = (float) currentSize / (float) totalSize;
-                float progress = (float) Math.floor(percent * 100);
-                pd.setProgress((int) progress);
-                if (progress == 100) {
-                    pd.dismiss();
-                }
-            }
-        }
-
     }
 
     @Override
@@ -1158,12 +1166,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         // TODO Auto-generated method stub
-        if(isUpdate==1) {
+        if (isUpdate == 1) {
             unregisterReceiver(broadcastReceiver);
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        if (isUpdate == 1) {
+            unregisterReceiver(broadcastReceiver);
+        }
+        super.onPause();
     }
 
     public void DataCopy(int pos, View view) {
@@ -1206,6 +1222,94 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             adapter.Refresh_all();
             Tasks.pos_copy = -1;
             Snackbar.make(toolbar, "粘贴成功", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
+    }
+
+    public void delSamplingData() {
+        if (NetworkUtil.isNetworkAvailable(context)) {
+            FDA_API request = HttpUtils.JsonApi();
+            if (((MyApplication) getApplication()).getTOKEN() == null) {
+                token = sharedPreferences.getString("TOKEN", null);
+            } else {
+                token = ((MyApplication) getApplication()).getTOKEN();
+            }
+            Call<DelImgStatus> call = request.delSamplingData(token,
+                    Tasks.list_task.get(del_pos).getNO());
+            call.enqueue(new Callback<DelImgStatus>() {
+                @Override
+                public void onResponse(Call<DelImgStatus> call, Response<DelImgStatus>
+                        response) {
+                    if (response.code() == 401) {
+                        Log.v("delData请求", "token过期");
+                        Intent intent_login = new Intent();
+                        intent_login.setClass(MainActivity.this,
+                                LoginActivity.class);
+                        intent_login.putExtra("login_type", 1);
+                        startActivity(intent_login);
+                    } else if (response.code() == 200) {
+                        if (response.body() != null) {
+                            DelImgStatus delImgStatus = response.body();
+                            if (delImgStatus.getMessage().equals("执行完成！")) {
+                                try {
+                                    adapter.removeItem(del_pos);
+                                    Snackbar.make(rv_tasks, "删除成功!",
+                                            Snackbar.LENGTH_LONG).setAction("Action", null)
+                                            .show();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Snackbar.make(rv_tasks, "删除失败!",
+                                            Snackbar.LENGTH_LONG).setAction("Action", null)
+                                            .show();
+                                }
+                            } else {
+                                Snackbar.make(rv_tasks, delImgStatus.getMessage(),
+                                        Snackbar.LENGTH_LONG).setAction("Action", null)
+                                        .show();
+                            }
+                        } else {
+                            Log.v("delData请求成功!", "response.body is null");
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DelImgStatus> call, Throwable t) {
+                    Log.v("delData请求失败!", t.getMessage());
+                }
+            });
+        } else {
+            Snackbar.make(rv_tasks, "当前无网络", Snackbar.LENGTH_LONG).setAction("Action",
+                    null).show();
+        }
+    }
+
+    public class MyContentObserver extends ContentObserver {
+
+        private MyContentObserver(Handler handler) {
+            super(handler);
+        }
+
+        @TargetApi(Build.VERSION_CODES.N)
+        @Override
+        public void onChange(boolean selfChange) {
+            DownloadManager.Query query = new DownloadManager.Query();
+            query.setFilterById(mId);
+            DownloadManager dManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            final Cursor cursor = dManager.query(query);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int totalColumn = cursor.getColumnIndex(DownloadManager
+                        .COLUMN_TOTAL_SIZE_BYTES);
+                final int currentColumn = cursor.getColumnIndex(DownloadManager
+                        .COLUMN_BYTES_DOWNLOADED_SO_FAR);
+                int totalSize = cursor.getInt(totalColumn);
+                int currentSize = cursor.getInt(currentColumn);
+                float percent = (float) currentSize / (float) totalSize;
+                float progress = (float) Math.floor(percent * 100);
+                pd.setProgress((int) progress);
+                if (progress == 100) {
+                    pd.dismiss();
+                }
+            }
         }
     }
 }

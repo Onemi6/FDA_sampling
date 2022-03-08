@@ -134,4 +134,7 @@ public interface FDA_API {
 
     @GET("api/checkUpdate")
     Call<AppUpdate> CheckUpdate(@Query("appid") String appid, @Query("version") String version, @Query("imei") String imei);
+
+    @POST("api/Apply/delSamplingData")
+    Call<DelImgStatus> delSamplingData(@Header("LIMS_Token") String LIMS_Token, @Query("applyNo") String applyNo);
 }

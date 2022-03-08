@@ -1,11 +1,13 @@
 package com.fda_sampling.view;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -36,6 +38,7 @@ import java.io.File;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -95,13 +98,14 @@ public class LoginActivity extends Activity {
     }
 
     public void login() {
-        //imei = Util.getIMEI(_context);
-        //imei = Util.getMac().replace(":","").toUpperCase();
-        //imei = Util.getSN();
-        if(!TextUtils.isEmpty(Util.getIMEI(_context))){
-            imei = Util.getIMEI(_context);
-        }else{
-            imei = Util.getMac().replace(":","").toUpperCase();
+        imei=sharedPreferences.getString("IMEI", null);
+        if(imei==null || TextUtils.isEmpty(imei)){
+            //imei = Objects.requireNonNull(Util.getMac()).replace(":","").toUpperCase();
+            if(!TextUtils.isEmpty(Util.getIMEI(_context))){
+                imei = Util.getIMEI(_context);
+            }else{
+                imei = Objects.requireNonNull(Util.getMac()).replace(":","").toUpperCase();
+            }
         }
         if (!TextUtils.isEmpty(imei)) {
             imei_type.setText("IMEI/MAC: "+imei);
@@ -149,6 +153,7 @@ public class LoginActivity extends Activity {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.FROYO)
     private void attemptLogin() {
         final BuildBean dialog_login = DialogUIUtils.showLoading(_context, "登录中...", false, true,
                 false,
@@ -164,11 +169,10 @@ public class LoginActivity extends Activity {
             String data = "{\"Login_Name\":\"" + account + "\"," + "\"Password\":\"" +
                     password_afterEncrypt +  "\"," + "\"IMEI\":\"" +imei + "\"}";
 
-            /*byte[] encryptByte = RSAUtil.encryptData("784512Mustafa".getBytes(), publicKey);
-            // 为了方便观察吧加密后的数据用base64加密转一下，要不然看起来是乱码,所以解密是也是要用Base64先转换
+            /*byte[] encryptByte = RSAUtil.encryptData("ZjhLxm456".getBytes(), publicKey);
             String password_afterEncrypt = Base64.encodeToString(encryptByte, Base64.DEFAULT);
-            String data = "{\"Login_Name\":\"" + "mustafa" + "\"," + "\"Password\":\"" +
-                    password_afterEncrypt +  "\"," + "\"IMEI\":\"" +"861695037552457" + "\"}";*/
+            String data = "{\"Login_Name\":\"" + "luoxm" + "\"," + "\"Password\":\"" +
+                    password_afterEncrypt +  "\"," + "\"IMEI\":\"" +"861695038144692" + "\"}";*/
 
             FDA_API request = HttpUtils.JsonApi();
             //Log.v("password",password);
@@ -191,6 +195,7 @@ public class LoginActivity extends Activity {
                             editor.putString("TOKEN", response.body().getTOKEN());
                             editor.putString("NAME", response.body().getNAME());
                             editor.putString("NO", response.body().getNO());
+                            editor.putString("IMEI", imei);
                             editor.apply();
                             ((MyApplication) getApplication()).setTOKEN(response.body()
                                     .getTOKEN());

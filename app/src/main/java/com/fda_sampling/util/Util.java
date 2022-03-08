@@ -1,5 +1,6 @@
 package com.fda_sampling.util;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -78,6 +79,7 @@ public class Util {
         TelephonyManager manager =(TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         try {
             Method method = manager.getClass().getMethod("getImei", int.class);
+            method.setAccessible(true);
             String imei1 = (String) method.invoke(manager, 0);
             String imei2 = (String) method.invoke(manager, 1);
             if (TextUtils.isEmpty(imei2)) {
@@ -134,6 +136,7 @@ public class Util {
      * 获取SN
      * @return
      */
+    @SuppressLint("HardwareIds")
     public static String getSN() {
         String serial = "";
 /*        //通过android.os获取sn号
@@ -146,11 +149,10 @@ public class Util {
 
         //通过反射获取sn号
         try {
-            Class<?> c =Class.forName("android.os.SystemProperties");
+            @SuppressLint("PrivateApi") Class<?> c =Class.forName("android.os.SystemProperties");
             Method get =c.getMethod("get", String.class);
             serial = (String)get.invoke(c, "ro.serialno");
             if (!serial.equals("")&&!serial.equals("unknown"))return serial;
-
             //9.0及以上无法获取到sn，此方法为补充，能够获取到多数高版本手机 sn
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) serial = Build.getSerial();
         } catch (Exception e) {
